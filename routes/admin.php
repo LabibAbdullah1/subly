@@ -5,17 +5,22 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserDatabaseController;
 use App\Http\Controllers\Admin\DeploymentQueueController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SubdomainController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('index');
 Route::resource('plans', PlanController::class);
 Route::resource('vouchers', VoucherController::class);
 Route::resource('users', UserController::class);
+Route::resource('subdomains', SubdomainController::class);
+Route::resource('databases', UserDatabaseController::class);
 
 Route::prefix('deployments')->name('deployments.')->group(function () {
     Route::get('/', [DeploymentQueueController::class, 'index'])->name('index');
     Route::put('/{deployment}/status', [DeploymentQueueController::class, 'updateStatus'])->name('update_status');
+    Route::get('/{deployment}/download', [DeploymentQueueController::class, 'download'])->name('download');
     Route::post('/{deployment}/setup-db', [DeploymentQueueController::class, 'setupDatabase'])->name('setup_db');
 });
 

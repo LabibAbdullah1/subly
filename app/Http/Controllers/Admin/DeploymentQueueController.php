@@ -11,12 +11,17 @@ class DeploymentQueueController extends Controller
 {
     public function index()
     {
-        $deployments = Deployment::with('subdomain.user')
-            ->orderByRaw("CASE status WHEN 'queued' THEN 1 WHEN 'processing' THEN 2 WHEN 'error' THEN 3 WHEN 'success' THEN 4 ELSE 5 END")
+        $pendingDeployments = Deployment::with('subdomain.user')
+            ->whereIn('status', ['queued', 'processing'])
+            ->latest()
+            ->get();
+
+        $completedDeployments = Deployment::with('subdomain.user')
+            ->whereIn('status', ['success', 'error'])
             ->latest()
             ->paginate(15);
             
-        return view('admin.deployments.index', compact('deployments'));
+        return view('admin.deployments.index', compact('pendingDeployments', 'completedDeployments'));
     }
 
     public function updateStatus(Request $request, Deployment $deployment)
@@ -35,23 +40,15 @@ class DeploymentQueueController extends Controller
         return redirect()->back()->with('success', 'Deployment status updated successfully.');
     }
 
-    public function setupDatabase(Request $request, Deployment $deployment)
+    public function download(Deployment $deployment)
     {
-        $request->validate([
-            'db_name' => 'required|string|max:255',
-            'db_user' => 'required|string|max:255',
-            'db_password' => 'required|string|max:255',
-        ]);
+        if (!$deployment->zip_path || !\Storage::exists($deployment->zip_path)) {
+            return redirect()->back()->withErrors(['error' => 'Deployment file not found on server.']);
+        }
 
-        UserDatabase::updateOrCreate(
-            ['subdomain_id' => $deployment->subdomain_id],
-            [
-                'db_name' => $request->db_name,
-                'db_user' => $request->db_user,
-                'db_password' => $request->db_password,
-            ]
-        );
+        $extension = pathinfo($deployment->zip_path, PATHINFO_EXTENSION);
+        $filename = ($deployment->subdomain->domain ?? 'deployment') . "_v" . $deployment->version . "." . $extension;
 
-        return redirect()->back()->with('success', 'Database credentials saved for this subdomain.');
+        return \Storage::download($deployment->zip_path, $filename);
     }
 }

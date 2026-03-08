@@ -54,6 +54,12 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'domain' => env('APP_DOMAIN', 'subly.test'),
+    
+    'subdomain_suffix' => env('SUBDOMAIN_SUFFIX', '.subly.test'),
+
+    'doc_root_prefix' => env('DOC_ROOT_PREFIX', '/public_html/'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -65,7 +71,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------

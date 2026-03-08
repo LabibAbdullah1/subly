@@ -10,11 +10,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            
-            <!-- Messages -->
             @if (session('success'))
-                <div class="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-lg flex items-center gap-3 shadow-lg" role="alert">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-lg flex items-center gap-3 animate-fade-in" role="alert">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <p>{{ session('success') }}</p>
                 </div>
             @endif
@@ -30,7 +28,7 @@
             @endif
 
             <!-- 1. Subscription Widget -->
-            <div class="glass-panel overflow-hidden relative group">
+            <div class="glass-panel overflow-hidden relative group hover-lift">
                 <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl group-hover:bg-primary-500/20 transition-all duration-700 pointer-events-none"></div>
                 <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center relative z-10">
                     <div>
@@ -61,178 +59,244 @@
                 </div>
             </div>
 
-            <!-- 2. Deployments & Upload -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Upload Form -->
-                <div class="lg:col-span-1">
-                    <div class="glass-panel p-6 h-full flex flex-col">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="p-2 rounded-lg bg-gray-800 border border-gray-700 text-primary-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                            </div>
-                            <h3 class="text-lg font-medium text-gray-100">Deploy Code</h3>
-                        </div>
-                        <form action="{{ route('client.deployments.store') }}" method="POST" enctype="multipart/form-data" class="flex-1 flex flex-col">
-                            @csrf
-                            <div class="mb-5">
-                                <label for="subdomain_id" class="block text-sm font-medium text-gray-300 mb-1.5">Target Destination</label>
-                                <div class="relative">
-                                    <select name="subdomain_id" id="subdomain_id" class="input-field appearance-none py-2.5 pl-3 pr-10">
-                                        @forelse($subdomains as $sub)
-                                            <option value="{{ $sub->id }}" class="bg-gray-900">{{ $sub->full_domain }}</option>
-                                        @empty
-                                            <option value="" class="bg-gray-900">No active domains</option>
-                                        @endforelse
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                    </div>
+            <!-- 2. Deployments & Hosted Environments -->
+            @if($subdomains->count() > 0)
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Upload Form -->
+                    <div class="lg:col-span-1">
+                        <div class="glass-panel p-6 h-full flex flex-col hover-lift">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="p-2 rounded-lg bg-gray-800 border border-gray-700 text-primary-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                                 </div>
+                                <h3 class="text-lg font-medium text-gray-100">Deploy Code</h3>
                             </div>
-                            
-                            <div class="mb-6 flex-1">
-                                <label class="block text-sm font-medium text-gray-300 mb-1.5">Project Files (.zip)</label>
-                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-700 border-dashed rounded-xl hover:border-primary-500/50 hover:bg-gray-800/30 transition-all group relative">
-                                    <div class="space-y-1 text-center">
-                                        <svg class="mx-auto h-12 w-12 text-gray-500 group-hover:text-primary-400 transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                        <div class="flex text-sm text-gray-400">
-                                            <label for="zip_file" class="relative cursor-pointer rounded-md font-medium text-primary-400 hover:text-primary-300 focus-within:outline-none">
-                                                <span>Upload a file</span>
-                                                <input id="zip_file" name="zip_file" type="file" class="sr-only" accept=".zip" required>
-                                            </label>
-                                            <p class="pl-1">or drag and drop</p>
+                            <form action="{{ route('client.deployments.store') }}" method="POST" enctype="multipart/form-data" class="flex-1 flex flex-col">
+                                @csrf
+                                <div class="mb-5">
+                                    <label for="subdomain_id" class="block text-sm font-medium text-gray-300 mb-1.5">Target Destination</label>
+                                    <div class="relative">
+                                        <select name="subdomain_id" id="subdomain_id" class="input-field appearance-none pr-10">
+                                            @foreach($subdomains as $sub)
+                                                <option value="{{ $sub->id }}" class="bg-gray-900">{{ $sub->full_domain }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                         </div>
-                                        <p class="text-xs text-gray-500">ZIP up to 50MB</p>
                                     </div>
                                 </div>
-                            </div>
+                                
+                                <div class="mb-6 flex-1">
+                                    <label class="block text-sm font-medium text-gray-300 mb-1.5">Project Files (.zip)</label>
+                                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-700 border-dashed rounded-xl hover:border-primary-500/50 hover:bg-gray-800/30 transition-all group relative cursor-pointer" onclick="document.getElementById('zip_file').click()">
+                                        <div class="space-y-1 text-center">
+                                            <div id="upload-icon-container">
+                                                <svg class="mx-auto h-12 w-12 text-gray-500 group-hover:text-primary-400 transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex text-sm text-gray-400">
+                                                <label for="zip_file" class="relative cursor-pointer rounded-md font-medium text-primary-400 hover:text-primary-300 focus-within:outline-none">
+                                                    <span id="file-chosen-text">Upload a file</span>
+                                                    <input id="zip_file" name="zip_file" type="file" class="sr-only" accept=".zip" required onchange="handleFileSelect(this)">
+                                                </label>
+                                                <p class="pl-1" id="drop-text">or drag and drop</p>
+                                            </div>
+                                            <p class="text-xs text-gray-500" id="file-info-text">ZIP up to 50MB</p>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <button type="submit" class="w-full btn-primary py-2.5 mt-auto transition-all {{ (!$plan || $subdomains->isEmpty()) ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-[0_0_20px_rgba(94,106,210,0.4)]' }}" {{ (!$plan || $subdomains->isEmpty()) ? 'disabled' : '' }}>
-                                {{ !$plan ? 'Subscription Required' : 'Initiate Deployment' }}
-                            </button>
+                                <button type="submit" id="deploy-btn" class="w-full btn-primary py-2.5 mt-auto transition-all {{ (!$plan) ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-[0_0_20px_rgba(94,106,210,0.4)]' }} flex items-center justify-center gap-2" {{ (!$plan) ? 'disabled' : '' }}>
+                                    <span id="btn-text">{{ !$plan ? 'Subscription Required' : 'Initiate Deployment' }}</span>
+                                    <svg id="btn-spinner" class="hidden animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Subdomains List -->
+                    <div class="lg:col-span-2">
+                        <div class="glass-panel overflow-hidden h-full flex flex-col">
+                            <div class="p-6 border-b border-gray-800/50 bg-gray-900/30 flex justify-between items-center">
+                                <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                                    Hosted Environments
+                                </h3>
+                            </div>
+                            <div class="overflow-x-auto flex-1 relative group/scroll">
+                                <!-- Scroll Indicator (Mobile only) -->
+                                <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-950/50 to-transparent pointer-events-none opacity-0 group-hover/scroll:opacity-100 sm:hidden transition-opacity"></div>
+                                <table class="w-full text-left">
+                                    <thead>
+                                        <tr>
+                                            <th class="table-th">Domain</th>
+                                            <th class="table-th">Status</th>
+                                            <th class="table-th text-right">Latest Build</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-800/50">
+                                        @foreach($subdomains as $sub)
+                                            <tr class="group hover:bg-gray-800/30 transition-colors">
+                                                <td class="table-td">
+                                                    <a href="http://{{ $sub->full_domain }}" target="_blank" class="font-medium text-primary-400 hover:text-primary-300 hover:underline flex items-center gap-1.5 transition-colors">
+                                                        {{ $sub->full_domain }}
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                    </a>
+                                                </td>
+                                                <td class="table-td">
+                                                    <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-medium rounded-md border 
+                                                        {{ $sub->status == 'active' ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]' : 'bg-red-500/10 text-red-400 border-red-500/20' }}">
+                                                        {{ ucfirst($sub->status) }}
+                                                    </span>
+                                                </td>
+                                                <td class="table-td text-right">
+                                                    @php $latest = $sub->deployments->last(); @endphp
+                                                    @if($latest)
+                                                        <div class="flex items-center justify-end gap-2">
+                                                            <span class="text-xs text-gray-500">v{{ $latest->version }}</span>
+                                                            <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-medium rounded-full 
+                                                                {{ $latest->status === 'success' ? 'bg-green-500/10 text-green-400' : '' }}
+                                                                {{ $latest->status === 'queued' ? 'bg-yellow-500/10 text-yellow-400' : '' }}
+                                                                {{ $latest->status === 'processing' ? 'bg-blue-500/10 text-blue-400' : '' }}
+                                                                {{ $latest->status === 'error' ? 'bg-red-500/10 text-red-400' : '' }}">
+                                                                {{ ucfirst($latest->status) }}
+                                                            </span>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-sm text-gray-500 italic">No deployments yet</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <!-- Empty State for Users with Plan but No Subdomain -->
+                <div class="glass-panel p-12 flex flex-col items-center text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-b from-primary-500/5 to-transparent pointer-events-none"></div>
+                    <div class="relative z-10 max-w-lg">
+                        <div class="w-20 h-20 bg-primary-500/10 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-primary-500/20 shadow-lg shadow-primary-500/5">
+                            <svg class="w-10 h-10 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-100 mb-3">Welcome to Subly!</h3>
+                        <p class="text-gray-400 mb-8 leading-relaxed">
+                            Your hosting plan is active and ready to go! Choose your unique subdomain below to claim your space on the web.
+                        </p>
+                        
+                        <form action="{{ route('client.subdomains.store') }}" method="POST" class="max-w-md mx-auto">
+                            @csrf
+                            <div class="flex flex-col gap-4">
+                                <div class="relative group">
+                                    <div class="flex flex-col sm:flex-row items-center bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 sm:py-0 focus-within:ring-2 focus-within:ring-primary-500/50 focus-within:border-primary-500 transition-all">
+                                        <input type="text" name="name" 
+                                            class="bg-transparent border-none p-0 focus:ring-0 text-gray-100 font-mono text-lg flex-1 w-full text-center sm:text-left sm:py-3" 
+                                            placeholder="your-project-name" required
+                                            pattern="[a-zA-Z0-9\-_]+" title="Only letters, numbers, dashes, and underscores allowed">
+                                        <span class="text-gray-500 font-mono font-medium border-t sm:border-t-0 sm:border-l border-gray-800 pt-2 sm:pt-0 sm:pl-4 sm:ml-2 w-full sm:w-auto text-center sm:text-left">{{ config('app.subdomain_suffix') }}</span>
+                                    </div>
+                                    @error('name')
+                                        <p class="text-red-400 text-xs mt-2 text-left bg-red-400/5 py-1 px-3 rounded border border-red-400/10">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <button type="submit" class="btn-primary py-3.5 px-8 shadow-[0_0_20px_rgba(94,106,210,0.3)] flex items-center justify-center gap-2 font-bold text-base group animate-pulsar hover:animate-none">
+                                    Claim This Subdomain
+                                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                    </svg>
+                                </button>
+                                <p class="text-[10px] text-gray-500 mt-2">
+                                    *By claiming, you agree to our terms of service. You can claim only one subdomain per plan.
+                                </p>
+                            </div>
                         </form>
                     </div>
                 </div>
-
-                <!-- Subdomains List -->
-                <div class="lg:col-span-2">
-                    <div class="glass-panel overflow-hidden h-full flex flex-col">
-                        <div class="p-6 border-b border-gray-800/50 bg-gray-900/30 flex justify-between items-center">
-                            <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                                Hosted Environments
-                            </h3>
-                        </div>
-                        <div class="overflow-x-auto flex-1">
-                            <table class="w-full h-full text-left">
-                                <thead>
-                                    <tr>
-                                        <th class="table-th">Domain</th>
-                                        <th class="table-th">Status</th>
-                                        <th class="table-th text-right">Latest Build</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-800/50">
-                                    @forelse($subdomains as $sub)
-                                        <tr class="group hover:bg-gray-800/30 transition-colors">
-                                            <td class="table-td">
-                                                <a href="http://{{ $sub->full_domain }}" target="_blank" class="font-medium text-primary-400 hover:text-primary-300 hover:underline flex items-center gap-1.5 transition-colors">
-                                                    {{ $sub->full_domain }}
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                                                </a>
-                                            </td>
-                                            <td class="table-td">
-                                                <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-medium rounded-md border 
-                                                    {{ $sub->status == 'active' ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]' : 'bg-red-500/10 text-red-400 border-red-500/20' }}">
-                                                    {{ ucfirst($sub->status) }}
-                                                </span>
-                                            </td>
-                                            <td class="table-td text-right">
-                                                @php $latest = $sub->deployments->last(); @endphp
-                                                @if($latest)
-                                                    <div class="flex items-center justify-end gap-2">
-                                                        <span class="text-xs text-gray-500">v{{ $latest->version }}</span>
-                                                        <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-medium rounded-full 
-                                                            {{ $latest->status === 'success' ? 'bg-green-500/10 text-green-400' : '' }}
-                                                            {{ $latest->status === 'queued' ? 'bg-yellow-500/10 text-yellow-400' : '' }}
-                                                            {{ $latest->status === 'processing' ? 'bg-blue-500/10 text-blue-400' : '' }}
-                                                            {{ $latest->status === 'error' ? 'bg-red-500/10 text-red-400' : '' }}">
-                                                            {{ ucfirst($latest->status) }}
-                                                        </span>
-                                                    </div>
-                                                @else
-                                                    <span class="text-sm text-gray-500 italic">No deployments yet</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="3" class="table-td text-center py-12">
-                                                <div class="flex flex-col items-center justify-center text-gray-500 space-y-3">
-                                                    <svg class="w-10 h-10 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                    <p>No environments available.</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endif
 
             <!-- Database Info -->
-            <div class="glass-panel overflow-hidden">
-                <div class="p-6 border-b border-gray-800/50 bg-gray-900/30">
-                    <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                        Database Credentials
-                    </h3>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @forelse($subdomains as $sub)
-                            @foreach($sub->userDatabases as $db)
-                                <div class="relative bg-gray-900/80 rounded-xl p-5 border border-gray-800 shadow-lg group hover:border-gray-700 transition-colors">
-                                    <div class="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button onclick="navigator.clipboard.writeText('Host: localhost\nDB: {{ $db->db_name }}\nUser: {{ $db->db_user }}\nPass: {{ $db->db_password }}')" class="text-gray-500 hover:text-primary-400" title="Copy Credentials">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                                        </button>
+            @if($subdomains->count() > 0)
+                <div class="glass-panel overflow-hidden">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-gray-800/50 bg-gray-900/30 gap-4">
+                            <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                                Database Credentials
+                            </h3>
+                            <a href="https://db.subly.my.id" target="_blank" class="btn-secondary text-xs py-1.5 px-3 flex items-center gap-2 border-gray-700 hover:bg-gray-700/50 shadow-lg shadow-gray-900/20">
+                                <svg class="w-4 h-4 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                <span>Access Database (phpMyAdmin)</span>
+                            </a>
+                        </div>
+                    <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            @foreach($subdomains as $sub)
+                                @foreach($sub->userDatabases as $db)
+                                    <div class="relative bg-gray-900/80 rounded-xl p-5 border border-gray-800 shadow-lg group hover:border-gray-700 transition-colors">
+                                        <div class="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button onclick="copyToClipboard('Host: localhost\nDB: {{ $db->db_name }}\nUser: {{ $db->db_user }}\nPass: {{ $db->db_password }}', this)" class="text-gray-500 hover:text-primary-400 transition-all duration-200" title="Copy All Credentials">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            </button>
+                                        </div>
+                                        <h4 class="font-medium text-gray-200 flex items-center mb-4 pb-3 border-b border-gray-800">
+                                            {{ $sub->full_domain }}
+                                        </h4>
+                                        <ul class="text-sm space-y-3">
+                                            <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800 group/item">
+                                                <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">DB Name</span> 
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-gray-300 font-mono text-[13px]">{{ $db->db_name }}</span>
+                                                    <button onclick="copyToClipboard('{{ $db->db_name }}', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200" title="Copy DB Name">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800 group/item">
+                                                <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">User</span> 
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-gray-300 font-mono text-[13px]">{{ $db->db_user }}</span>
+                                                    <button onclick="copyToClipboard('{{ $db->db_user }}', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200" title="Copy Username">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800 group/item">
+                                                <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">Password</span> 
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-gray-300 font-mono text-[13px]">{{ $db->db_password }}</span>
+                                                    <button onclick="copyToClipboard('{{ $db->db_password }}', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200" title="Copy Password">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800 group/item">
+                                                <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">Host</span> 
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-gray-300 font-mono text-[13px]">localhost</span>
+                                                    <button onclick="copyToClipboard('localhost', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200" title="Copy Host">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    <h4 class="font-medium text-gray-200 flex items-center mb-4 pb-3 border-b border-gray-800">
-                                        {{ $sub->full_domain }}
-                                    </h4>
-                                    <ul class="text-sm space-y-3">
-                                        <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800">
-                                            <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">DB Name</span> 
-                                            <span class="text-gray-300 font-mono text-[13px]">{{ $db->db_name }}</span>
-                                        </li>
-                                        <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800">
-                                            <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">User</span> 
-                                            <span class="text-gray-300 font-mono text-[13px]">{{ $db->db_user }}</span>
-                                        </li>
-                                        <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800">
-                                            <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">Password</span> 
-                                            <span class="text-gray-300 font-mono text-[13px]">{{ $db->db_password }}</span>
-                                        </li>
-                                        <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800">
-                                            <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">Host</span> 
-                                            <span class="text-gray-300 font-mono text-[13px]">localhost</span>
-                                        </li>
-                                    </ul>
-                                </div>
+                                @endforeach
                             @endforeach
-                        @empty
-                            <div class="col-span-full py-8 text-center text-gray-500 bg-gray-900/50 rounded-xl border border-gray-800 border-dashed">
-                                No databases provisioned yet.
-                            </div>
-                        @endforelse
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
             <!-- Support & Feedback -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -250,11 +314,11 @@
                         @csrf
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-400 mb-1">Subject</label>
-                            <input type="text" name="subject" class="input-field py-2" required placeholder="Issue with database connection...">
+                            <input type="text" name="subject" class="input-field" required placeholder="Issue with database connection...">
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-400 mb-1">Detailed Description</label>
-                            <textarea name="message" rows="3" class="input-field py-2" required placeholder="Describe what exactly is happening..."></textarea>
+                            <textarea name="message" rows="3" class="input-field" required placeholder="Describe what exactly is happening..."></textarea>
                         </div>
                         <button type="submit" class="w-full btn-secondary py-2 border-gray-700 bg-gray-800 hover:bg-gray-700">
                             Submit Support Ticket
@@ -314,7 +378,7 @@
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-gray-400 mb-1">Your Rating</label>
                                 <div class="relative">
-                                    <select name="rating" class="input-field appearance-none py-2.5 pl-3 pr-10">
+                                    <select name="rating" class="input-field appearance-none pr-10">
                                         <option value="5" class="bg-gray-900">⭐⭐⭐⭐⭐ Phenomenal</option>
                                         <option value="4" class="bg-gray-900">⭐⭐⭐⭐ Great overall</option>
                                         <option value="3" class="bg-gray-900">⭐⭐⭐ Meets expectations</option>
@@ -328,7 +392,7 @@
                             </div>
                             <div class="mb-6 flex-1">
                                 <label class="block text-sm font-medium text-gray-400 mb-1">Feedback Notes</label>
-                                <textarea name="comment" rows="4" class="input-field h-full py-2 resize-none" placeholder="What parts of your experience can we optimize?"></textarea>
+                                <textarea name="comment" rows="4" class="input-field h-full resize-none" placeholder="What parts of your experience can we optimize?"></textarea>
                             </div>
                             <button type="submit" class="w-full btn-secondary py-2 border-gray-700 bg-gray-800 hover:bg-gray-700 mt-auto">
                                 Share Feedback
@@ -340,4 +404,86 @@
 
         </div>
     </div>
+
+    <script>
+        function handleFileSelect(input) {
+            const fileNameDisplay = document.getElementById('file-chosen-text');
+            const dropText = document.getElementById('drop-text');
+            const fileInfoText = document.getElementById('file-info-text');
+            const container = input.closest('.border-dashed');
+            
+            if (input.files.length > 0) {
+                const file = input.files[0];
+                fileNameDisplay.innerText = file.name;
+                dropText.innerText = "";
+                fileInfoText.innerText = (file.size / 1024 / 1024).toFixed(2) + " MB";
+                container.classList.add('border-primary-500', 'bg-primary-500/5');
+                container.classList.remove('border-gray-700');
+            }
+        }
+
+        // Handle form submission loading state
+        document.querySelector('form[action$="deployments"]').addEventListener('submit', function(e) {
+            const btn = document.getElementById('deploy-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('btn-spinner');
+            
+            if (btn && btnText && spinner) {
+                btn.disabled = true;
+                btn.classList.add('opacity-75', 'cursor-not-allowed');
+                btnText.innerText = "Uploading Project...";
+                spinner.classList.remove('hidden');
+            }
+        });
+
+        function copyToClipboard(text, btn) {
+            const copy = () => {
+                if (navigator.clipboard) {
+                    return navigator.clipboard.writeText(text);
+                } else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    textArea.style.top = "0";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        textArea.remove();
+                        return Promise.resolve();
+                    } catch (err) {
+                        textArea.remove();
+                        return Promise.reject(err);
+                    }
+                }
+            };
+
+            copy().then(() => {
+                const copyIcon = btn.querySelector('.copy-icon');
+                const checkIcon = btn.querySelector('.check-icon');
+                
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Copied to clipboard!');
+                }
+                
+                if (copyIcon && checkIcon) {
+                    copyIcon.classList.add('hidden');
+                    checkIcon.classList.remove('hidden');
+                    btn.classList.add('text-green-400');
+                    btn.classList.remove('text-gray-500', 'text-gray-600');
+                    
+                    setTimeout(() => {
+                        copyIcon.classList.remove('hidden');
+                        checkIcon.classList.add('hidden');
+                        btn.classList.remove('text-green-400');
+                        btn.classList.add(btn.classList.contains('text-gray-600') ? 'text-gray-600' : 'text-gray-500');
+                    }, 2000);
+                }
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
 </x-app-layout>

@@ -36,6 +36,12 @@
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                             {{ __('Clients') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.subdomains.index')" :active="request()->routeIs('admin.subdomains.*')">
+                            {{ __('Subdomains') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.databases.index')" :active="request()->routeIs('admin.databases.*')">
+                            {{ __('Databases') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.index')">
                             {{ __('Support') }}
                         </x-nav-link>
@@ -98,7 +104,31 @@
         <div class="pt-2 pb-3 space-y-1">
             @if(Auth::user()->role === 'Admin')
                 <x-responsive-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
-                    {{ __('Admin Dashboard') }}
+                    {{ __('Overview') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.deployments.index')" :active="request()->routeIs('admin.deployments.index')">
+                    {{ __('Deployments') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.plans.index')" :active="request()->routeIs('admin.plans.*')">
+                    {{ __('Plans') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.vouchers.index')" :active="request()->routeIs('admin.vouchers.*')">
+                    {{ __('Vouchers') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                    {{ __('Clients') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.subdomains.index')" :active="request()->routeIs('admin.subdomains.*')">
+                    {{ __('Subdomains') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.databases.index')" :active="request()->routeIs('admin.databases.*')">
+                    {{ __('Databases') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.index')">
+                    {{ __('Support') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.feedback.index')" :active="request()->routeIs('admin.feedback.index')">
+                    {{ __('Testimonials') }}
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('client.index')" :active="request()->routeIs('client.index')">

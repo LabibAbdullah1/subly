@@ -12,9 +12,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
             <!-- Quick Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Total Users -->
-                <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="glass-panel p-6 relative overflow-hidden group hover-lift">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary-500/10 rounded-full blur-xl group-hover:bg-primary-500/20 transition-all duration-500"></div>
                     <div class="flex items-center">
                         <div class="p-3 rounded-lg bg-gray-800/80 border border-gray-700/50 text-primary-400 mr-4">
@@ -28,7 +28,7 @@
                 </div>
 
                 <!-- Queued Deployments -->
-                <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="glass-panel p-6 relative overflow-hidden group hover-lift">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-xl group-hover:bg-yellow-500/20 transition-all duration-500"></div>
                     <div class="flex items-center">
                         <div class="p-3 rounded-lg bg-gray-800/80 border border-gray-700/50 text-yellow-400 mr-4">
@@ -42,7 +42,7 @@
                 </div>
 
                 <!-- Open Tickets -->
-                <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="glass-panel p-6 relative overflow-hidden group hover-lift">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-500/10 rounded-full blur-xl group-hover:bg-red-500/20 transition-all duration-500"></div>
                     <div class="flex items-center border-b-0">
                         <div class="p-3 rounded-lg bg-gray-800/80 border border-gray-700/50 text-red-400 mr-4">
@@ -56,7 +56,7 @@
                 </div>
 
                 <!-- Total Revenue -->
-                <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="glass-panel p-6 relative overflow-hidden group hover-lift">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-500/10 rounded-full blur-xl group-hover:bg-green-500/20 transition-all duration-500"></div>
                     <div class="flex items-center">
                         <div class="p-3 rounded-lg bg-gray-800/80 border border-gray-700/50 text-green-400 mr-4">
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Recent Deployments -->
                 <div class="glass-panel overflow-hidden">
                     <div class="p-6 border-b border-gray-800/60 bg-gray-900/50 flex justify-between items-center">
@@ -89,8 +89,8 @@
                             <tbody class="divide-y divide-gray-800/50">
                                 @forelse($recentDeployments as $deployment)
                                 <tr class="group">
-                                    <td class="table-td">{{ $deployment->subdomain->user->name ?? 'Unknown' }}</td>
-                                    <td class="table-td text-primary-400">{{ $deployment->subdomain->full_domain }}</td>
+                                    <td class="table-td">{{ $deployment->subdomain?->user?->name ?? 'Unknown' }}</td>
+                                    <td class="table-td text-primary-400 font-mono text-sm">{{ $deployment->subdomain?->full_domain ?? 'N/A' }}</td>
                                     <td class="table-td text-right">
                                         <span class="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full 
                                             {{ $deployment->status === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : '' }}
@@ -129,8 +129,8 @@
                             </thead>
                             <tbody class="divide-y divide-gray-800/50">
                                 @forelse($recentTickets as $ticket)
-                                <tr class="group">
-                                    <td class="table-td">{{ $ticket->user->name }}</td>
+                                <tr class="group hover:bg-primary-500/5 transition-all duration-300">
+                                    <td class="table-td text-gray-200 transition-colors group-hover:text-white">{{ $ticket->user->name ?? 'Deleted User' }}</td>
                                     <td class="table-td truncate max-w-[150px]">{{ $ticket->subject }}</td>
                                     <td class="table-td text-right">
                                         <span class="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full 
