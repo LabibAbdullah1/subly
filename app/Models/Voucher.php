@@ -26,4 +26,9 @@ class Voucher extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function successfulPayments()
+    {
+        return $this->hasMany(Payment::class)->where('status', 'success');
+    }
 }

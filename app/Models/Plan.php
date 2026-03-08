@@ -12,6 +12,8 @@ class Plan extends Model
 
     protected $fillable = [
         'name',
+        'type',
+        'is_active',
         'price',
         'duration_months',
         'max_storage_mb',

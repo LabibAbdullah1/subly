@@ -14,6 +14,7 @@ class Feedback extends Model
         'user_id',
         'rating',
         'comment',
+        'is_featured',
     ];
 
     public function user()
