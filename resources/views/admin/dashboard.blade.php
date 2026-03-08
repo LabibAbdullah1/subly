@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-100 leading-tight flex items-center gap-2">
             <svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -155,4 +155,4 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserDatabaseController;
 use App\Http\Controllers\Admin\DeploymentQueueController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SubdomainController;
+use App\Http\Controllers\Admin\PaymentController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('index');
 Route::resource('plans', PlanController::class);
@@ -16,6 +17,7 @@ Route::resource('vouchers', VoucherController::class);
 Route::resource('users', UserController::class);
 Route::resource('subdomains', SubdomainController::class);
 Route::resource('databases', UserDatabaseController::class);
+Route::resource('payments', PaymentController::class)->only(['index', 'show']);
 
 Route::prefix('deployments')->name('deployments.')->group(function () {
     Route::get('/', [DeploymentQueueController::class, 'index'])->name('index');

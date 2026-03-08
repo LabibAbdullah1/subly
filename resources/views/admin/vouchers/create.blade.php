@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <x-slot name="header">
         <div class="flex items-center gap-4">
             <a href="{{ route('admin.vouchers.index') }}" class="text-gray-400 hover:text-white transition-colors">
@@ -71,4 +71,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

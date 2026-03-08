@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-100 leading-tight">
             {{ __('Client Feedback moderation') }}
@@ -77,4 +77,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-admin-layout>
