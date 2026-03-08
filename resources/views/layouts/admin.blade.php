@@ -148,7 +148,61 @@
                         </button>
                     </div>
 
-                    <div class="flex items-center">
+                    <div class="flex items-center gap-4">
+                        <x-dropdown align="right" width="80" contentClasses="py-1 bg-gray-900 border border-gray-800 shadow-2xl">
+                            <x-slot name="trigger">
+                                <button class="relative text-gray-400 hover:text-white transition-colors focus:outline-none">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                                    @if(Auth::user()->unreadNotifications->count() > 0)
+                                        <span class="absolute top-0 right-0 -mt-1 -mr-1 flex h-3 w-3">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                        </span>
+                                    @endif
+                                </button>
+                            </x-slot>
+                        
+                            <x-slot name="content">
+                                <div class="px-4 py-3 border-b border-gray-800 flex justify-between items-center">
+                                    <span class="text-sm font-medium text-gray-200">Notifications</span>
+                                    @if(Auth::user()->unreadNotifications->count() > 0)
+                                        <form method="POST" action="{{ route('notifications.readAll') }}" class="inline">
+                                            @csrf
+                                            <button type="submit" class="text-xs text-primary-400 hover:text-primary-300">Mark all read</button>
+                                        </form>
+                                    @endif
+                                </div>
+                                <div class="max-h-64 overflow-y-auto">
+                                    @forelse(Auth::user()->notifications()->take(5)->get() as $notification)
+                                        <div class="px-4 py-3 border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors {{ is_null($notification->read_at) ? 'bg-gray-800/10' : '' }}">
+                                            <div class="flex justify-between items-start">
+                                                <p class="text-sm text-gray-300 leading-snug">{{ $notification->data['message'] ?? 'New notification' }}</p>
+                                                @if(is_null($notification->read_at))
+                                                    <form method="POST" action="{{ route('notifications.read', $notification->id) }}" class="ml-2 shrink-0">
+                                                        @csrf
+                                                        <button type="submit" class="w-2 h-2 rounded-full bg-primary-500" title="Mark as read"></button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                            <span class="text-xs text-gray-500 mt-1 block">{{ $notification->created_at->diffForHumans() }}</span>
+                                        </div>
+                                    @empty
+                                        <div class="px-4 py-6 text-center text-gray-500 text-sm">
+                                            No new notifications.
+                                        </div>
+                                    @endforelse
+                                </div>
+                                @if(Auth::user()->notifications->count() > 0)
+                                    <div class="px-4 py-2 border-t border-gray-800 text-center">
+                                       <form method="POST" action="{{ route('notifications.clearAll') }}">
+                                            @csrf
+                                            <button type="submit" class="text-xs text-red-400 hover:text-red-300">Clear all</button>
+                                        </form>
+                                    </div>
+                                @endif
+                            </x-slot>
+                        </x-dropdown>
+
                         <x-dropdown align="right" width="48" contentClasses="py-1 bg-gray-900 border border-gray-800 shadow-2xl">
                             <x-slot name="trigger">
                                 <button class="flex items-center gap-2 text-sm font-medium text-gray-300 hover:text-white focus:outline-none transition ease-in-out duration-150 rounded-full bg-gray-800/50 px-3 py-1.5 border border-gray-700/50 hover:border-gray-600">

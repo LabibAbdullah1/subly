@@ -8,6 +8,7 @@ use App\Http\Controllers\Client\FeedbackController;
 use App\Http\Controllers\Client\PlanController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\SubdomainController;
+use App\Http\Controllers\Client\NotificationController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('index');
 Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');

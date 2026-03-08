@@ -19,4 +19,11 @@ Route::get('/home', function () {
 
 Route::post('dashboard/midtrans/webhook', [App\Http\Controllers\Client\CheckoutController::class, 'webhook'])->name('midtrans.webhook');
 
+Route::middleware('auth')->prefix('notifications')->name('notifications.')->group(function () {
+    Route::post('/read-all', [\App\Http\Controllers\Client\NotificationController::class, 'markAllAsRead'])->name('readAll');
+    Route::post('/clear-all', [\App\Http\Controllers\Client\NotificationController::class, 'clearAll'])->name('clearAll');
+    Route::post('/{id}/read', [\App\Http\Controllers\Client\NotificationController::class, 'markAsRead'])->name('read');
+    Route::delete('/{id}', [\App\Http\Controllers\Client\NotificationController::class, 'destroy'])->name('destroy');
+});
+
 require __DIR__.'/auth.php';
