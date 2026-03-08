@@ -179,7 +179,7 @@
                         </div>
                     </div>
                 </div>
-            @else
+            @elseif($plan)
                 <!-- Empty State for Users with Plan but No Subdomain -->
                 <div class="glass-panel p-12 flex flex-col items-center text-center relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-b from-primary-500/5 to-transparent pointer-events-none"></div>
@@ -220,6 +220,29 @@
                                 </p>
                             </div>
                         </form>
+                    </div>
+                </div>
+            @else
+                <!-- Empty State for Users without Plan -->
+                <div class="glass-panel p-12 flex flex-col items-center text-center relative overflow-hidden hover-lift">
+                    <div class="absolute inset-0 bg-gradient-to-b from-gray-800/20 to-transparent pointer-events-none"></div>
+                    <div class="relative z-10 max-w-lg">
+                        <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-gray-800 shadow-lg shadow-gray-900/50">
+                            <svg class="w-10 h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-100 mb-3">Welcome to Subly!</h3>
+                        <p class="text-gray-400 mb-8 leading-relaxed">
+                            You don't have an active hosting plan yet. Get started by exploring our affordable plans to launch your project on the web.
+                        </p>
+                        
+                        <a href="{{ route('client.plans.index') }}" class="btn-primary py-3.5 px-8 shadow-[0_0_20px_rgba(94,106,210,0.3)] inline-flex items-center justify-center gap-2 font-bold text-base group">
+                            View Hosting Plans
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                        </a>
                     </div>
                 </div>
             @endif
