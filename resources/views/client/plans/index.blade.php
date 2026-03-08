@@ -26,24 +26,23 @@
                         <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-gray-800 via-primary-500 to-purple-600 opacity-50 group-hover:opacity-100 transition-opacity"></div>
                         
                         <div class="p-8 flex-1 flex flex-col">
-                            <div class="flex items-center justify-between mb-2">
-                                <h4 class="text-xl font-bold text-gray-100">{{ $plan->name }}</h4>
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {{ $plan->type == 'PHP' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : ($plan->type == 'NodeJS' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20') }}">
+                            <div class="flex items-start justify-between mb-4 gap-2">
+                                <h4 class="text-xl font-bold text-gray-100 break-words">{{ $plan->name }}</h4>
+                                <span class="shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase {{ $plan->type == 'PHP' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : ($plan->type == 'NodeJS' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20') }}">
                                     {{ $plan->type }}
                                 </span>
                             </div>
-                            <div class="flex items-baseline gap-1 mb-4">
+                            
+                            <div class="flex items-baseline gap-1 mb-6 flex-wrap">
                                 <span class="text-3xl font-bold text-primary-400">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
-                                <span class="text-sm font-medium text-gray-500">/ {{ $plan->duration_months }} month(s)</span>
+                                <span class="text-sm font-medium text-gray-500">/ {{ $plan->duration_months }} mo</span>
                             </div>
                             
-                            @if($plan->description)
-                                <p class="text-sm text-gray-400 mb-8 flex-1">{{ $plan->description }}</p>
-                            @else
-                                <p class="text-sm text-gray-400 mb-8 flex-1">Perfect for hosting secure and reliable projects on Subly's infrastructure.</p>
-                            @endif
+                            <p class="text-sm text-gray-400 mb-6 min-h-[40px]">
+                                {{ $plan->description ?: "Perfect for hosting secure and reliable projects on Subly's infrastructure." }}
+                            </p>
 
-                            <div class="space-y-4 text-sm font-medium text-gray-400 mb-8 border-t border-gray-800/60 pt-6">
+                            <div class="space-y-4 text-sm font-medium text-gray-400 mb-8 flex-1">
                                 <div class="flex items-center gap-3">
                                     <svg class="w-5 h-5 text-primary-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                     <span class="text-gray-200">{{ $plan->max_storage_mb }}MB SSD Storage</span>
@@ -66,13 +65,9 @@
                                     <svg class="w-5 h-5 text-primary-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                     <span class="text-gray-200">Free SSL Certificate</span>
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    <svg class="w-5 h-5 text-primary-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    <span class="text-gray-200">24/7 Priority Support</span>
-                                </div>
                             </div>
                             
-                            <form action="{{ route('client.checkout.process', $plan) }}" method="POST" class="mt-auto pt-2 space-y-4">
+                            <form action="{{ route('client.checkout.process', $plan) }}" method="POST" class="mt-auto space-y-4 border-t border-gray-800/60 pt-6">
                                 @csrf
                                 <div class="relative group/input">
                                     <input type="text" name="voucher_code" placeholder="Voucher Code (Optional)" 
@@ -80,7 +75,7 @@
                                     <div class="absolute inset-0 rounded-lg bg-primary-500/5 opacity-0 group-focus-within/input:opacity-100 pointer-events-none transition-opacity"></div>
                                 </div>
                                 <button type="submit" class="w-full btn-primary py-3 hover:shadow-[0_0_20px_rgba(94,106,210,0.5)] bg-gradient-to-r from-primary-600 to-indigo-600">
-                                    Select {{ $plan->name }}
+                                    Get Started
                                 </button>
                             </form>
                         </div>
