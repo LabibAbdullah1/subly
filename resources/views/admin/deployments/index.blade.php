@@ -38,6 +38,7 @@
                                         <tr class="group hover:bg-gray-800/20 transition-colors">
                                             <td class="table-td">
                                                 <div class="font-medium text-gray-200 text-sm">{{ $deployment->subdomain?->full_domain ?? 'Deleted Subdomain' }}</div>
+                                                <div class="text-[11px] text-primary-400 mt-0.5">Owner: {{ $deployment->subdomain?->user?->name ?? 'Deleted/Unknown User' }}</div>
                                                 <div class="flex items-center gap-2 mt-2">
                                                     <a href="{{ route('admin.deployments.download', $deployment) }}" class="text-[11px] font-mono px-2 py-0.5 rounded bg-primary-500/10 text-primary-400 border border-primary-500/20 hover:bg-primary-500/20 transition-all flex items-center gap-1.5 group/dl">
                                                         <svg class="w-3 h-3 group-hover/dl:translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -95,23 +96,31 @@
                                                 <div class="flex items-center justify-between">
                                                     <div>
                                                         <div class="text-xs font-medium text-gray-300">{{ $deployment->subdomain?->full_domain ?? 'Deleted Subdomain' }}</div>
-                                                        <div class="text-[10px] text-gray-500 mt-0.5">Build v{{ $deployment->version }}</div>
+                                                        <div class="text-[10px] text-gray-400 mt-0.5">Owner: {{ $deployment->subdomain?->user?->name ?? 'Deleted/Unknown User' }}</div>
+                                                        <div class="text-[10px] text-gray-500 mt-1">Build v{{ $deployment->version }}</div>
                                                     </div>
                                                     <a href="{{ route('admin.deployments.download', $deployment) }}" class="opacity-0 group-hover/row:opacity-100 transition-opacity p-1.5 rounded bg-gray-800 text-gray-400 hover:text-primary-400" title="Download ZIP">
                                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                                     </a>
                                                 </div>
-                                            </td>
                                             <td class="table-td">
-                                                <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">
-                                                    @csrf @method('PUT')
-                                                    <select name="status" class="text-[10px] uppercase tracking-wider font-bold rounded px-1.5 py-0.5 border-none 
-                                                        {{ $deployment->status == 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500' }} shadow-inner cursor-pointer" onchange="this.form.submit()">
-                                                        <option value="success" {{ $deployment->status == 'success' ? 'selected' : '' }}>Success</option>
-                                                        <option value="error" {{ $deployment->status == 'error' ? 'selected' : '' }}>Error</option>
-                                                        <option value="queued">Restore To Queue</option>
-                                                    </select>
-                                                </form>
+                                                <div class="flex items-center gap-2">
+                                                    <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">
+                                                        @csrf @method('PUT')
+                                                        <select name="status" class="text-[10px] uppercase tracking-wider font-bold rounded px-1.5 py-0.5 border-none 
+                                                            {{ $deployment->status == 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500' }} shadow-inner cursor-pointer" onchange="this.form.submit()">
+                                                            <option value="success" {{ $deployment->status == 'success' ? 'selected' : '' }}>Success</option>
+                                                            <option value="error" {{ $deployment->status == 'error' ? 'selected' : '' }}>Error</option>
+                                                            <option value="queued">Restore To Queue</option>
+                                                        </select>
+                                                    </form>
+                                                    <form action="{{ route('admin.deployments.destroy', $deployment) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this deployment? This deletes the ZIP file and cannot be undone.')">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="text-gray-500 hover:text-red-400 opacity-0 group-hover/row:opacity-100 transition-all p-1" title="Delete Deployment">
+                                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                             <td class="table-td text-right text-[10px] text-gray-500">
                                                 {{ $deployment->updated_at->format('d M, H:i') }}

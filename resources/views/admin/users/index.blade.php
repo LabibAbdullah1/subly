@@ -25,6 +25,25 @@
                 </div>
             @endif
 
+            <!-- Search and Filter Section -->
+            <div class="glass-panel p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <form action="{{ route('admin.users.index') }}" method="GET" class="w-full sm:w-1/2 flex gap-2">
+                    <input type="hidden" name="subdomain_filter" value="{{ $subdomainFilter ?? '' }}">
+                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search users by name or email..." class="w-full bg-gray-900 border border-gray-800 rounded-lg py-2 px-4 text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all">
+                    <button type="submit" class="btn-primary py-2 px-4 whitespace-nowrap">Search</button>
+                    @if(isset($search) && $search)
+                        <a href="{{ route('admin.users.index', ['subdomain_filter' => $subdomainFilter ?? '']) }}" class="px-4 py-2 rounded-lg border border-gray-700 text-gray-300 hover:bg-gray-800 transition-colors whitespace-nowrap">Clear</a>
+                    @endif
+                </form>
+
+                <div class="flex gap-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
+                    <a href="{{ route('admin.users.index', ['search' => $search ?? '']) }}" class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {{ !($subdomainFilter ?? null) ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30' : 'bg-gray-800/50 text-gray-400 hover:text-gray-200 border border-transparent' }}">All</a>
+                    <a href="{{ route('admin.users.index', ['subdomain_filter' => 'active', 'search' => $search ?? '']) }}" class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {{ ($subdomainFilter ?? null) === 'active' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-800/50 text-gray-400 hover:text-gray-200 border border-transparent' }}">Active Subdomain</a>
+                    <a href="{{ route('admin.users.index', ['subdomain_filter' => 'inactive', 'search' => $search ?? '']) }}" class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {{ ($subdomainFilter ?? null) === 'inactive' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-gray-800/50 text-gray-400 hover:text-gray-200 border border-transparent' }}">Inactive Subdomain</a>
+                    <a href="{{ route('admin.users.index', ['subdomain_filter' => 'none', 'search' => $search ?? '']) }}" class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {{ ($subdomainFilter ?? null) === 'none' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-gray-800/50 text-gray-400 hover:text-gray-200 border border-transparent' }}">No Subdomain</a>
+                </div>
+            </div>
+
             <div class="glass-panel overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full">

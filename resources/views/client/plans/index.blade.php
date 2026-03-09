@@ -18,6 +18,13 @@
                 <p class="text-gray-400">All plans include secure subdomains, automated database provisioning, and one-click ZIP deployments. No hidden fees.</p>
             </div>
 
+            @if(session('error'))
+                <div class="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg flex items-center gap-3 shadow-lg max-w-2xl mx-auto mb-8 animate-fade-in" role="alert">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <p>{{ session('error') }}</p>
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch pt-4">
                 @forelse($plans as $plan)
                     <div class="glass-panel relative flex flex-col hover:-translate-y-2 transition-transform duration-300 group">
@@ -67,7 +74,7 @@
                                 </div>
                             </div>
                             
-                            <form action="{{ route('client.checkout.process', $plan) }}" method="POST" class="mt-auto space-y-4 border-t border-gray-800/60 pt-6">
+                            <form action="{{ route('client.checkout.process', ['plan' => $plan->id] + (request()->has('renew') ? ['renew' => request()->query('renew')] : [])) }}" method="POST" class="mt-auto space-y-4 border-t border-gray-800/60 pt-6">
                                 @csrf
                                 <div class="relative group/input">
                                     <input type="text" name="voucher_code" placeholder="Voucher Code (Optional)" 
@@ -75,7 +82,7 @@
                                     <div class="absolute inset-0 rounded-lg bg-primary-500/5 opacity-0 group-focus-within/input:opacity-100 pointer-events-none transition-opacity"></div>
                                 </div>
                                 <button type="submit" class="w-full btn-primary py-3 hover:shadow-[0_0_20px_rgba(94,106,210,0.5)] bg-gradient-to-r from-primary-600 to-indigo-600">
-                                    Get Started
+                                    {{ request()->has('renew') ? 'Renew Now' : 'Get Started' }}
                                 </button>
                             </form>
                         </div>

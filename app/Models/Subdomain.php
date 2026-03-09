@@ -37,4 +37,9 @@ class Subdomain extends Model
     {
         return $this->hasMany(Deployment::class);
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

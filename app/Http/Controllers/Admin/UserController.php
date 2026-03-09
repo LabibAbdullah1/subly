@@ -10,10 +10,35 @@ use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('payments.plan')->latest()->paginate(15);
-        return view('admin.users.index', compact('users'));
+        $search = $request->input('search');
+        $subdomainFilter = $request->input('subdomain_filter');
+
+        $query = User::with('payments.plan')->latest();
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($subdomainFilter === 'active') {
+            $query->whereHas('subdomains', function($q) {
+                $q->where('status', 'active');
+            });
+        } elseif ($subdomainFilter === 'inactive') {
+            $query->whereHas('subdomains', function($q) {
+                $q->where('status', 'inactive');
+            });
+        } elseif ($subdomainFilter === 'none') {
+            $query->whereDoesntHave('subdomains');
+        }
+
+        $users = $query->paginate(15)->appends($request->query());
+
+        return view('admin.users.index', compact('users', 'search', 'subdomainFilter'));
     }
 
     public function create()

@@ -33,12 +33,26 @@
                         </div>
 
                         <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-300">Plan</label>
+                            <select name="plan_id" class="w-full bg-gray-900 border border-gray-800 rounded-lg py-2.5 px-4 text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" required>
+                                <option value="" disabled selected>Select a plan for user</option>
+                                @foreach($plans as $plan)
+                                    <option value="{{ $plan->id }}" {{ old('plan_id') == $plan->id ? 'selected' : '' }}>
+                                        {{ $plan->name }} - Rp {{ number_format($plan->price, 0, ',', '.') }} / {{ $plan->duration_months }} Months
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-xs text-gray-500 italic">This plan will be assigned automatically to the client as active.</p>
+                            @error('plan_id') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="space-y-2">
                             <label class="block text-sm font-medium text-gray-300">Subdomain Name</label>
                             <div class="flex items-center gap-2">
                                 <input type="text" name="name" value="{{ old('name') }}" 
                                     class="flex-1 bg-gray-900 border border-gray-800 rounded-lg py-2.5 px-4 text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all font-mono" 
                                     placeholder="my-cool-project" required>
-                                <span class="text-gray-500 font-mono">.subly.test</span>
+                                <span class="text-gray-500 font-mono">{{ config('app.subdomain_suffix') }}</span>
                             </div>
                             <p class="text-xs text-gray-500 italic">This will be used for both the URL and the directory name.</p>
                             @error('name') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror

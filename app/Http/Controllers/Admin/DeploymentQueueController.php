@@ -11,12 +11,16 @@ class DeploymentQueueController extends Controller
 {
     public function index()
     {
-        $pendingDeployments = Deployment::with('subdomain.user')
+        $pendingDeployments = Deployment::with(['subdomain' => function($q) {
+                $q->withTrashed()->with('user');
+            }])
             ->whereIn('status', ['queued', 'processing'])
             ->latest()
             ->get();
 
-        $completedDeployments = Deployment::with('subdomain.user')
+        $completedDeployments = Deployment::with(['subdomain' => function($q) {
+                $q->withTrashed()->with('user');
+            }])
             ->whereIn('status', ['success', 'error'])
             ->latest()
             ->paginate(15);
@@ -50,5 +54,16 @@ class DeploymentQueueController extends Controller
         $filename = ($deployment->subdomain->domain ?? 'deployment') . "_v" . $deployment->version . "." . $extension;
 
         return \Storage::download($deployment->zip_path, $filename);
+    }
+
+    public function destroy(Deployment $deployment)
+    {
+        if ($deployment->zip_path && \Storage::exists($deployment->zip_path)) {
+            \Storage::delete($deployment->zip_path);
+        }
+        
+        $deployment->forceDelete();
+        
+        return redirect()->back()->with('success', 'Deployment record and associated files deleted successfully.');
     }
 }

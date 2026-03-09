@@ -27,7 +27,8 @@
                             <tr>
                                 <th class="table-th text-center">Name</th>
                                 <th class="table-th text-center">Type</th>
-                                <th class="table-th text-center">Price/Mo</th>
+                                <th class="table-th text-center">Months</th>
+                                <th class="table-th text-center">Price</th>
                                 <th class="table-th text-center">Status</th>
                                 <th class="table-th text-center">DBs</th>
                                 <th class="table-th text-center">Storage</th>
@@ -46,6 +47,8 @@
                                             {{ $plan->type }}
                                         </span>
                                     </td>
+                                    <td class="table-td text-center text-gray-400">{{ $plan->duration_months }}</td>
+                                    <td class="table-td font-medium text-gray-200 text-center">Rp {{ number_format($plan->price, 0, ',', '.') }}</td>
                                     <td class="table-td text-center">
                                         @if($plan->is_active)
                                             <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-green-500/10 text-green-400 border border-green-500/20">Active</span>
@@ -53,7 +56,6 @@
                                             <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20">Inactive</span>
                                         @endif
                                     </td>
-                                    <td class="table-td font-medium text-gray-200">Rp {{ number_format($plan->price, 0, ',', '.') }}</td>
                                     <td class="table-td text-gray-400 text-center">
                                         {{ $plan->max_databases > 0 ? $plan->max_databases : 'None' }}
                                     </td>

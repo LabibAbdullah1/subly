@@ -28,4 +28,8 @@ Route::prefix('feedback')->name('feedback.')->group(function () {
     Route::post('/', [FeedbackController::class, 'store'])->name('store');
 });
 
-Route::post('/subdomains', [SubdomainController::class, 'store'])->name('subdomains.store');
+Route::prefix('subdomains')->name('subdomains.')->group(function () {
+    Route::post('/', [SubdomainController::class, 'store'])->name('store');
+    Route::get('/{subdomain}/renew', [SubdomainController::class, 'renew'])->name('renew');
+    Route::delete('/{subdomain}', [SubdomainController::class, 'destroy'])->name('destroy');
+});

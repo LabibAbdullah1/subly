@@ -24,6 +24,7 @@ Route::prefix('deployments')->name('deployments.')->group(function () {
     Route::put('/{deployment}/status', [DeploymentQueueController::class, 'updateStatus'])->name('update_status');
     Route::get('/{deployment}/download', [DeploymentQueueController::class, 'download'])->name('download');
     Route::post('/{deployment}/setup-db', [DeploymentQueueController::class, 'setupDatabase'])->name('setup_db');
+    Route::delete('/{deployment}', [DeploymentQueueController::class, 'destroy'])->name('destroy');
 });
 
 Route::prefix('reports')->name('reports.')->group(function () {

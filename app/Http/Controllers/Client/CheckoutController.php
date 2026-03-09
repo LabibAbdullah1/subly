@@ -26,6 +26,7 @@ class CheckoutController extends Controller
     {
         $user = Auth::user();
         $voucherCode = $request->input('voucher_code');
+        $renewSubdomainId = $request->input('renew');
         $voucher = null;
         $discount = 0;
         $originalPrice = (int) $plan->price;
@@ -83,6 +84,39 @@ class CheckoutController extends Controller
             ];
         }
 
+        if ($grossAmount <= 0) {
+            // Free plan due to 100% discount, skip Midtrans payment gateway
+            $payment = Payment::create([
+                'user_id' => $user->id,
+                'plan_id' => $plan->id,
+                'voucher_id' => $voucher ? $voucher->id : null,
+                'subdomain_id' => $renewSubdomainId,
+                'transaction_id' => $orderId,
+                'snap_token' => 'FREE_VOUCHER_SKIPPED',
+                'amount' => 0,
+                'status' => 'success',
+            ]);
+
+            if ($voucher && $voucher->usage_limit !== null) {
+                $voucher->decrement('usage_limit');
+            }
+
+            // Immediately extend subdomain if this is a renewal
+            if ($renewSubdomainId) {
+                $subdomainToRenew = \App\Models\Subdomain::find($renewSubdomainId);
+                if ($subdomainToRenew && $subdomainToRenew->user_id === $user->id) {
+                    $currentExpiry = $subdomainToRenew->expired_at && $subdomainToRenew->expired_at->isFuture() 
+                        ? $subdomainToRenew->expired_at 
+                        : now();
+                    $subdomainToRenew->update([
+                        'expired_at' => $currentExpiry->addMonths($plan->duration_months)
+                    ]);
+                }
+            }
+
+            return redirect()->route('client.checkout.success')->with('success', 'Plan purchased successfully using a voucher!');
+        }
+
         try {
             $snapToken = Snap::getSnapToken($params);
 
@@ -91,6 +125,7 @@ class CheckoutController extends Controller
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
                 'voucher_id' => $voucher ? $voucher->id : null,
+                'subdomain_id' => $renewSubdomainId,
                 'transaction_id' => $orderId,
                 'snap_token' => $snapToken,
                 'amount' => $grossAmount,
@@ -135,6 +170,19 @@ class CheckoutController extends Controller
             // Decrement voucher usage if applicable
             if ($payment->voucher_id) {
                 $payment->voucher->decrement('usage_limit');
+            }
+
+            // Extend the subdomain if this was a renewal
+            if ($payment->subdomain_id) {
+                $subdomainToRenew = \App\Models\Subdomain::find($payment->subdomain_id);
+                if ($subdomainToRenew) {
+                    $currentExpiry = $subdomainToRenew->expired_at && $subdomainToRenew->expired_at->isFuture() 
+                        ? $subdomainToRenew->expired_at 
+                        : now();
+                    $subdomainToRenew->update([
+                        'expired_at' => $currentExpiry->addMonths($payment->plan->duration_months)
+                    ]);
+                }
             }
         } elseif ($transactionStatus == 'pending') {
             $payment->update(['status' => 'pending']);

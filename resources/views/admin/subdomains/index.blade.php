@@ -27,6 +27,7 @@
                                 <th class="table-th">Owner</th>
                                 <th class="table-th">Subdomain Name</th>
                                 <th class="table-th">Full URL</th>
+                                <th class="table-th">Remaining Time</th>
                                 <th class="table-th">Status</th>
                                 <th class="table-th text-right">Actions</th>
                             </tr>
@@ -44,6 +45,16 @@
                                             {{ $sub->full_domain }}
                                             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                                         </a>
+                                    </td>
+                                    <td class="table-td">
+                                        @if($sub->expired_at)
+                                            <div class="text-sm {{ $sub->expired_at->isPast() ? 'text-red-400 font-semibold' : 'text-gray-200' }}">
+                                                {{ $sub->expired_at->diffForHumans() }}
+                                            </div>
+                                            <div class="text-xs text-gray-500">{{ $sub->expired_at->format('d M Y') }}</div>
+                                        @else
+                                            <span class="text-gray-500 italic text-sm">Lifetime/None</span>
+                                        @endif
                                     </td>
                                     <td class="table-td">
                                         <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-md border 

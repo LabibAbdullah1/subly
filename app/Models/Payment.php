@@ -14,6 +14,7 @@ class Payment extends Model
         'user_id',
         'plan_id',
         'voucher_id',
+        'subdomain_id',
         'transaction_id',
         'snap_token',
         'amount',
@@ -34,5 +35,10 @@ class Payment extends Model
     public function voucher()
     {
         return $this->belongsTo(Voucher::class);
+    }
+
+    public function subdomain()
+    {
+        return $this->belongsTo(Subdomain::class);
     }
 }

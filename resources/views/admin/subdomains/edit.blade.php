@@ -38,7 +38,7 @@
                                 <input type="text" name="name" value="{{ old('name', $subdomain->name) }}" 
                                     class="flex-1 bg-gray-900 border border-gray-800 rounded-lg py-2.5 px-4 text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all font-mono" 
                                     placeholder="my-cool-project" required>
-                                <span class="text-gray-500 font-mono">.subly.test</span>
+                                <span class="text-gray-500 font-mono">{{ config('app.subdomain_suffix') }}</span>
                             </div>
                             <p class="text-xs text-gray-500 italic">Changing this will update the URL and directory name. Use with caution for active projects.</p>
                             @error('name') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror

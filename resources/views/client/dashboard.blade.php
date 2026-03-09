@@ -28,17 +28,16 @@
             @endif
 
             <!-- 1. Subscription Widget -->
-            <div class="glass-panel overflow-hidden relative group hover-lift">
-                <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl group-hover:bg-primary-500/20 transition-all duration-700 pointer-events-none"></div>
-                <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center relative z-10">
-                    <div>
-                        <div class="flex items-center gap-3 mb-1">
-                            <h3 class="text-xl font-semibold text-gray-100">{{ $plan ? $plan->name : 'No Active Plan' }}</h3>
-                            @if($plan)
+            @forelse($unusedPayments as $payment)
+                @php $plan = $payment->plan; @endphp
+                <div class="glass-panel overflow-hidden relative group hover-lift mb-6">
+                    <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl group-hover:bg-primary-500/20 transition-all duration-700 pointer-events-none"></div>
+                    <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center relative z-10">
+                        <div>
+                            <div class="flex items-center gap-3 mb-1">
+                                <h3 class="text-xl font-semibold text-gray-100">{{ $plan->name }}</h3>
                                 <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]">Active</span>
-                            @endif
-                        </div>
-                        @if($payment)
+                            </div>
                             <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3">
                                 <p class="text-sm text-gray-400 flex items-center gap-1">
                                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -49,17 +48,58 @@
                                     Time left: <span class="text-gray-200">{{ max(0, (int)now()->startOfDay()->diffInDays($payment->created_at->addMonths($plan->duration_months)->startOfDay(), false)) }} days</span>
                                 </p>
                             </div>
-                        @endif
-                    </div>
-                    @if(!$plan)
-                        <div class="mt-4 md:mt-0">
-                            <a href="{{ route('client.plans.index') }}" class="btn-primary shadow-[0_0_15px_rgba(94,106,210,0.3)]">View Hosting Plans</a>
                         </div>
-                    @endif
+                        <div class="mt-4 md:mt-0">
+                            @if($loop->first)
+                                <a href="{{ route('client.plans.index') }}" class="btn-primary shadow-[0_0_15px_rgba(94,106,210,0.3)]">
+                                    Purchase Another Plan
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
-            </div>
+            @empty
+                <div class="glass-panel overflow-hidden relative group hover-lift mb-6">
+                    <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl group-hover:bg-primary-500/20 transition-all duration-700 pointer-events-none"></div>
+                    <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center relative z-10">
+                        <div>
+                            <div class="flex items-center gap-3 mb-1">
+                                <h3 class="text-xl font-semibold text-gray-100">No Active Plan</h3>
+                            </div>
+                        </div>
+                        <div class="mt-4 md:mt-0">
+                            <a href="{{ route('client.plans.index') }}" class="btn-primary shadow-[0_0_15px_rgba(94,106,210,0.3)]">
+                                View Hosting Plans
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endforelse
 
             <!-- 2. Deployments & Hosted Environments -->
+            @if($subdomains->count() > 0 && $available_slots > $subdomains->count())
+                <div class="glass-panel p-6 mb-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-primary-500/30 shadow-[0_0_20px_rgba(94,106,210,0.1)]">
+                    <div class="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-transparent pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-bold text-gray-100 mb-1 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                            Claim Your Next Subdomain
+                        </h3>
+                        <p class="text-gray-400 text-sm">You have <span class="text-white font-bold">{{ $available_slots - $subdomains->count() }}</span> unused subdomain slot(s) available.</p>
+                    </div>
+                    <div class="relative z-10 w-full md:w-auto mt-2 md:mt-0">
+                        <form action="{{ route('client.subdomains.store') }}" method="POST" class="flex flex-col sm:flex-row items-center gap-3">
+                            @csrf
+                            <div class="relative group flex items-center bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 w-full sm:w-64 focus-within:ring-1 focus-within:ring-primary-500/50 focus-within:border-primary-500 transition-all">
+                                <input type="text" name="name" class="bg-transparent border-none p-0 focus:ring-0 text-gray-100 font-mono text-sm w-full" placeholder="project-name" required pattern="[a-zA-Z0-9\-_]+">
+                                <span class="text-gray-500 font-mono text-sm pl-2 ml-2 border-l border-gray-800">{{ config('app.subdomain_suffix') }}</span>
+                            </div>
+                            <button type="submit" class="btn-primary py-2.5 px-6 shadow-[0_0_15px_rgba(94,106,210,0.3)] whitespace-nowrap w-full sm:w-auto hover:scale-[1.02] transition-transform">Claim</button>
+                        </form>
+                    </div>
+                </div>
+            @endif
+
             @if($subdomains->count() > 0)
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Upload Form -->
@@ -136,7 +176,9 @@
                                         <tr>
                                             <th class="table-th">Domain</th>
                                             <th class="table-th">Status</th>
+                                            <th class="table-th text-center">Expiry</th>
                                             <th class="table-th text-right">Latest Build</th>
+                                            <th class="table-th text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-800/50">
@@ -153,6 +195,16 @@
                                                         {{ $sub->status == 'active' ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]' : 'bg-red-500/10 text-red-400 border-red-500/20' }}">
                                                         {{ ucfirst($sub->status) }}
                                                     </span>
+                                                </td>
+                                                <td class="table-td text-center">
+                                                    @if($sub->expired_at)
+                                                        <div class="text-sm {{ $sub->expired_at->isPast() ? 'text-red-400 font-semibold' : 'text-gray-200' }}">
+                                                            {{ $sub->expired_at->diffForHumans() }}
+                                                        </div>
+                                                        <div class="text-xs text-gray-500">{{ $sub->expired_at->format('d M Y') }}</div>
+                                                    @else
+                                                        <span class="text-gray-500 italic text-sm">Lifetime/None</span>
+                                                    @endif
                                                 </td>
                                                 <td class="table-td text-right">
                                                     @php $latest = $sub->deployments->last(); @endphp
@@ -171,6 +223,15 @@
                                                         <span class="text-sm text-gray-500 italic">No deployments yet</span>
                                                     @endif
                                                 </td>
+                                                <td class="table-td text-right">
+                                                    <div class="flex items-center justify-end gap-3">
+                                                        <a href="{{ route('client.subdomains.renew', $sub) }}" class="text-sm font-medium text-primary-400 hover:text-primary-300 transition-colors">Perpanjang</a>
+                                                        <form action="{{ route('client.subdomains.destroy', $sub) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin berhenti berlangganan? Subdomain dan seluruh filenya akan dihapus permanen.');" class="inline">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="text-sm font-medium text-red-500 hover:text-red-400 transition-colors">Berhenti</button>
+                                                        </form>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -179,7 +240,7 @@
                         </div>
                     </div>
                 </div>
-            @elseif($plan)
+            @elseif($available_slots > 0)
                 <!-- Empty State for Users with Plan but No Subdomain -->
                 <div class="glass-panel p-12 flex flex-col items-center text-center relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-b from-primary-500/5 to-transparent pointer-events-none"></div>
