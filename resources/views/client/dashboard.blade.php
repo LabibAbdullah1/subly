@@ -430,7 +430,7 @@
                 </div>
 
                 <!-- Feedback -->
-                <div class="glass-panel p-6 flex flex-col h-full relative overflow-hidden">
+                <div class="glass-panel p-6 flex flex-col h-full relative overflow-hidden" x-data="{ selectedPlanId: '{{ $purchasedPlans->first()->id ?? '' }}' }">
                     <div class="absolute -right-16 -top-16 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
                     <h3 class="text-lg font-medium text-gray-100 mb-6 flex items-center gap-2 relative z-10">
                         <div class="p-1.5 rounded bg-yellow-500/20 text-yellow-400">
@@ -441,47 +441,86 @@
                         Platform Feedback
                     </h3>
                     
-                    @if($feedback)
+                    @if($purchasedPlans->isEmpty())
                         <div class="p-5 bg-gray-900/50 rounded-xl border border-gray-800 flex-1 flex flex-col justify-center items-center text-center relative z-10">
-                            <div class="flex items-center gap-1 mb-4 bg-gray-950 p-2 rounded-lg border border-gray-800">
-                                @for($i = 0; $i < $feedback->rating; $i++)
-                                    <svg class="w-5 h-5 text-yellow-500 drop-shadow-[0_0_5px_rgba(234,179,8,0.5)] fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                                @endfor
-                            </div>
-                            <p class="text-sm text-gray-300 font-medium mb-4">Thanks for shaping Subly's future!</p>
-                            @if($feedback->comment)
-                                <div class="text-sm text-gray-400 italic bg-gray-800/50 p-4 rounded-lg border border-gray-700/50 w-full relative">
-                                    <svg class="w-6 h-6 text-gray-700 absolute top-2 left-2 opacity-50" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
-                                    <p class="relative z-10 pl-6 pr-2">{{ $feedback->comment }}</p>
-                                </div>
-                            @endif
+                            <p class="text-sm text-gray-400">Silakan beli plan terlebih dahulu untuk memberikan feedback.</p>
                         </div>
                     @else
-                        <form action="{{ route('client.feedback.store') }}" method="POST" class="flex-1 flex flex-col relative z-10">
-                            @csrf
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-400 mb-1">Your Rating</label>
-                                <div class="relative">
-                                    <select name="rating" class="input-field appearance-none pr-10">
-                                        <option value="5" class="bg-gray-900">⭐⭐⭐⭐⭐ Phenomenal</option>
-                                        <option value="4" class="bg-gray-900">⭐⭐⭐⭐ Great overall</option>
-                                        <option value="3" class="bg-gray-900">⭐⭐⭐ Meets expectations</option>
-                                        <option value="2" class="bg-gray-900">⭐⭐ Needs improvement</option>
-                                        <option value="1" class="bg-gray-900">⭐ Disappointing</option>
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                    </div>
+                        <!-- Select Plan -->
+                        <div class="mb-4 relative z-10">
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Pilih Plan</label>
+                            <div class="relative">
+                                <select x-model="selectedPlanId" class="input-field appearance-none pr-10">
+                                    @foreach($purchasedPlans as $p)
+                                        <option value="{{ $p->id }}" class="bg-gray-900">{{ $p->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </div>
                             </div>
-                            <div class="mb-6 flex-1">
-                                <label class="block text-sm font-medium text-gray-400 mb-1">Feedback Notes</label>
-                                <textarea name="comment" rows="4" class="input-field h-full resize-none" placeholder="What parts of your experience can we optimize?"></textarea>
+                        </div>
+
+                        @foreach($purchasedPlans as $p)
+                            <div x-show="selectedPlanId == '{{ $p->id }}'" class="flex-1 flex flex-col w-full relative z-10" style="display: none;" x-transition>
+                                @php $planFeedback = $feedbacks->get($p->id); @endphp
+                                @if($planFeedback)
+                                    <div class="p-5 bg-gray-900/50 rounded-xl border border-gray-800 flex-1 flex flex-col justify-center items-center text-center relative mt-2">
+                                        <div class="flex items-center gap-1 mb-4 bg-gray-950 p-2 rounded-lg border border-gray-800">
+                                            @for($i = 0; $i < $planFeedback->rating; $i++)
+                                                <svg class="w-5 h-5 text-yellow-500 drop-shadow-[0_0_5px_rgba(234,179,8,0.5)] fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                            @endfor
+                                        </div>
+                                        <p class="text-sm text-gray-300 font-medium mb-4">Terima kasih atas ulasan Anda!</p>
+                                        @if($planFeedback->comment)
+                                            <div class="text-sm text-gray-400 italic bg-gray-800/50 p-4 rounded-lg border border-gray-700/50 w-full relative">
+                                                <svg class="w-6 h-6 text-gray-700 absolute top-2 left-2 opacity-50" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
+                                                <p class="relative z-10 pl-6 pr-2">{{ $planFeedback->comment }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @else
+                                    <form action="{{ route('client.feedback.store') }}" method="POST" class="flex-1 flex flex-col relative" x-data="{ comment: '' }">
+                                        @csrf
+                                        <input type="hidden" name="plan_id" value="{{ $p->id }}">
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-400 mb-1">Rating Anda</label>
+                                            <div class="relative">
+                                                <select name="rating" class="input-field appearance-none pr-10">
+                                                    <option value="5" class="bg-gray-900">⭐⭐⭐⭐⭐ Sangat Memuaskan</option>
+                                                    <option value="4" class="bg-gray-900">⭐⭐⭐⭐ Bagus</option>
+                                                    <option value="3" class="bg-gray-900">⭐⭐⭐ Cukup Baik</option>
+                                                    <option value="2" class="bg-gray-900">⭐⭐ Kurang Memuaskan</option>
+                                                    <option value="1" class="bg-gray-900">⭐ Mengecewakan</option>
+                                                </select>
+                                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Quick Feedback Chips -->
+                                        <div class="mb-3">
+                                            <label class="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">Pilih Cepat</label>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button type="button" @click="comment = 'Sangat memuaskan dan mudah digunakan!'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Sangat Memuaskan</button>
+                                                <button type="button" @click="comment = 'Harganya sepadan dengan fitur yang didapat.'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Harga Sepadan</button>
+                                                <button type="button" @click="comment = 'Servernya cepat dan stabil, tanpa kendala.'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Cepat & Stabil</button>
+                                                <button type="button" @click="comment = 'Proses deploy sangat gampang untuk pemula.'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Mudah untuk Pemula</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-5 flex-1">
+                                            <label class="block text-sm font-medium text-gray-400 mb-1">Catatan Tambahan</label>
+                                            <textarea name="comment" x-model="comment" rows="3" class="input-field w-full resize-none text-sm" placeholder="Tulis masukan Anda di sini..."></textarea>
+                                        </div>
+                                        <button type="submit" class="w-full btn-secondary py-2 border-gray-700 bg-gray-800 hover:bg-primary-600 hover:text-white hover:border-primary-500 mt-auto transition-all">
+                                            Kirim Feedback
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
-                            <button type="submit" class="w-full btn-secondary py-2 border-gray-700 bg-gray-800 hover:bg-gray-700 mt-auto">
-                                Share Feedback
-                            </button>
-                        </form>
+                        @endforeach
                     @endif
                 </div>
             </div>

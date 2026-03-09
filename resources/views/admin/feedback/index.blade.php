@@ -20,6 +20,7 @@
                         <thead>
                             <tr>
                                 <th class="table-th">Client</th>
+                                <th class="table-th">Plan</th>
                                 <th class="table-th">Rating</th>
                                 <th class="table-th">Comment</th>
                                 <th class="table-th text-center">Featured</th>
@@ -36,6 +37,15 @@
                                             </div>
                                             <span class="text-gray-100 font-medium">{{ $feedback->user->name }}</span>
                                         </div>
+                                    </td>
+                                    <td class="table-td">
+                                        @if($feedback->plan)
+                                            <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-medium rounded-md bg-primary-500/10 text-primary-400 border border-primary-500/20">
+                                                {{ $feedback->plan->name }}
+                                            </span>
+                                        @else
+                                            <span class="text-gray-500 italic text-xs">General</span>
+                                        @endif
                                     </td>
                                     <td class="table-td">
                                         <div class="flex text-yellow-500">

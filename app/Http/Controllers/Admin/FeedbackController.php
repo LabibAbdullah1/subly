@@ -10,7 +10,7 @@ class FeedbackController extends Controller
 {
     public function index()
     {
-        $feedbacks = Feedback::with('user')->latest()->paginate(15);
+        $feedbacks = Feedback::with(['user', 'plan'])->latest()->paginate(15);
         return view('admin.feedback.index', compact('feedbacks'));
     }
 

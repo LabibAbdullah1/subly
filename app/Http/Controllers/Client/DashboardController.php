@@ -25,8 +25,9 @@ class DashboardController extends Controller
         
         $reports = $user->reports()->latest()->get();
         
-        $feedback = class_exists(\App\Models\Feedback::class) ? $user->feedback()->latest()->first() : null;
+        $feedbacks = class_exists(\App\Models\Feedback::class) ? $user->feedback()->get()->keyBy('plan_id') : collect();
+        $purchasedPlans = $user->payments()->with('plan')->where('status', 'success')->get()->pluck('plan')->filter()->unique('id');
 
-        return view('client.dashboard', compact('user', 'plan', 'payment', 'unusedPayments', 'available_slots', 'subdomains', 'reports', 'feedback'));
+        return view('client.dashboard', compact('user', 'plan', 'payment', 'unusedPayments', 'available_slots', 'subdomains', 'reports', 'feedbacks', 'purchasedPlans'));
     }
 }
