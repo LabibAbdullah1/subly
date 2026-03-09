@@ -14,7 +14,7 @@ class DashboardController extends Controller
         
         // Get active payments (plans) that haven't expired and aren't linked to a subdomain yet
         $unusedPayments = $user->payments()->with('plan')->where('status', 'success')->whereNull('subdomain_id')->latest()->get()->filter(function ($p) {
-            return $p->plan && $p->created_at->addMonths($p->plan->duration_months)->isFuture();
+            return $p->plan && $p->created_at->addMonths((int) $p->plan->duration_months)->isFuture();
         });
 
         $available_slots = $unusedPayments->count();

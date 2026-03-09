@@ -21,6 +21,13 @@ class Plan extends Model
         'description',
     ];
 
+    protected $casts = [
+        'duration_months' => 'integer',
+        'max_storage_mb' => 'integer',
+        'max_databases' => 'integer',
+        'is_active' => 'boolean',
+    ];
+
     public function payments()
     {
         return $this->hasMany(Payment::class);
