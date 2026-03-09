@@ -19,7 +19,6 @@ return new class extends Migration
             $table->integer('usage_limit')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

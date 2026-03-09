@@ -54,9 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'domain' => env('APP_DOMAIN', 'subly.test'),
+    'domain' => env('APP_DOMAIN', 'subly.my.id'),
     
-    'subdomain_suffix' => env('SUBDOMAIN_SUFFIX', '.subly.test'),
+    'subdomain_suffix' => env('SUBDOMAIN_SUFFIX', '.subly.my.id'),
 
     'doc_root_prefix' => env('DOC_ROOT_PREFIX', '/public_html/'),
 
