@@ -29,7 +29,7 @@ class NotificationController extends Controller
     {
         $request->validate([
             'target' => 'required|string',
-            'user_id' => 'required_if:target,specific|exists:users,id',
+            'user_id' => 'nullable|required_if:target,specific|exists:users,id',
             'message' => 'required|string|max:1000',
         ]);
 
