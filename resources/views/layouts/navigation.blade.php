@@ -11,7 +11,8 @@
                     <a href="{{ $dashboardRoute }}" class="flex items-center gap-2 group">
                         <div class="w-8 h-8 rounded bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-all">
                             <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 9h19M2.5 15h19M12 2c3 0 6 4.477 6 10s-3 10-6 10-6-4.477-6-10 3-10 6-10z"></path>
                             </svg>
                         </div>
                         <span class="font-bold text-xl tracking-tight text-white group-hover:text-gray-200 transition-colors">Subly</span>
@@ -23,6 +24,17 @@
                     <x-nav-link :href="route('client.index')" :active="request()->routeIs('client.index')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(Auth::user()->role === 'Client')
+                        <x-nav-link :href="route('client.plans.index')" :active="request()->routeIs('client.plans.index')">
+                            {{ __('Plan Hosting') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('client.deployments.index')" :active="request()->routeIs('client.deployments.*')">
+                            {{ __('History') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('client.chat.index')" :active="request()->routeIs('client.chat.index')">
+                            {{ __('Chat') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -125,6 +137,17 @@
             <x-responsive-nav-link :href="route('client.index')" :active="request()->routeIs('client.index')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @if(Auth::user()->role === 'Client')
+                <x-responsive-nav-link :href="route('client.plans.index')" :active="request()->routeIs('client.plans.index')">
+                    {{ __('Plan Hosting') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('client.deployments.index')" :active="request()->routeIs('client.deployments.*')">
+                    {{ __('History') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('client.chat.index')" :active="request()->routeIs('client.chat.index')">
+                    {{ __('Chat') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-800">

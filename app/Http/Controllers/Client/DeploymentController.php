@@ -10,6 +10,19 @@ use Illuminate\Support\Facades\Auth;
 
 class DeploymentController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+        $deployments = Deployment::whereHas('subdomain', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->with('subdomain')
+            ->latest()
+            ->paginate(15);
+
+        return view('client.deployments.index', compact('deployments'));
+    }
+
     public function store(Request $request)
     {
         // Explicitly check for upload errors before validation

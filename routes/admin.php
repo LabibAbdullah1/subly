@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserDatabaseController;
 use App\Http\Controllers\Admin\DeploymentQueueController;
-use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\SubdomainController;
 use App\Http\Controllers\Admin\PaymentController;
 
@@ -27,9 +27,11 @@ Route::prefix('deployments')->name('deployments.')->group(function () {
     Route::delete('/{deployment}', [DeploymentQueueController::class, 'destroy'])->name('destroy');
 });
 
-Route::prefix('reports')->name('reports.')->group(function () {
-    Route::get('/', [ReportController::class, 'index'])->name('index');
-    Route::put('/{report}', [ReportController::class, 'update'])->name('update');
+Route::prefix('chat')->name('chat.')->group(function () {
+    Route::get('/', [ChatController::class, 'index'])->name('index');
+    Route::get('/{user}', [ChatController::class, 'show'])->name('show');
+    Route::post('/{user}', [ChatController::class, 'store'])->name('store');
+    Route::delete('/{chat}', [ChatController::class, 'destroy'])->name('destroy');
 });
 
 Route::prefix('feedback')->name('feedback.')->group(function () {

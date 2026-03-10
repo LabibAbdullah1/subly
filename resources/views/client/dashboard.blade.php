@@ -4,7 +4,7 @@
             <svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
-            {{ __('Client Portal') }}
+            {{ __('Client Portal Dashboard') }}
         </h2>
     </x-slot>
 
@@ -76,7 +76,7 @@
                 </div>
             @endforelse
 
-            <!-- 2. Deployments & Hosted Environments -->
+            <!-- 2. Start Project & Hosted Environments -->
             @if($subdomains->count() > 0 && $available_slots > $subdomains->count())
                 <div class="glass-panel p-6 mb-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-primary-500/30 shadow-[0_0_20px_rgba(94,106,210,0.1)]">
                     <div class="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-transparent pointer-events-none"></div>
@@ -101,144 +101,48 @@
             @endif
 
             @if($subdomains->count() > 0)
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Upload Form -->
-                    <div class="lg:col-span-1">
-                        <div class="glass-panel p-6 h-full flex flex-col hover-lift">
-                            <div class="flex items-center gap-3 mb-6">
-                                <div class="p-2 rounded-lg bg-gray-800 border border-gray-700 text-primary-400">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <div class="mb-4">
+                    <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                        Hosted Environments
+                    </h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($subdomains as $sub)
+                        <div class="glass-panel p-6 hover-lift flex flex-col relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            
+                            <div class="flex items-center gap-3 mb-4 relative z-10">
+                                <div class="p-2 rounded-lg {{ $sub->status == 'active' ? 'bg-green-500/10 text-green-400 shadow-[0_0_10px_rgba(34,197,94,0.1)]' : 'bg-red-500/10 text-red-400' }}">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
                                 </div>
-                                <h3 class="text-lg font-medium text-gray-100">Deploy Code</h3>
-                            </div>
-                            <form action="{{ route('client.deployments.store') }}" method="POST" enctype="multipart/form-data" class="flex-1 flex flex-col">
-                                @csrf
-                                <div class="mb-5">
-                                    <label for="subdomain_id" class="block text-sm font-medium text-gray-300 mb-1.5">Target Destination</label>
-                                    <div class="relative">
-                                        <select name="subdomain_id" id="subdomain_id" class="input-field appearance-none pr-10">
-                                            @foreach($subdomains as $sub)
-                                                <option value="{{ $sub->id }}" class="bg-gray-900">{{ $sub->full_domain }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-6 flex-1">
-                                    <label class="block text-sm font-medium text-gray-300 mb-1.5">Project Files (.zip)</label>
-                                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-700 border-dashed rounded-xl hover:border-primary-500/50 hover:bg-gray-800/30 transition-all group relative cursor-pointer" onclick="document.getElementById('zip_file').click()">
-                                        <div class="space-y-1 text-center">
-                                            <div id="upload-icon-container">
-                                                <svg class="mx-auto h-12 w-12 text-gray-500 group-hover:text-primary-400 transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                            </div>
-                                            <div class="flex text-sm text-gray-400">
-                                                <label for="zip_file" class="relative cursor-pointer rounded-md font-medium text-primary-400 hover:text-primary-300 focus-within:outline-none">
-                                                    <span id="file-chosen-text">Upload a file</span>
-                                                    <input id="zip_file" name="zip_file" type="file" class="sr-only" accept=".zip" required onchange="handleFileSelect(this)">
-                                                </label>
-                                                <p class="pl-1" id="drop-text">or drag and drop</p>
-                                            </div>
-                                            <p class="text-xs text-gray-500" id="file-info-text">ZIP up to 50MB</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="submit" id="deploy-btn" class="w-full btn-primary py-2.5 mt-auto transition-all {{ (!$plan) ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-[0_0_20px_rgba(94,106,210,0.4)]' }} flex items-center justify-center gap-2" {{ (!$plan) ? 'disabled' : '' }}>
-                                    <span id="btn-text">{{ !$plan ? 'Subscription Required' : 'Initiate Deployment' }}</span>
-                                    <svg id="btn-spinner" class="hidden animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Subdomains List -->
-                    <div class="lg:col-span-2">
-                        <div class="glass-panel overflow-hidden h-full flex flex-col">
-                            <div class="p-6 border-b border-gray-800/50 bg-gray-900/30 flex justify-between items-center">
-                                <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                                    Hosted Environments
+                                <h3 class="text-lg font-bold text-gray-100 truncate flex-1">
+                                    <a href="https://{{ $sub->full_domain }}" target="_blank" class="hover:text-primary-400 transition-colors">{{ $sub->full_domain }}</a>
                                 </h3>
                             </div>
-                            <div class="overflow-x-auto flex-1 relative group/scroll">
-                                <!-- Scroll Indicator (Mobile only) -->
-                                <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-950/50 to-transparent pointer-events-none opacity-0 group-hover/scroll:opacity-100 sm:hidden transition-opacity"></div>
-                                <table class="w-full text-left">
-                                    <thead>
-                                        <tr>
-                                            <th class="table-th">Domain</th>
-                                            <th class="table-th">Status</th>
-                                            <th class="table-th text-center">Expiry</th>
-                                            <th class="table-th text-right">Latest Build</th>
-                                            <th class="table-th text-right">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-800/50">
-                                        @foreach($subdomains as $sub)
-                                            <tr class="group hover:bg-gray-800/30 transition-colors">
-                                                <td class="table-td">
-                                                    <a href="https://{{ $sub->full_domain }}" target="_blank" class="font-medium text-primary-400 hover:text-primary-300 hover:underline flex items-center gap-1.5 transition-colors">
-                                                        {{ $sub->full_domain }}
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                                                    </a>
-                                                </td>
-                                                <td class="table-td">
-                                                    <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-medium rounded-md border 
-                                                        {{ $sub->status == 'active' ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]' : 'bg-red-500/10 text-red-400 border-red-500/20' }}">
-                                                        {{ ucfirst($sub->status) }}
-                                                    </span>
-                                                </td>
-                                                <td class="table-td text-center">
-                                                    @if($sub->expired_at)
-                                                        <div class="text-sm {{ $sub->expired_at->isPast() ? 'text-red-400 font-semibold' : 'text-gray-200' }}">
-                                                            {{ $sub->expired_at->diffForHumans() }}
-                                                        </div>
-                                                        <div class="text-xs text-gray-500">{{ $sub->expired_at->format('d M Y') }}</div>
-                                                    @else
-                                                        <span class="text-gray-500 italic text-sm">Lifetime/None</span>
-                                                    @endif
-                                                </td>
-                                                <td class="table-td text-right">
-                                                    @php $latest = $sub->deployments->last(); @endphp
-                                                    @if($latest)
-                                                        <div class="flex items-center justify-end gap-2">
-                                                            <span class="text-xs text-gray-500">v{{ $latest->version }}</span>
-                                                            <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-medium rounded-full 
-                                                                {{ $latest->status === 'success' ? 'bg-green-500/10 text-green-400' : '' }}
-                                                                {{ $latest->status === 'queued' ? 'bg-yellow-500/10 text-yellow-400' : '' }}
-                                                                {{ $latest->status === 'processing' ? 'bg-blue-500/10 text-blue-400' : '' }}
-                                                                {{ $latest->status === 'error' ? 'bg-red-500/10 text-red-400' : '' }}">
-                                                                {{ ucfirst($latest->status) }}
-                                                            </span>
-                                                        </div>
-                                                    @else
-                                                        <span class="text-sm text-gray-500 italic">No deployments yet</span>
-                                                    @endif
-                                                </td>
-                                                <td class="table-td text-right">
-                                                    <div class="flex items-center justify-end gap-3">
-                                                        <a href="{{ route('client.subdomains.renew', $sub) }}" class="text-sm font-medium text-primary-400 hover:text-primary-300 transition-colors">Perpanjang</a>
-                                                        <form action="{{ route('client.subdomains.destroy', $sub) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin berhenti berlangganan? Subdomain dan seluruh filenya akan dihapus permanen.');" class="inline">
-                                                            @csrf @method('DELETE')
-                                                            <button type="submit" class="text-sm font-medium text-red-500 hover:text-red-400 transition-colors">Berhenti</button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                            
+                            <div class="space-y-3 mb-6 flex-1 relative z-10">
+                                <div class="flex justify-between items-center text-sm bg-gray-900/50 p-2 rounded-lg border border-gray-800/50">
+                                    <span class="text-gray-400 font-medium">Status</span>
+                                    <span class="{{ $sub->status == 'active' ? 'text-green-400 shadow-[0_0_10px_rgba(34,197,94,0.1)] bg-green-500/10' : 'text-red-400 bg-red-500/10' }} font-semibold px-2 py-0.5 rounded text-xs uppercase tracking-wider">{{ ucfirst($sub->status) }}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm bg-gray-900/50 p-2 rounded-lg border border-gray-800/50">
+                                    <span class="text-gray-400 font-medium">Expiry</span>
+                                    <span class="text-gray-200">{{ $sub->expired_at ? $sub->expired_at->format('d M Y') : 'Lifetime' }}</span>
+                                </div>
+                                @php $latest = $sub->deployments->last(); @endphp
+                                <div class="flex justify-between items-center text-sm bg-gray-900/50 p-2 rounded-lg border border-gray-800/50">
+                                    <span class="text-gray-400 font-medium">Latest Build</span>
+                                    <span class="text-gray-200">{{ $latest ? 'v'.$latest->version : 'None' }}</span>
+                                </div>
                             </div>
+
+                            <a href="{{ route('client.portal', $sub->id) }}" class="btn-primary w-full text-center py-2.5 shadow-[0_0_15px_rgba(94,106,210,0.3)] hover:scale-[1.02] transition-transform relative z-10 font-medium flex justify-center items-center gap-2">
+                                Manage Plan
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </a>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
             @elseif($available_slots > 0)
                 <!-- Empty State for Users with Plan but No Subdomain -->
@@ -311,20 +215,20 @@
             <!-- Database Info -->
             @if($subdomains->count() > 0)
                 <div class="glass-panel overflow-hidden">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-gray-800/50 bg-gray-900/30 gap-4">
-                            <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                                Database Credentials
-                            </h3>
-                            <a href="https://db.subly.my.id" target="_blank" class="btn-secondary text-xs py-1.5 px-3 flex items-center gap-2 border-gray-700 hover:bg-gray-700/50 shadow-lg shadow-gray-900/20">
-                                <svg class="w-4 h-4 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                </svg>
-                                <span>Access Database (phpMyAdmin)</span>
-                            </a>
-                        </div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-gray-800/50 bg-gray-900/30 gap-4">
+                        <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                            Database Credentials
+                        </h3>
+                        <a href="https://db.subly.my.id" target="_blank" class="btn-secondary text-xs py-1.5 px-3 flex items-center gap-2 border-gray-700 hover:bg-gray-700/50 shadow-lg shadow-gray-900/20">
+                            <svg class="w-4 h-4 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            <span>Access Database (phpMyAdmin)</span>
+                        </a>
+                    </div>
                     <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             @foreach($subdomains as $sub)
                                 @foreach($sub->userDatabases as $db)
                                     <div class="relative bg-gray-900/80 rounded-xl p-5 border border-gray-800 shadow-lg group hover:border-gray-700 transition-colors">
@@ -382,183 +286,10 @@
                 </div>
             @endif
 
-            <!-- Support & Feedback -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Support Tickets -->
-                <div id="support" class="glass-panel p-6 flex flex-col h-full">
-                    <h3 class="text-lg font-medium text-gray-100 mb-6 flex items-center gap-2">
-                        <div class="p-1.5 rounded bg-primary-500/20 text-primary-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                        </div>
-                        Help & Support
-                    </h3>
-                    <form action="{{ route('client.reports.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-400 mb-1">Subject</label>
-                            <input type="text" name="subject" class="input-field" required placeholder="Issue with database connection...">
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-400 mb-1">Detailed Description</label>
-                            <textarea name="message" rows="3" class="input-field" required placeholder="Describe what exactly is happening..."></textarea>
-                        </div>
-                        <button type="submit" class="w-full btn-secondary py-2 border-gray-700 bg-gray-800 hover:bg-gray-700">
-                            Submit Support Ticket
-                        </button>
-                    </form>
-
-                    <div class="mt-8">
-                        <h4 class="text-xs uppercase tracking-wider font-semibold text-gray-500 mb-3 ml-1">Recent Tickets</h4>
-                        <ul class="space-y-2">
-                            @forelse($reports as $report)
-                                <li class="p-3 bg-gray-900/50 border border-gray-800 rounded-lg flex justify-between items-center group">
-                                    <span class="font-medium text-sm text-gray-300">{{ $report->subject }}</span>
-                                    <span class="px-2 py-0.5 inline-flex text-[10px] uppercase font-bold tracking-wider rounded border 
-                                        {{ $report->status === 'resolved' ? 'bg-green-500/10 text-green-400 border-green-500/20' : '' }}
-                                        {{ $report->status === 'open' ? 'bg-red-500/10 text-red-400 border-red-500/20' : '' }}
-                                        {{ $report->status === 'in_progress' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : '' }}">
-                                        {{ str_replace('_', ' ', $report->status) }}
-                                    </span>
-                                </li>
-                            @empty
-                                <li class="py-4 text-sm text-gray-500 text-center italic border border-gray-800 border-dashed rounded-lg bg-gray-900/30">No active tickets.</li>
-                            @endforelse
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Feedback -->
-                <div class="glass-panel p-6 flex flex-col h-full relative overflow-hidden" x-data="{ selectedPlanId: '{{ $purchasedPlans->first()->id ?? '' }}' }">
-                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                    <h3 class="text-lg font-medium text-gray-100 mb-6 flex items-center gap-2 relative z-10">
-                        <div class="p-1.5 rounded bg-yellow-500/20 text-yellow-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                            </svg>
-                        </div>
-                        Platform Feedback
-                    </h3>
-                    
-                    @if($purchasedPlans->isEmpty())
-                        <div class="p-5 bg-gray-900/50 rounded-xl border border-gray-800 flex-1 flex flex-col justify-center items-center text-center relative z-10">
-                            <p class="text-sm text-gray-400">Silakan beli plan terlebih dahulu untuk memberikan feedback.</p>
-                        </div>
-                    @else
-                        <!-- Select Plan -->
-                        <div class="mb-4 relative z-10">
-                            <label class="block text-sm font-medium text-gray-400 mb-1">Pilih Plan</label>
-                            <div class="relative">
-                                <select x-model="selectedPlanId" class="input-field appearance-none pr-10">
-                                    @foreach($purchasedPlans as $p)
-                                        <option value="{{ $p->id }}" class="bg-gray-900">{{ $p->name }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        @foreach($purchasedPlans as $p)
-                            <div x-show="selectedPlanId == '{{ $p->id }}'" class="flex-1 flex flex-col w-full relative z-10" style="display: none;" x-transition>
-                                @php $planFeedback = $feedbacks->get($p->id); @endphp
-                                @if($planFeedback)
-                                    <div class="p-5 bg-gray-900/50 rounded-xl border border-gray-800 flex-1 flex flex-col justify-center items-center text-center relative mt-2">
-                                        <div class="flex items-center gap-1 mb-4 bg-gray-950 p-2 rounded-lg border border-gray-800">
-                                            @for($i = 0; $i < $planFeedback->rating; $i++)
-                                                <svg class="w-5 h-5 text-yellow-500 drop-shadow-[0_0_5px_rgba(234,179,8,0.5)] fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                                            @endfor
-                                        </div>
-                                        <p class="text-sm text-gray-300 font-medium mb-4">Terima kasih atas ulasan Anda!</p>
-                                        @if($planFeedback->comment)
-                                            <div class="text-sm text-gray-400 italic bg-gray-800/50 p-4 rounded-lg border border-gray-700/50 w-full relative">
-                                                <svg class="w-6 h-6 text-gray-700 absolute top-2 left-2 opacity-50" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
-                                                <p class="relative z-10 pl-6 pr-2">{{ $planFeedback->comment }}</p>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @else
-                                    <form action="{{ route('client.feedback.store') }}" method="POST" class="flex-1 flex flex-col relative" x-data="{ comment: '' }">
-                                        @csrf
-                                        <input type="hidden" name="plan_id" value="{{ $p->id }}">
-                                        <div class="mb-4">
-                                            <label class="block text-sm font-medium text-gray-400 mb-1">Rating Anda</label>
-                                            <div class="relative">
-                                                <select name="rating" class="input-field appearance-none pr-10">
-                                                    <option value="5" class="bg-gray-900">⭐⭐⭐⭐⭐ Sangat Memuaskan</option>
-                                                    <option value="4" class="bg-gray-900">⭐⭐⭐⭐ Bagus</option>
-                                                    <option value="3" class="bg-gray-900">⭐⭐⭐ Cukup Baik</option>
-                                                    <option value="2" class="bg-gray-900">⭐⭐ Kurang Memuaskan</option>
-                                                    <option value="1" class="bg-gray-900">⭐ Mengecewakan</option>
-                                                </select>
-                                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Quick Feedback Chips -->
-                                        <div class="mb-3">
-                                            <label class="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">Pilih Cepat</label>
-                                            <div class="flex flex-wrap gap-2">
-                                                <button type="button" @click="comment = 'Sangat memuaskan dan mudah digunakan!'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Sangat Memuaskan</button>
-                                                <button type="button" @click="comment = 'Harganya sepadan dengan fitur yang didapat.'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Harga Sepadan</button>
-                                                <button type="button" @click="comment = 'Servernya cepat dan stabil, tanpa kendala.'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Cepat & Stabil</button>
-                                                <button type="button" @click="comment = 'Proses deploy sangat gampang untuk pemula.'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Mudah untuk Pemula</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-5 flex-1">
-                                            <label class="block text-sm font-medium text-gray-400 mb-1">Catatan Tambahan</label>
-                                            <textarea name="comment" x-model="comment" rows="3" class="input-field w-full resize-none text-sm" placeholder="Tulis masukan Anda di sini..."></textarea>
-                                        </div>
-                                        <button type="submit" class="w-full btn-secondary py-2 border-gray-700 bg-gray-800 hover:bg-primary-600 hover:text-white hover:border-primary-500 mt-auto transition-all">
-                                            Kirim Feedback
-                                        </button>
-                                    </form>
-                                @endif
-                            </div>
-                        @endforeach
-                    @endif
-                </div>
-            </div>
-
         </div>
     </div>
 
     <script>
-        function handleFileSelect(input) {
-            const fileNameDisplay = document.getElementById('file-chosen-text');
-            const dropText = document.getElementById('drop-text');
-            const fileInfoText = document.getElementById('file-info-text');
-            const container = input.closest('.border-dashed');
-            
-            if (input.files.length > 0) {
-                const file = input.files[0];
-                fileNameDisplay.innerText = file.name;
-                dropText.innerText = "";
-                fileInfoText.innerText = (file.size / 1024 / 1024).toFixed(2) + " MB";
-                container.classList.add('border-primary-500', 'bg-primary-500/5');
-                container.classList.remove('border-gray-700');
-            }
-        }
-
-        // Handle form submission loading state
-        document.querySelector('form[action$="deployments"]').addEventListener('submit', function(e) {
-            const btn = document.getElementById('deploy-btn');
-            const btnText = document.getElementById('btn-text');
-            const spinner = document.getElementById('btn-spinner');
-            
-            if (btn && btnText && spinner) {
-                btn.disabled = true;
-                btn.classList.add('opacity-75', 'cursor-not-allowed');
-                btnText.innerText = "Uploading Project...";
-                spinner.classList.remove('hidden');
-            }
-        });
-
         function copyToClipboard(text, btn) {
             const copy = () => {
                 if (navigator.clipboard) {

@@ -41,16 +41,16 @@
                     </div>
                 </div>
 
-                <!-- Open Tickets -->
+                <!-- Unread Chats -->
                 <div class="glass-panel p-6 relative overflow-hidden group hover-lift">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-500/10 rounded-full blur-xl group-hover:bg-red-500/20 transition-all duration-500"></div>
                     <div class="flex items-center border-b-0">
                         <div class="p-3 rounded-lg bg-gray-800/80 border border-gray-700/50 text-red-400 mr-4">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-400">Open Tickets</p>
-                            <p class="text-2xl font-bold text-gray-100">{{ $openTickets }}</p>
+                            <p class="text-sm font-medium text-gray-400">Unread Chats</p>
+                            <p class="text-2xl font-bold text-gray-100">{{ $unreadChats }}</p>
                         </div>
                     </div>
                 </div>
@@ -112,39 +112,37 @@
                     </div>
                 </div>
 
-                <!-- Recent Support Tickets -->
+                <!-- Recent Chats -->
                 <div class="glass-panel overflow-hidden">
                     <div class="p-6 border-b border-gray-800/60 bg-gray-900/50 flex justify-between items-center">
-                        <h3 class="text-lg font-medium text-gray-100">Recent Tickets</h3>
-                        <a href="{{ route('admin.reports.index') }}" class="text-sm text-primary-400 hover:text-primary-300">Support Center →</a>
+                        <h3 class="text-lg font-medium text-gray-100">Recent Chats</h3>
+                        <a href="{{ route('admin.chat.index') }}" class="text-sm text-primary-400 hover:text-primary-300">Live Chat →</a>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead>
                                 <tr>
                                     <th class="table-th">Client</th>
-                                    <th class="table-th">Subject</th>
+                                    <th class="table-th">Message</th>
                                     <th class="table-th text-right">Status</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-800/50">
-                                @forelse($recentTickets as $ticket)
+                                @forelse($recentChats as $chat)
                                 <tr class="group hover:bg-primary-500/5 transition-all duration-300">
-                                    <td class="table-td text-gray-200 transition-colors group-hover:text-white">{{ $ticket->user->name ?? 'Deleted User' }}</td>
-                                    <td class="table-td truncate max-w-[150px]">{{ $ticket->subject }}</td>
+                                    <td class="table-td text-gray-200 transition-colors group-hover:text-white">{{ $chat->user->name ?? 'Deleted User' }}</td>
+                                    <td class="table-td truncate max-w-[150px]">{{ $chat->message }}</td>
                                     <td class="table-td text-right">
                                         <span class="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full 
-                                            {{ $ticket->status === 'open' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : '' }}
-                                            {{ $ticket->status === 'in_progress' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : '' }}
-                                            {{ $ticket->status === 'resolved' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : '' }}
+                                            {{ $chat->is_read ? 'bg-gray-500/10 text-gray-400 border border-gray-500/20' : 'bg-green-500/10 text-green-400 border border-green-500/20' }}
                                         ">
-                                            {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
+                                            {{ $chat->is_read ? 'Read' : 'New' }}
                                         </span>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="3" class="table-td text-center py-8">No open tickets.</td>
+                                    <td colspan="3" class="table-td text-center py-8">No recent messages.</td>
                                 </tr>
                                 @endforelse
                             </tbody>

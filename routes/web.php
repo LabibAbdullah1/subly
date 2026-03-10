@@ -19,6 +19,12 @@ Route::get('/home', function () {
 
 Route::post('dashboard/midtrans/webhook', [App\Http\Controllers\Client\CheckoutController::class, 'webhook'])->name('midtrans.webhook');
 
+// Static Policy Pages
+Route::view('/terms', 'pages.terms')->name('pages.terms');
+Route::view('/rules', 'pages.rules')->name('pages.rules');
+Route::view('/purchase-terms', 'pages.purchase-terms')->name('pages.purchase-terms');
+Route::view('/privacy', 'pages.privacy')->name('pages.privacy');
+
 Route::middleware('auth')->prefix('notifications')->name('notifications.')->group(function () {
     Route::post('/read-all', [\App\Http\Controllers\Client\NotificationController::class, 'markAllAsRead'])->name('readAll');
     Route::post('/clear-all', [\App\Http\Controllers\Client\NotificationController::class, 'clearAll'])->name('clearAll');

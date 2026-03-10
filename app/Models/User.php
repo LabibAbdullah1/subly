@@ -23,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role',
+        'last_seen_at',
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_seen_at' => 'datetime',
         ];
     }
 
@@ -58,9 +60,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Subdomain::class);
     }
 
-    public function reports()
+    public function chats()
     {
-        return $this->hasMany(Report::class);
+        return $this->hasMany(Chat::class);
     }
 
     public function feedback()
