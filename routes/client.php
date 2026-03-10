@@ -11,6 +11,7 @@ use App\Http\Controllers\Client\SubdomainController;
 use App\Http\Controllers\Client\NotificationController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('index');
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::get('/portal/{subdomain}', [DashboardController::class, 'portal'])->name('portal');
 Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
 

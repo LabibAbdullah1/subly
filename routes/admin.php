@@ -34,6 +34,12 @@ Route::prefix('chat')->name('chat.')->group(function () {
     Route::delete('/{chat}', [ChatController::class, 'destroy'])->name('destroy');
 });
 
+Route::prefix('notifications')->name('notifications.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('index');
+    Route::get('/create', [App\Http\Controllers\Admin\NotificationController::class, 'create'])->name('create');
+    Route::post('/', [App\Http\Controllers\Admin\NotificationController::class, 'store'])->name('store');
+});
+
 Route::prefix('feedback')->name('feedback.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\FeedbackController::class, 'index'])->name('index');
     Route::put('/{feedback}/toggle-featured', [App\Http\Controllers\Admin\FeedbackController::class, 'toggleFeatured'])->name('toggle_featured');

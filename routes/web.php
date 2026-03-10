@@ -33,3 +33,4 @@ Route::middleware('auth')->prefix('notifications')->name('notifications.')->grou
 });
 
 require __DIR__.'/auth.php';
+

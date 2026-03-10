@@ -128,6 +128,12 @@
                                     {{ __('Testimonials') }}
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('admin.notifications.index') }}" class="sidebar-link {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+                                    {{ __('Notifications') }}
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -163,8 +169,11 @@
                             </x-slot>
                         
                             <x-slot name="content">
-                                <div class="px-4 py-3 border-b border-gray-800 flex justify-between items-center">
-                                    <span class="text-sm font-medium text-gray-200">Notifications</span>
+                                <div class="px-4 py-3 border-b border-gray-800 flex justify-between items-center bg-gray-950/30">
+                                    <a href="{{ route('admin.notifications.index') }}" class="text-sm font-medium text-gray-200 hover:text-primary-400 transition-colors flex items-center gap-1">
+                                        Notifications
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                                    </a>
                                     @if(Auth::user()->unreadNotifications->count() > 0)
                                         <form method="POST" action="{{ route('notifications.readAll') }}" class="inline">
                                             @csrf
@@ -173,7 +182,7 @@
                                     @endif
                                 </div>
                                 <div class="max-h-64 overflow-y-auto">
-                                    @forelse(Auth::user()->notifications()->take(5)->get() as $notification)
+                                    @forelse(Auth::user()->notifications()->latest()->take(5)->get() as $notification)
                                         <div class="px-4 py-3 border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors {{ is_null($notification->read_at) ? 'bg-gray-800/10' : '' }}">
                                             <div class="flex justify-between items-start">
                                                 <p class="text-sm text-gray-300 leading-snug">{{ $notification->data['message'] ?? 'New notification' }}</p>

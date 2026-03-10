@@ -103,7 +103,7 @@
                     <h4 class="text-lg font-medium text-gray-200 mb-2">Need a custom enterprise solution?</h4>
                     <p class="text-gray-400 text-sm max-w-xl">If your application requires significantly more resources, dedicated infrastructure, or more databases, our team can help configure exactly what you need.</p>
                 </div>
-                <a href="{{ route('client.index') }}#support" class="btn-secondary whitespace-nowrap px-6">
+                <a href="{{ route('client.chat.index') }}" class="btn-secondary whitespace-nowrap px-6">
                     Contact Sales
                 </a>
             </div>

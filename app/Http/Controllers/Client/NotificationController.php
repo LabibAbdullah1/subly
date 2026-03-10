@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Auth;
 class NotificationController extends Controller
 {
     /**
+     * Display a listing of the notifications.
+     */
+    public function index()
+    {
+        $notifications = Auth::user()->notifications()->paginate(15);
+        return view('client.notifications.index', compact('notifications'));
+    }
+
+    /**
      * Mark a specific notification as read.
      */
     public function markAsRead(Request $request, $id)
