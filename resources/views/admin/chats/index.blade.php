@@ -5,9 +5,9 @@
         </h2>
     </x-slot>
 
-    <div class="py-6 sm:py-12" x-data="adminChat()">
+    <div class="py-2 sm:py-4" x-data="adminChat()">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex h-[80vh] sm:h-[75vh] glass-panel overflow-hidden relative">
+            <div class="flex h-[80vh] sm:h-[75vh] min-h-[500px] glass-panel overflow-hidden" style="height: 75vh;">
                 <!-- User List -->
                 <div class="w-full sm:w-1/3 border-r border-gray-800 flex flex-col h-full bg-gray-900/50 transition-all duration-300"
                      :class="currentUserId ? 'hidden sm:flex' : 'flex'">
