@@ -25,7 +25,7 @@ class ChatController extends Controller
         auth()->user()->chats()->where('is_admin', true)->where('is_read', false)->update(['is_read' => true]);
         
         $adminOnline = \App\Models\User::where('role', 'Admin')
-            ->where('last_seen_at', '>=', now()->subMinutes(5))
+            ->where('last_seen_at', '>=', now()->subMinutes(2))
             ->exists();
 
         return response()->json([
