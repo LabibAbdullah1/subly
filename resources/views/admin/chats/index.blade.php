@@ -5,12 +5,13 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="adminChat()">
+    <div class="py-6 sm:py-12" x-data="adminChat()">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex h-[75vh] glass-panel overflow-hidden">
+            <div class="flex h-[80vh] sm:h-[75vh] glass-panel overflow-hidden relative">
                 <!-- User List -->
-                <div class="w-1/3 border-r border-gray-800 flex flex-col h-full bg-gray-900/50">
-                    <div class="p-4 border-b border-gray-800">
+                <div class="w-full sm:w-1/3 border-r border-gray-800 flex flex-col h-full bg-gray-900/50 transition-all duration-300"
+                     :class="currentUserId ? 'hidden sm:flex' : 'flex'">
+                    <div class="p-4 border-b border-gray-800 flex items-center justify-between">
                         <h3 class="text-lg font-medium text-gray-100">Clients</h3>
                     </div>
                     <div class="flex-1 overflow-y-auto">
@@ -33,10 +34,18 @@
                 </div>
 
                 <!-- Chat Area -->
-                <div class="w-2/3 flex flex-col h-full relative" x-show="currentUserId" style="display: none;">
+                <div class="w-full sm:w-2/3 flex flex-col h-full relative bg-gray-900/40" x-show="currentUserId" style="display: none;">
                     <!-- Chat Header -->
                     <div class="p-4 border-b border-gray-800 bg-gray-900/80 shrink-0 flex items-center justify-between">
-                        <h3 class="text-lg font-medium text-gray-100" x-text="currentUserName"></h3>
+                        <div class="flex items-center gap-3">
+                            <!-- Back Button for Mobile -->
+                            <button @click="currentUserId = null" class="sm:hidden p-1.5 text-gray-400 hover:text-white transition-colors">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <h3 class="text-lg font-medium text-gray-100" x-text="currentUserName"></h3>
+                        </div>
                     </div>
 
                     <!-- Messages Box -->
@@ -48,9 +57,9 @@
                                     <span x-text="msg.is_admin ? 'A' : currentUserName.substring(0,1)"></span>
                                 </div>
                                 <div class="flex flex-col" :class="msg.is_admin ? 'items-end' : 'items-start'">
-                                    <div class="px-4 py-2 rounded-2xl max-w-sm text-sm shadow-md"
+                                    <div class="px-4 py-2 rounded-2xl max-w-[85%] sm:max-w-sm text-sm shadow-md"
                                          :class="msg.is_admin ? 'bg-primary-600 text-white rounded-tr-none' : 'bg-gray-800 text-gray-200 rounded-tl-none'">
-                                        <p x-text="msg.message" class="whitespace-pre-wrap"></p>
+                                        <p x-text="msg.message" class="whitespace-pre-wrap text-[13px] sm:text-sm"></p>
                                     </div>
                                     <div class="text-[10px] text-gray-500 mt-1 flex items-center gap-2">
                                         <span x-text="new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})"></span>
@@ -67,17 +76,18 @@
                     <!-- Input Area -->
                     <div class="p-4 border-t border-gray-800 bg-gray-900/80 shrink-0">
                         <form @submit.prevent="sendMessage" class="flex gap-2">
-                            <input type="text" x-model="newMessage" placeholder="Type a message..." class="input-field flex-1" required autocomplete="off">
-                            <button type="submit" class="btn-primary py-2 px-6" :disabled="sending">
-                                <span x-show="!sending">Send</span>
+                            <input type="text" x-model="newMessage" placeholder="Type a message..." class="input-field flex-1 py-2 sm:py-3 text-sm sm:text-base" required autocomplete="off">
+                            <button type="submit" class="btn-primary py-2 px-4 sm:px-6" :disabled="sending">
+                                <span x-show="!sending" class="hidden sm:inline">Send</span>
+                                <svg x-show="!sending" class="sm:hidden w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                                 <span x-show="sending">...</span>
                             </button>
                         </form>
                     </div>
                 </div>
                 
-                <!-- Empty State -->
-                <div class="w-2/3 flex items-center justify-center h-full text-gray-500" x-show="!currentUserId">
+                <!-- Empty State (Desktop only) -->
+                <div class="hidden sm:flex w-2/3 items-center justify-center h-full text-gray-500" x-show="!currentUserId">
                     Select a client to start chatting
                 </div>
             </div>
