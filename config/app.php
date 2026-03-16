@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://subly.my.id'),
 
     'domain' => env('APP_DOMAIN', 'subly.my.id'),
     
