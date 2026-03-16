@@ -52,6 +52,7 @@
                                 <th class="table-th">User Profile</th>
                                 <th class="table-th">Role Access</th>
                                 <th class="table-th">Joined Date</th>
+                                <th class="table-th text-center">Verified</th>
                                 <th class="table-th text-right">Actions</th>
                             </tr>
                         </thead>
@@ -80,6 +81,17 @@
                                         {{ $user->created_at->format('M d, Y') }}
                                         <span class="text-xs text-gray-600 block">{{ $user->created_at->format('H:i') }}</span>
                                     </td>
+                                    <td class="table-td text-center">
+                                        @if($user->email_verified_at)
+                                            <span class="text-green-400 text-sm flex items-center justify-center gap-1">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                {{ $user->email_verified_at->format('M d, Y') }}
+                                            </span>
+                                            <span class="text-xs text-gray-600">{{ $user->email_verified_at->format('H:i') }}</span>
+                                        @else
+                                            <span class="text-red-400/60 text-sm">Not Verified</span>
+                                        @endif
+                                    </td>
                                     <td class="table-td flex justify-end gap-3 items-center pt-5">
                                         <a href="{{ route('admin.users.edit', $user) }}" class="text-gray-400 hover:text-white transition-colors">Edit</a>
                                         <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user? This will also remove their deployments.');">
@@ -90,7 +102,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="table-td text-center py-12 text-gray-500">No users found.</td>
+                                    <td colspan="5" class="table-td text-center py-12 text-gray-500">No users found.</td>
                                 </tr>
                             @endforelse
                         </tbody>
