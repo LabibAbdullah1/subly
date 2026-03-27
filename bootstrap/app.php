@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
 
-            Route::middleware(['web', 'auth', 'verified'])
+            Route::middleware(['web', 'auth', 'verified', 'pending_payment'])
                 ->prefix('dashboard')
                 ->name('client.')
                 ->group(base_path('routes/client.php'));
@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'pending_payment' => \App\Http\Middleware\CheckPendingPayment::class,
         ]);
 
         $middleware->validateCsrfTokens(except: [

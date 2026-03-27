@@ -18,6 +18,7 @@ Route::resource('users', UserController::class);
 Route::resource('subdomains', SubdomainController::class);
 Route::resource('databases', UserDatabaseController::class);
 Route::resource('payments', PaymentController::class)->only(['index', 'show']);
+Route::post('payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
 
 Route::prefix('deployments')->name('deployments.')->group(function () {
     Route::get('/', [DeploymentQueueController::class, 'index'])->name('index');
@@ -44,4 +45,9 @@ Route::prefix('feedback')->name('feedback.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\FeedbackController::class, 'index'])->name('index');
     Route::put('/{feedback}/toggle-featured', [App\Http\Controllers\Admin\FeedbackController::class, 'toggleFeatured'])->name('toggle_featured');
     Route::delete('/{feedback}', [App\Http\Controllers\Admin\FeedbackController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('settings')->name('settings.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('index');
+    Route::post('/qris', [App\Http\Controllers\Admin\SettingController::class, 'updateQris'])->name('update_qris');
 });

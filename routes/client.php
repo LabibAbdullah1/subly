@@ -16,6 +16,9 @@ Route::get('/portal/{subdomain}', [DashboardController::class, 'portal'])->name(
 Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
 
 Route::post('/checkout/{plan}', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('/checkout/qris/{payment}', [CheckoutController::class, 'qris'])->name('checkout.qris');
+Route::get('/checkout/cancel/{payment}', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+Route::get('/checkout/status/{payment}', [CheckoutController::class, 'status'])->name('checkout.status');
 Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
 
 Route::prefix('deployments')->name('deployments.')->group(function () {

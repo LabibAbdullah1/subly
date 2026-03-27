@@ -30,8 +30,10 @@
                                 <th class="table-th">Client</th>
                                 <th class="table-th">Plan</th>
                                 <th class="table-th">Amount</th>
+                                <th class="table-th">Code</th>
                                 <th class="table-th">Status</th>
-                                <th class="table-th text-right">Transaction ID</th>
+                                <th class="table-th">Transaction ID</th>
+                                <th class="table-th text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-800/50">
@@ -49,10 +51,18 @@
                                         </div>
                                     </td>
                                     <td class="table-td">
-                                        <span class="text-primary-400 font-medium">{{ $payment->plan->name ?? 'N/A' }}</span>
+                                        <div class="flex flex-col">
+                                            <span class="text-primary-400 font-medium">{{ $payment->plan->name ?? 'N/A' }}</span>
+                                            @if($payment->subdomain)
+                                                <span class="text-xs text-gray-500">{{ $payment->subdomain->name }}</span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="table-td font-mono">
                                         Rp {{ number_format($payment->amount, 0, ',', '.') }}
+                                    </td>
+                                    <td class="table-td font-mono text-primary-400 font-bold">
+                                        {{ $payment->unique_code ?? '-' }}
                                     </td>
                                     <td class="table-td">
                                         <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-bold uppercase tracking-wider rounded border 
@@ -62,8 +72,8 @@
                                             {{ $payment->status }}
                                         </span>
                                     </td>
-                                    <td class="table-td text-right">
-                                        <div class="flex items-center justify-end gap-2">
+                                    <td class="table-td">
+                                        <div class="flex items-center gap-2">
                                             <span class="text-gray-500 font-mono text-xs">{{ $payment->transaction_id ?? '-' }}</span>
                                             @if($payment->transaction_id)
                                                 <button onclick="copyToClipboard('{{ $payment->transaction_id }}', this)" class="text-gray-600 hover:text-primary-400 transition-colors" title="Copy Transaction ID">
@@ -71,6 +81,18 @@
                                                 </button>
                                             @endif
                                         </div>
+                                    </td>
+                                    <td class="table-td text-right">
+                                        @if($payment->status === 'pending')
+                                            <form action="{{ route('admin.payments.confirm', $payment) }}" method="POST" onsubmit="return confirm('Konfirmasi pembayaran ini?')">
+                                                @csrf
+                                                <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-xs font-bold py-1.5 px-3 rounded transition-colors uppercase tracking-wider">
+                                                    Confirm
+                                                </button>
+                                            </form>
+                                        @else
+                                            <span class="text-gray-600 text-xs italic">N/A</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty

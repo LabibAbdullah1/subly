@@ -52,47 +52,28 @@ class CheckoutController extends Controller
 
         $grossAmount = max(0, $originalPrice - $discount);
 
+        // Anti-Spam: Check for existing pending payment for this plan/subdomain
+        $existingPayment = Payment::where('user_id', $user->id)
+            ->where('plan_id', $plan->id)
+            ->where('subdomain_id', $renewSubdomainId)
+            ->where('status', 'pending')
+            ->first();
+
+        if ($existingPayment) {
+            return redirect()->route('client.checkout.qris', $existingPayment)->with('info', 'Anda memiliki pembayaran tertunda untuk item ini.');
+        }
+
         // Create a unique transaction ID
         $orderId = 'PAY-' . time() . '-' . $user->id;
 
-        $params = [
-            'transaction_details' => [
-                'order_id' => $orderId,
-                'gross_amount' => $grossAmount,
-            ],
-            'customer_details' => [
-                'first_name' => $user->name,
-                'email' => $user->email,
-            ],
-            'item_details' => [
-                [
-                    'id' => $plan->id,
-                    'price' => $originalPrice,
-                    'quantity' => 1,
-                    'name' => $plan->name,
-                ]
-            ],
-        ];
-
-        // Add discount as a negative item if applicable
-        if ($discount > 0) {
-            $params['item_details'][] = [
-                'id' => 'DISC-' . ($voucher ? $voucher->id : 'VOUCH'),
-                'price' => -$discount,
-                'quantity' => 1,
-                'name' => 'Voucher Discount: ' . ($voucher ? $voucher->code : ''),
-            ];
-        }
-
         if ($grossAmount <= 0) {
-            // Free plan due to 100% discount, skip Midtrans payment gateway
+            // Free plan due to 100% discount, skip payment
             $payment = Payment::create([
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
                 'voucher_id' => $voucher ? $voucher->id : null,
                 'subdomain_id' => $renewSubdomainId,
                 'transaction_id' => $orderId,
-                'snap_token' => 'FREE_VOUCHER_SKIPPED',
                 'amount' => 0,
                 'status' => 'success',
             ]);
@@ -117,28 +98,36 @@ class CheckoutController extends Controller
             return redirect()->route('client.checkout.success')->with('success', 'Plan purchased successfully using a voucher!');
         }
 
-        try {
-            $snapToken = Snap::getSnapToken($params);
+        // Manual QRIS logic: Generate a unique 3-digit code
+        $uniqueCode = rand(100, 999);
+        $totalAmount = $grossAmount + $uniqueCode;
 
-            // Save pending payment record
-            Payment::create([
-                'user_id' => $user->id,
-                'plan_id' => $plan->id,
-                'voucher_id' => $voucher ? $voucher->id : null,
-                'subdomain_id' => $renewSubdomainId,
-                'transaction_id' => $orderId,
-                'snap_token' => $snapToken,
-                'amount' => $grossAmount,
-                'status' => 'pending',
-            ]);
+        // Save pending payment record
+        $payment = Payment::create([
+            'user_id' => $user->id,
+            'plan_id' => $plan->id,
+            'voucher_id' => $voucher ? $voucher->id : null,
+            'subdomain_id' => $renewSubdomainId,
+            'transaction_id' => $orderId,
+            'amount' => $totalAmount,
+            'unique_code' => $uniqueCode,
+            'status' => 'pending',
+        ]);
 
-            // If it's a valid voucher with a limit, we theoretically should decrement it on successful payment
-            // but we can track that in the webhook or here. Usually on settlement.
+        return redirect()->route('client.checkout.qris', $payment);
+    }
 
-            return view('client.checkout.snap', compact('snapToken', 'plan', 'grossAmount', 'discount', 'originalPrice'));
-        } catch (\Exception $e) {
-            return back()->with('error', 'Could not initialize payment: ' . $e->getMessage());
+    public function qris(Payment $payment)
+    {
+        if ($payment->user_id !== auth()->id()) {
+            abort(403);
         }
+
+        if ($payment->status !== 'pending') {
+            return redirect()->route('client.index')->with('info', 'This payment has already been processed.');
+        }
+
+        return view('client.checkout.qris', compact('payment'));
     }
 
     public function success(Request $request)
@@ -191,5 +180,27 @@ class CheckoutController extends Controller
         }
 
         return response()->json(['message' => 'Webhook processed']);
+    }
+
+    public function cancel(Payment $payment)
+    {
+        if ($payment->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($payment->status === 'pending') {
+            $payment->update(['status' => 'failed']);
+        }
+
+        return redirect()->route('client.plans.index')->with('success', 'Pembayaran dibatalkan. Silakan pilih paket lain.');
+    }
+
+    public function status(Payment $payment)
+    {
+        if ($payment->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        return response()->json(['status' => $payment->status]);
     }
 }

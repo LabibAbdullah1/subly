@@ -13,6 +13,7 @@ class Chat extends Model
         'user_id',
         'is_admin',
         'message',
+        'image_path',
         'is_read',
     ];
 
@@ -20,6 +21,15 @@ class Chat extends Model
         'is_admin' => 'boolean',
         'is_read' => 'boolean',
     ];
+
+    protected static function booted()
+    {
+        static::deleted(function ($chat) {
+            if ($chat->image_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($chat->image_path);
+            }
+        });
+    }
 
     public function user()
     {

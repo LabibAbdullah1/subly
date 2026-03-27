@@ -21,10 +21,13 @@ class ChatController extends Controller
 
     public function show(User $user)
     {
-        // Auto-delete read messages older than 24 hours
+        // Auto-delete read messages older than 24 hours (with image cleanup)
         \App\Models\Chat::where('is_read', true)
             ->where('created_at', '<', now()->subDay())
-            ->delete();
+            ->get()
+            ->each(function($chat) {
+                $chat->delete();
+            });
 
         $chats = $user->chats()->oldest()->get();
         
@@ -36,19 +39,43 @@ class ChatController extends Controller
 
     public function store(Request $request, User $user)
     {
-        $request->validate(['message' => 'required|string']);
+        try {
+            $request->validate([
+                'message' => 'nullable|string',
+                'image' => 'nullable|image|max:10240',
+            ]);
 
-        $chat = $user->chats()->create([
-            'message' => $request->message,
-            'is_admin' => true,
-        ]);
+            if (!$request->message && !$request->hasFile('image')) {
+                return response()->json(['error' => 'Message or image required.'], 422);
+            }
 
-        return response()->json($chat);
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('chats', 'public');
+            }
+
+            $chat = $user->chats()->create([
+                'message' => $request->message ?? '',
+                'image_path' => $imagePath,
+                'is_admin' => true,
+            ]);
+
+            return response()->json($chat);
+        } catch (\Exception $e) {
+            \Log::error('Admin chat store error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy(Chat $chat)
     {
-        $chat->delete();
-        return response()->json(['success' => true]);
+        try {
+            // Image deletion is now handled automatically by the Chat model's deleted event
+            $chat->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            \Log::error('Admin chat delete error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

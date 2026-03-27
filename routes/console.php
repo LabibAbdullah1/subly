@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 
 use Illuminate\Support\Facades\Schedule;
 Schedule::command('deployments:cleanup')->daily();
+Schedule::command('payments:cleanup')->daily();
