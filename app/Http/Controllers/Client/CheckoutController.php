@@ -85,7 +85,7 @@ class CheckoutController extends Controller
             // Immediately extend subdomain if this is a renewal
             if ($renewSubdomainId) {
                 $subdomainToRenew = \App\Models\Subdomain::find($renewSubdomainId);
-                if ($subdomainToRenew && $subdomainToRenew->user_id === $user->id) {
+                if ($subdomainToRenew && $subdomainToRenew->user_id == $user->id) {
                     $currentExpiry = $subdomainToRenew->expired_at && $subdomainToRenew->expired_at->isFuture() 
                         ? $subdomainToRenew->expired_at 
                         : now();
@@ -119,7 +119,7 @@ class CheckoutController extends Controller
 
     public function qris(Payment $payment)
     {
-        if ($payment->user_id !== auth()->id()) {
+        if ($payment->user_id != auth()->id()) {
             abort(403);
         }
 
@@ -184,7 +184,7 @@ class CheckoutController extends Controller
 
     public function cancel(Payment $payment)
     {
-        if ($payment->user_id !== auth()->id()) {
+        if ($payment->user_id != auth()->id()) {
             abort(403);
         }
 
@@ -197,7 +197,7 @@ class CheckoutController extends Controller
 
     public function status(Payment $payment)
     {
-        if ($payment->user_id !== auth()->id()) {
+        if ($payment->user_id != auth()->id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

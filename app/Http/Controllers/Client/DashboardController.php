@@ -26,7 +26,7 @@ class DashboardController extends Controller
     public function portal(\App\Models\Subdomain $subdomain)
     {
         $user = Auth::user();
-        if ($subdomain->user_id !== $user->id) {
+        if ($subdomain->user_id != $user->id) {
             abort(403);
         }
 

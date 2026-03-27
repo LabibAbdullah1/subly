@@ -70,7 +70,7 @@ class ChatController extends Controller
     public function destroy(Chat $chat)
     {
         try {
-            if ($chat->user_id !== auth()->id() || $chat->is_admin) {
+            if ($chat->user_id != auth()->id() || $chat->is_admin) {
                 return response()->json(['error' => 'Unauthorized.'], 403);
             }
 
