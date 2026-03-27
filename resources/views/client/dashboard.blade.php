@@ -28,7 +28,7 @@
             @endif
 
             <!-- 1. Subscription Widget -->
-            @forelse($unusedPayments as $payment)
+            @foreach($unusedPayments as $payment)
                 @php $plan = $payment->plan; @endphp
                 <div class="glass-panel overflow-hidden relative group hover-lift mb-6">
                     <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl group-hover:bg-primary-500/20 transition-all duration-700 pointer-events-none"></div>
@@ -58,23 +58,7 @@
                         </div>
                     </div>
                 </div>
-            @empty
-                <div class="glass-panel overflow-hidden relative group hover-lift mb-6">
-                    <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl group-hover:bg-primary-500/20 transition-all duration-700 pointer-events-none"></div>
-                    <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center relative z-10">
-                        <div>
-                            <div class="flex items-center gap-3 mb-1">
-                                <h3 class="text-xl font-semibold text-gray-100">No Active Plan</h3>
-                            </div>
-                        </div>
-                        <div class="mt-4 md:mt-0">
-                            <a href="{{ route('client.plans.index') }}" class="btn-primary shadow-[0_0_15px_rgba(94,106,210,0.3)]">
-                                View Hosting Plans
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endforelse
+            @endforeach
 
             <!-- 2. Start Project & Hosted Environments -->
             @if($subdomains->count() > 0 && $available_slots > $subdomains->count())

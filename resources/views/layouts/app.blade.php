@@ -123,7 +123,7 @@
         </div>
 
         <!-- Global Toast Container -->
-        <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+        <div id="toast-container" class="fixed top-20 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
         <style>
             @keyframes fade-in {
@@ -140,7 +140,26 @@
                 @apply transition-transform duration-300 hover:-translate-y-1;
             }
             .toast {
-                @apply bg-gray-900 border border-gray-800 text-gray-100 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 pointer-events-auto animate-fade-in;
+                @apply bg-gray-900/60 backdrop-blur-xl border border-white/10 text-gray-100 pr-6 pl-9 py-4 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-row items-center gap-5 whitespace-nowrap pointer-events-auto relative overflow-hidden transition-all duration-300;
+                animation: toast-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+            .toast-progress {
+                @apply absolute bottom-0 left-0 h-1 bg-primary-500/50;
+                animation: toast-progress 3s linear forwards;
+            }
+            @keyframes toast-in {
+                from { opacity: 0; transform: translateX(50px) scale(0.9); }
+                to { opacity: 1; transform: translateX(0) scale(1); }
+            }
+            @keyframes toast-progress {
+                from { width: 100%; }
+                to { width: 0%; }
+            }
+            .toast-out {
+                animation: toast-out 0.4s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+            }
+            @keyframes toast-out {
+                to { opacity: 0; transform: translateX(20px) scale(0.95); }
             }
         </style>
 
@@ -154,11 +173,16 @@
                     ? '<svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
                     : '<svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>';
 
-                toast.innerHTML = `${icon} <span class="text-sm font-medium">${message}</span>`;
+                toast.innerHTML = `
+                    <div class="absolute inset-0 bg-gradient-to-r ${type === 'success' ? 'from-primary-500/5' : 'from-red-500/5'} to-transparent opacity-50 pointer-events-none"></div>
+                    ${icon} 
+                    <span class="text-sm font-semibold tracking-wide relative z-10">${message}</span>
+                    <div class="toast-progress ${type === 'success' ? 'bg-primary-500' : 'bg-red-500'}"></div>
+                `;
                 container.appendChild(toast);
 
                 setTimeout(() => {
-                    toast.classList.add('opacity-0', 'translate-y-2');
+                    toast.classList.add('toast-out');
                     setTimeout(() => toast.remove(), 500);
                 }, 3000);
             };

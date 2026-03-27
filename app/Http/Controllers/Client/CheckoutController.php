@@ -98,8 +98,13 @@ class CheckoutController extends Controller
             return redirect()->route('client.checkout.success')->with('success', 'Plan purchased successfully using a voucher!');
         }
 
-        // Manual QRIS logic: Generate a unique 3-digit code
-        $uniqueCode = rand(100, 999);
+        // Manual QRIS logic: Reuse last unique code for user to prevent "fishing" for smaller codes
+        $lastPaymentWithCode = Payment::where('user_id', $user->id)
+            ->whereNotNull('unique_code')
+            ->latest()
+            ->first();
+
+        $uniqueCode = $lastPaymentWithCode ? $lastPaymentWithCode->unique_code : rand(100, 999);
         $totalAmount = $grossAmount + $uniqueCode;
 
         // Save pending payment record
