@@ -1,4 +1,4 @@
-<aside class="w-64 flex-shrink-0 bg-gray-900/50 backdrop-blur-md border-r border-gray-800 flex flex-col z-40 fixed sm:relative h-full transition-transform duration-300 ease-in-out sm:translate-x-0"
+<aside class="w-64 flex-shrink-0 bg-gray-900/50 backdrop-blur-md border-r border-gray-800 flex flex-col z-40 fixed xl:relative h-full transition-transform duration-300 ease-in-out xl:translate-x-0"
        :class="{'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen}">
     
     <!-- Logo -->

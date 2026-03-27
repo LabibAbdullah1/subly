@@ -28,7 +28,7 @@
             @include('layouts.navigation')
             
             <!-- Mobile Overlay -->
-            <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black/50 z-30 sm:hidden" style="display: none;"></div>
+            <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black/50 z-30 xl:hidden" style="display: none;"></div>
 
             <!-- Page Content Area -->
             <div class="flex-1 flex flex-col h-screen overflow-hidden relative z-10 w-full backdrop-blur-[2px]">
@@ -36,13 +36,13 @@
                 <!-- Top Header -->
                 <header class="h-16 border-b border-gray-800 bg-gray-900/30 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 shrink-0 relative z-20">
                     <div class="flex items-center">
-                        <button @click="sidebarOpen = !sidebarOpen" class="sm:hidden text-gray-400 hover:text-white focus:outline-none p-2 mr-2">
+                        <button @click="sidebarOpen = !sidebarOpen" class="xl:hidden text-gray-400 hover:text-white focus:outline-none p-2 mr-2">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </button>
                         
                         <!-- Breadcrumb/Title placeholder -->
                         @isset($header)
-                            <div class="hidden sm:block text-sm font-medium text-gray-400">
+                            <div class="hidden xl:block text-sm font-medium text-gray-400">
                                 {{ $header }}
                             </div>
                         @endisset
@@ -110,7 +110,7 @@
                 </header>
 
                 @isset($header)
-                    <div class="px-4 sm:px-6 lg:px-8 py-5 border-b border-gray-800/60 bg-transparent flex flex-col gap-2 shrink-0 sm:hidden">
+                    <div class="px-4 sm:px-6 lg:px-8 py-5 border-b border-gray-800/60 bg-transparent flex flex-col gap-2 shrink-0 xl:hidden">
                         {{ $header }}
                     </div>
                 @endisset

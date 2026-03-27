@@ -8,8 +8,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-6 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             @if (session('success'))
                 <div class="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-lg flex items-center gap-3 animate-fade-in" role="alert">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -32,26 +32,26 @@
                 @php $plan = $payment->plan; @endphp
                 <div class="glass-panel overflow-hidden relative group hover-lift mb-6">
                     <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl group-hover:bg-primary-500/20 transition-all duration-700 pointer-events-none"></div>
-                    <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center relative z-10">
-                        <div>
+                    <div class="p-4 sm:p-6 flex flex-col lg:flex-row justify-between items-start lg:items-center relative z-10 gap-4">
+                        <div class="w-full lg:w-auto">
                             <div class="flex items-center gap-3 mb-1">
-                                <h3 class="text-xl font-semibold text-gray-100">{{ $plan->name }}</h3>
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]">Active</span>
+                                <h3 class="text-lg sm:text-xl font-semibold text-gray-100">{{ $plan->name }}</h3>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]">Active</span>
                             </div>
-                            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3">
-                                <p class="text-sm text-gray-400 flex items-center gap-1">
+                            <div class="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2 mt-3">
+                                <p class="text-xs sm:text-sm text-gray-400 flex items-center gap-1.5 font-medium">
                                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                     Expires: <span class="text-gray-200">{{ $payment->created_at->addMonths($plan->duration_months)->format('d M Y') }}</span>
                                 </p>
-                                <p class="text-sm text-gray-400 flex items-center gap-1">
+                                <p class="text-xs sm:text-sm text-gray-400 flex items-center gap-1.5 font-medium">
                                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    Time left: <span class="text-gray-200">{{ max(0, (int)now()->startOfDay()->diffInDays($payment->created_at->addMonths($plan->duration_months)->startOfDay(), false)) }} days</span>
+                                    Time left: <span class="text-gray-200 font-bold text-primary-400">{{ max(0, (int)now()->startOfDay()->diffInDays($payment->created_at->addMonths($plan->duration_months)->startOfDay(), false)) }} days</span>
                                 </p>
                             </div>
                         </div>
-                        <div class="mt-4 md:mt-0">
+                        <div class="w-full lg:w-auto mt-2 lg:mt-0">
                             @if($loop->first)
-                                <a href="{{ route('client.plans.index') }}" class="btn-primary shadow-[0_0_15px_rgba(94,106,210,0.3)]">
+                                <a href="{{ route('client.plans.index') }}" class="btn-primary w-full sm:w-auto shadow-[0_0_15px_rgba(94,106,210,0.3)] block text-center">
                                     Purchase Another Plan
                                 </a>
                             @endif
@@ -78,21 +78,21 @@
 
             <!-- 2. Start Project & Hosted Environments -->
             @if($subdomains->count() > 0 && $available_slots > $subdomains->count())
-                <div class="glass-panel p-6 mb-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-primary-500/30 shadow-[0_0_20px_rgba(94,106,210,0.1)]">
+                <div class="glass-panel p-4 sm:p-6 mb-6 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6 border border-primary-500/30 shadow-[0_0_20px_rgba(94,106,210,0.1)]">
                     <div class="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-transparent pointer-events-none"></div>
-                    <div class="relative z-10">
-                        <h3 class="text-xl font-bold text-gray-100 mb-1 flex items-center gap-2">
+                    <div class="relative z-10 w-full lg:w-auto text-center lg:text-left">
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-100 mb-1 flex items-center justify-center lg:justify-start gap-2">
                             <svg class="w-5 h-5 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
                             Claim Your Next Subdomain
                         </h3>
-                        <p class="text-gray-400 text-sm">You have <span class="text-white font-bold">{{ $available_slots - $subdomains->count() }}</span> unused subdomain slot(s) available.</p>
+                        <p class="text-gray-400 text-xs sm:text-sm">You have <span class="text-white font-bold">{{ $available_slots - $subdomains->count() }}</span> unused subdomain slot(s) available.</p>
                     </div>
-                    <div class="relative z-10 w-full md:w-auto mt-2 md:mt-0">
+                    <div class="relative z-10 w-full lg:w-auto mt-2 lg:mt-0">
                         <form action="{{ route('client.subdomains.store') }}" method="POST" class="flex flex-col sm:flex-row items-center gap-3">
                             @csrf
-                            <div class="relative group flex items-center bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 w-full sm:w-64 focus-within:ring-1 focus-within:ring-primary-500/50 focus-within:border-primary-500 transition-all">
+                            <div class="relative group flex items-center bg-gray-900 border border-gray-800 rounded-lg px-3 py-2.5 w-full sm:w-64 focus-within:ring-1 focus-within:ring-primary-500/50 focus-within:border-primary-500 transition-all">
                                 <input type="text" name="name" class="bg-transparent border-none p-0 focus:ring-0 text-gray-100 font-mono text-sm w-full" placeholder="project-name" required pattern="[a-zA-Z0-9\-_]+">
-                                <span class="text-gray-500 font-mono text-sm pl-2 ml-2 border-l border-gray-800">{{ config('app.subdomain_suffix') }}</span>
+                                <span class="text-gray-500 font-mono text-[10px] sm:text-xs pl-2 ml-2 border-l border-gray-800 shrink-0">{{ config('app.subdomain_suffix') }}</span>
                             </div>
                             <button type="submit" class="btn-primary py-2.5 px-6 shadow-[0_0_15px_rgba(94,106,210,0.3)] whitespace-nowrap w-full sm:w-auto hover:scale-[1.02] transition-transform">Claim</button>
                         </form>
@@ -116,24 +116,24 @@
                                 <div class="p-2 rounded-lg {{ $sub->status == 'active' ? 'bg-green-500/10 text-green-400 shadow-[0_0_10px_rgba(34,197,94,0.1)]' : 'bg-red-500/10 text-red-400' }}">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
                                 </div>
-                                <h3 class="text-lg font-bold text-gray-100 truncate flex-1">
+                                <h3 class="text-lg font-bold text-gray-100 break-all flex-1">
                                     <a href="https://{{ $sub->full_domain }}" target="_blank" class="hover:text-primary-400 transition-colors">{{ $sub->full_domain }}</a>
                                 </h3>
                             </div>
                             
                             <div class="space-y-3 mb-6 flex-1 relative z-10">
-                                <div class="flex justify-between items-center text-sm bg-gray-900/50 p-2 rounded-lg border border-gray-800/50">
-                                    <span class="text-gray-400 font-medium">Status</span>
-                                    <span class="{{ $sub->status == 'active' ? 'text-green-400 shadow-[0_0_10px_rgba(34,197,94,0.1)] bg-green-500/10' : 'text-red-400 bg-red-500/10' }} font-semibold px-2 py-0.5 rounded text-xs uppercase tracking-wider">{{ ucfirst($sub->status) }}</span>
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm bg-gray-900/50 p-3 rounded-xl border border-gray-800/50 gap-1.5 sm:gap-4">
+                                    <span class="text-gray-400 font-medium text-xs uppercase tracking-wider">Status</span>
+                                    <span class="{{ $sub->status == 'active' ? 'text-green-400 shadow-[0_0_10px_rgba(34,197,94,0.1)] bg-green-500/10' : 'text-red-400 bg-red-500/10' }} font-semibold px-2.5 py-1 rounded-lg text-[10px] uppercase tracking-wider w-fit border border-current/10">{{ ucfirst($sub->status) }}</span>
                                 </div>
-                                <div class="flex justify-between items-center text-sm bg-gray-900/50 p-2 rounded-lg border border-gray-800/50">
-                                    <span class="text-gray-400 font-medium">Expiry</span>
-                                    <span class="text-gray-200">{{ $sub->expired_at ? $sub->expired_at->format('d M Y') : 'Lifetime' }}</span>
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm bg-gray-900/50 p-3 rounded-xl border border-gray-800/50 gap-1.5 sm:gap-4">
+                                    <span class="text-gray-400 font-medium text-xs uppercase tracking-wider">Expiry</span>
+                                    <span class="text-gray-200 font-medium sm:text-right">{{ $sub->expired_at ? $sub->expired_at->format('d M Y') : 'Lifetime' }}</span>
                                 </div>
                                 @php $latest = $sub->deployments->last(); @endphp
-                                <div class="flex justify-between items-center text-sm bg-gray-900/50 p-2 rounded-lg border border-gray-800/50">
-                                    <span class="text-gray-400 font-medium">Latest Build</span>
-                                    <span class="text-gray-200">{{ $latest ? 'v'.$latest->version : 'None' }}</span>
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm bg-gray-900/50 p-3 rounded-xl border border-gray-800/50 gap-1.5 sm:gap-4">
+                                    <span class="text-gray-400 font-medium text-xs uppercase tracking-wider">Latest Build</span>
+                                    <span class="text-gray-200 font-medium sm:text-right">{{ $latest ? 'v'.$latest->version : 'None' }}</span>
                                 </div>
                             </div>
 
@@ -215,20 +215,20 @@
             <!-- Database Info -->
             @if($subdomains->count() > 0)
                 <div class="glass-panel overflow-hidden">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-gray-800/50 bg-gray-900/30 gap-4">
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center p-4 sm:p-6 border-b border-gray-800/50 bg-gray-900/30 gap-4">
                         <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
                             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                             Database Credentials
                         </h3>
-                        <a href="https://db.subly.my.id" target="_blank" class="btn-secondary text-xs py-1.5 px-3 flex items-center gap-2 border-gray-700 hover:bg-gray-700/50 shadow-lg shadow-gray-900/20">
+                        <a href="https://db.subly.my.id" target="_blank" class="btn-secondary w-full lg:w-auto text-xs py-2 px-4 flex items-center justify-center gap-2 border-gray-700 hover:bg-gray-700/50 shadow-lg shadow-gray-900/20 transition-all">
                             <svg class="w-4 h-4 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
                             <span>Access Database (phpMyAdmin)</span>
                         </a>
                     </div>
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="p-4 sm:p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                             @foreach($subdomains as $sub)
                                 @foreach($sub->userDatabases as $db)
                                     <div class="relative bg-gray-900/80 rounded-xl p-5 border border-gray-800 shadow-lg group hover:border-gray-700 transition-colors">
@@ -241,39 +241,39 @@
                                             {{ $sub->full_domain }}
                                         </h4>
                                         <ul class="text-sm space-y-3">
-                                            <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800 group/item">
-                                                <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">DB Name</span> 
-                                                <div class="flex items-center gap-2">
-                                                    <span class="text-gray-300 font-mono text-[13px]">{{ $db->db_name }}</span>
-                                                    <button onclick="copyToClipboard('{{ $db->db_name }}', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200" title="Copy DB Name">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <li class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-950 px-4 py-3 rounded-xl border border-gray-800 group/item gap-2">
+                                                <span class="text-gray-500 text-[10px] uppercase tracking-wider font-bold">DB Name</span> 
+                                                <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                                                    <span class="text-gray-300 font-mono text-sm break-words overflow-hidden text-right">{{ $db->db_name }}</span>
+                                                    <button onclick="copyToClipboard('{{ $db->db_name }}', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200 flex-shrink-0" title="Copy DB Name">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                                     </button>
                                                 </div>
                                             </li>
-                                            <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800 group/item">
-                                                <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">User</span> 
-                                                <div class="flex items-center gap-2">
-                                                    <span class="text-gray-300 font-mono text-[13px]">{{ $db->db_user }}</span>
-                                                    <button onclick="copyToClipboard('{{ $db->db_user }}', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200" title="Copy Username">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <li class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-950 px-4 py-3 rounded-xl border border-gray-800 group/item gap-2">
+                                                <span class="text-gray-500 text-[10px] uppercase tracking-wider font-bold">User</span> 
+                                                <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                                                    <span class="text-gray-300 font-mono text-sm break-words overflow-hidden text-right">{{ $db->db_user }}</span>
+                                                    <button onclick="copyToClipboard('{{ $db->db_user }}', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200 flex-shrink-0" title="Copy Username">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                                     </button>
                                                 </div>
                                             </li>
-                                            <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800 group/item">
-                                                <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">Password</span> 
-                                                <div class="flex items-center gap-2">
-                                                    <span class="text-gray-300 font-mono text-[13px]">{{ $db->db_password }}</span>
-                                                    <button onclick="copyToClipboard('{{ $db->db_password }}', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200" title="Copy Password">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <li class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-950 px-4 py-3 rounded-xl border border-gray-800 group/item gap-2">
+                                                <span class="text-gray-500 text-[10px] uppercase tracking-wider font-bold">Password</span> 
+                                                <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                                                    <span class="text-gray-300 font-mono text-sm break-words overflow-hidden text-right">{{ $db->db_password }}</span>
+                                                    <button onclick="copyToClipboard('{{ $db->db_password }}', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200 flex-shrink-0" title="Copy Password">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                                     </button>
                                                 </div>
                                             </li>
-                                            <li class="flex justify-between items-center bg-gray-950 px-3 py-1.5 rounded-md border border-gray-800 group/item">
-                                                <span class="text-gray-500 text-xs uppercase tracking-wider font-semibold">Host</span> 
-                                                <div class="flex items-center gap-2">
-                                                    <span class="text-gray-300 font-mono text-[13px]">localhost</span>
-                                                    <button onclick="copyToClipboard('localhost', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200" title="Copy Host">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <li class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-950 px-4 py-3 rounded-xl border border-gray-800 group/item gap-2">
+                                                <span class="text-gray-500 text-[10px] uppercase tracking-wider font-bold">Host</span> 
+                                                <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                                                    <span class="text-gray-300 font-mono text-sm break-words overflow-hidden text-right">localhost</span>
+                                                    <button onclick="copyToClipboard('localhost', this)" class="text-gray-600 hover:text-primary-400 transition-all duration-200 flex-shrink-0" title="Copy Host">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="copy-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path class="check-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                                     </button>
                                                 </div>
                                             </li>
