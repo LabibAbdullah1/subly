@@ -38,7 +38,7 @@
             </div>
             
             <div x-data="{ 
-                imageUrl: '{{ $qrisImage && strpos($qrisImage, 'images/') === 0 ? asset($qrisImage) : asset('storage/' . $qrisImage) }}',
+                imageUrl: '{{ $qrisImage && (strpos($qrisImage, 'images/') === 0 || strpos($qrisImage, 'uploads/') === 0) ? asset($qrisImage) : asset('storage/' . $qrisImage) }}',
                 fileChosen(event) {
                     const file = event.target.files[0];
                     if (file) {

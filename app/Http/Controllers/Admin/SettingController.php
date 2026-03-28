@@ -25,26 +25,29 @@ class SettingController extends Controller
             if ($request->hasFile('qris_image')) {
                 $file = $request->file('qris_image');
                 
-                // Ensure the settings directory exists in public disk (essential for some hosting)
-                if (!Storage::disk('public')->exists('settings')) {
-                    Storage::disk('public')->makeDirectory('settings', 0755, true);
+                // Define the public uploads path - direct access without symlinks
+                $uploadPath = public_path('uploads/settings');
+                
+                // Ensure the directory exists
+                if (!\Illuminate\Support\Facades\File::isDirectory($uploadPath)) {
+                    \Illuminate\Support\Facades\File::makeDirectory($uploadPath, 0755, true, true);
                 }
 
-                $path = $file->store('settings', 'public');
+                $filename = 'qris_' . time() . '.' . $file->getClientOriginalExtension();
+                $file->move($uploadPath, $filename);
                 
-                if (!$path) {
-                    throw new \Exception('Laravel was unable to save the file to the disk.');
-                }
+                $dbPath = 'uploads/settings/' . $filename;
                 
                 // Delete old file if exists and not the default one
                 $oldPath = Setting::get('qris_image_path');
-                if ($oldPath && $oldPath !== 'images/qris_static.png') {
-                    if (Storage::disk('public')->exists($oldPath)) {
-                        Storage::disk('public')->delete($oldPath);
+                if ($oldPath && $oldPath !== 'images/qris_static.png' && strpos($oldPath, 'uploads/') === 0) {
+                    $fullOldPath = public_path($oldPath);
+                    if (\Illuminate\Support\Facades\File::exists($fullOldPath)) {
+                        \Illuminate\Support\Facades\File::delete($fullOldPath);
                     }
                 }
 
-                Setting::set('qris_image_path', $path);
+                Setting::set('qris_image_path', $dbPath);
 
                 return back()->with('success', 'QRIS image updated successfully.');
             }

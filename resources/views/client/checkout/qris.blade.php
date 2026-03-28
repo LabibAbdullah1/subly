@@ -43,7 +43,9 @@
                 <!-- QRIS Image -->
                 @php
                     $qrisImage = \App\Models\Setting::get('qris_image_path', 'images/qris_static.png');
-                    $qrisUrl = strpos($qrisImage, 'images/') === 0 ? asset($qrisImage) : asset('storage/' . $qrisImage);
+                    $qrisUrl = ($qrisImage && (strpos($qrisImage, 'images/') === 0 || strpos($qrisImage, 'uploads/') === 0)) 
+                        ? asset($qrisImage) 
+                        : asset('storage/' . $qrisImage);
                 @endphp
                 <div class="relative group mb-8">
                     <div class="absolute -inset-1 bg-gradient-to-r from-primary-500 to-purple-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
