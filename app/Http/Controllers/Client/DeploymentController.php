@@ -72,6 +72,12 @@ class DeploymentController extends Controller
 
         // Find the specific plan for this subdomain to check limits
         $payment = $subdomain->payments()->where('status', 'success')->latest()->first();
+        
+        // Fallback: If no payment linked directly to subdomain, find user's latest active payment
+        if (!$payment) {
+            $payment = $user->payments()->with('plan')->where('status', 'success')->latest()->first();
+        }
+
         $plan = $payment ? $payment->plan : null;
 
         if (!$plan) {
