@@ -32,5 +32,18 @@ Route::middleware('auth')->prefix('notifications')->name('notifications.')->grou
     Route::delete('/{id}', [\App\Http\Controllers\Client\NotificationController::class, 'destroy'])->name('destroy');
 });
 
+// Temporary setup route for production (can be visited by admin to fix storage link)
+Route::get('/link-storage', function () {
+    if (auth()->check() && auth()->user()->role === 'Admin') {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('storage:link');
+            return "Storage link created successfully!";
+        } catch (\Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
+    }
+    abort(403);
+});
+
 require __DIR__.'/auth.php';
 

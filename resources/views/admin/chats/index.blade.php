@@ -59,7 +59,7 @@
                                 <div class="flex flex-col" :class="msg.is_admin ? 'items-end' : 'items-start'">
                                     <template x-if="msg.image_path">
                                         <div class="p-1 rounded-2xl shadow-md overflow-hidden bg-white/5 border border-white/10 mb-1">
-                                            <img :src="'/storage/' + msg.image_path" class="max-w-full h-auto rounded-xl max-h-60 object-contain cursor-pointer" @click="window.open('/storage/' + msg.image_path, '_blank')">
+                                            <img :src="'{{ asset('storage') }}/' + msg.image_path" class="max-w-full h-auto rounded-xl max-h-60 object-contain cursor-pointer" @click="window.open('{{ asset('storage') }}/' + msg.image_path, '_blank')">
                                         </div>
                                     </template>
                                     <div class="px-4 py-2 rounded-2xl max-w-[85%] sm:max-w-sm text-sm shadow-md" x-show="msg.message"
