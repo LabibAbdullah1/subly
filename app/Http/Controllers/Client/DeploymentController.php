@@ -66,8 +66,8 @@ class DeploymentController extends Controller
 
         $subdomain = Subdomain::findOrFail($request->subdomain_id);
 
-        if ($request->user()->cannot('update', $subdomain)) {
-            abort(403);
+        if ($subdomain->user_id != Auth::id()) {
+            abort(403, 'Unauthorized access to this subdomain.');
         }
 
         // Find the specific plan for this subdomain to check limits
