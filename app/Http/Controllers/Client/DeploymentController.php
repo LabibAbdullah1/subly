@@ -64,16 +64,23 @@ class DeploymentController extends Controller
             return redirect()->back()->withErrors(['zip_file' => 'Daily deployment limit reached! (Max 3 deployments per day)']);
         }
 
-        // Ensure user has an active plan (a successful payment)
-        $hasActivePlan = $user->payments()->where('status', 'success')->exists();
-        if (!$hasActivePlan) {
-            return redirect()->route('client.plans.index')->withErrors(['subscription' => 'You must purchase a hosting plan before you can deploy any projects.']);
-        }
-
         $subdomain = Subdomain::findOrFail($request->subdomain_id);
 
         if ($request->user()->cannot('update', $subdomain)) {
             abort(403);
+        }
+
+        // Find the specific plan for this subdomain to check limits
+        $payment = $subdomain->payments()->where('status', 'success')->latest()->first();
+        $plan = $payment ? $payment->plan : null;
+
+        if (!$plan) {
+            return redirect()->back()->withErrors(['zip_file' => 'Could not detect an active subscription for this subdomain. Please ensure your plan is still active.']);
+        }
+
+        // Storage limit from plan
+        if ($request->file('zip_file')->getSize() > ($plan->max_storage_mb * 1024 * 1024)) {
+            return redirect()->back()->withErrors(['zip_file' => "File exceeds your plan storage limit of {$plan->max_storage_mb} MB."]);
         }
 
         // Spam prevention: Delete previous queued or processing deployments for this subdomain

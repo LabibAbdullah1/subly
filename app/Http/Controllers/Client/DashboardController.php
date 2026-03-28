@@ -32,7 +32,7 @@ class DashboardController extends Controller
 
         // Specifically for this subdomain
         $subdomain->load(['deployments', 'userDatabases', 'payments.plan']);
-        $payment = $subdomain->payments->first();
+        $payment = $subdomain->payments()->where('status', 'success')->latest()->first();
         $plan = $payment ? $payment->plan : null;
         
         $feedbacks = class_exists(\App\Models\Feedback::class) ? $user->feedback()->get()->keyBy('plan_id') : collect();

@@ -7,12 +7,9 @@ use App\Models\User;
 
 class DeploymentPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'Admin';
+        return true;
     }
 
     /**
