@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
 
-            Route::middleware(['web', 'auth', 'pending_payment'])
+            Route::middleware(['web', 'auth', 'verified', 'pending_payment'])
                 ->prefix('dashboard')
                 ->name('client.')
                 ->group(base_path('routes/client.php'));
