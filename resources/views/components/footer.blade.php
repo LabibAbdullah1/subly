@@ -50,7 +50,7 @@
                 <h3 class="text-sm font-semibold text-gray-100 tracking-wider uppercase mb-4">Support</h3>
                 <ul class="space-y-3">
                     <li><a href="https://portofolio-labib.vercel.app" class="text-gray-400 hover:text-primary-400 transition-colors text-sm">Developers</a></li>
-                    <li><a href="{{ route('messages') }}" class="text-gray-400 hover:text-primary-400 transition-colors text-sm">Live Chat</a></li>
+                    <li><a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-primary-400 transition-colors text-sm">Live Chat</a></li>
                 </ul>
             </div>
 
