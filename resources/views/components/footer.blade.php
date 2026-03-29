@@ -9,11 +9,8 @@
             <!-- Company Info -->
             <div class="space-y-4">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 group">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center transform group-hover:scale-105 transition-transform shadow-lg shadow-primary-500/20">
-                        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 9h19M2.5 15h19M12 2c3 0 6 4.477 6 10s-3 10-6 10-6-4.477-6-10 3-10 6-10z"></path>
-                        </svg>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center">
+                        <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
                     </div>
                     <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-400">
                         {{ config('app.name', 'Subly') }}

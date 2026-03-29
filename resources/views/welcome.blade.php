@@ -32,11 +32,8 @@
             <!-- Header -->
             <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center shadow-[0_0_15px_rgba(94,106,210,0.4)]">
-                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 9h19M2.5 15h19M12 2c3 0 6 4.477 6 10s-3 10-6 10-6-4.477-6-10 3-10 6-10z"></path>
-                        </svg>
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+                        <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
                     </div>
                     <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Subly</span>
                 </div>

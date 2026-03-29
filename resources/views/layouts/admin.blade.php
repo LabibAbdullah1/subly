@@ -32,10 +32,8 @@
                 <!-- Logo -->
                 <div class="h-16 flex items-center px-6 border-b border-gray-800 shrink-0">
                     <a href="{{ route('admin.index') }}" class="flex items-center gap-2 group">
-                        <div class="w-8 h-8 rounded bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-all">
-                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
+                        <div class="w-8 h-8 rounded flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-all">
+                            <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
                         </div>
                         <span class="font-bold text-xl tracking-tight text-white group-hover:text-gray-200 transition-colors">Subly</span>
                     </a>

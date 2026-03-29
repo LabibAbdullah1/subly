@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Purchase Terms & Refund Policy - {{ config('app.name', 'Subly') }}</title>
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
         
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -27,11 +27,8 @@
                 <div class="flex justify-between h-20">
                     <div class="flex items-center">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 group">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center transform group-hover:scale-105 transition-all shadow-[0_0_15px_rgba(94,106,210,0.4)]">
-                                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 9h19M2.5 15h19M12 2c3 0 6 4.477 6 10s-3 10-6 10-6-4.477-6-10 3-10 6-10z"></path>
-                                </svg>
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center">
+                                <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
                             </div>
                             <span class="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
                                 {{ config('app.name', 'Subly') }}
@@ -76,26 +73,28 @@
 
                         <h2>1. Transaksi Pembelian</h2>
                         <p>Subly menyediakan paket berbasis langganan bulanan maupun tahunan. Semua paket ditagih di muka selama durasi yang dipilih saat proses pembayaran menggunakan gerbang pembayaran (Payment Gateway) resmi kami. Dengan melakukan pembelian, Anda menyetujui biaya otomatis yang tidak dapat dikembalikan tersebut sepanjang periode aktif.</p>
-
+                        <br>
                         <h2>2. Kelayakan Pengembalian Dana (Refund)</h2>
                         <p>Kami bangga dapat menyediakan platform yang stabil. Pada umumnya, pengembalian dana tidak kami layani. Akan tetapi, kami mungkin mengeluarkan pengembalian dana penuh atau sebagian dalam kasus pengecualian berikut:</p>
-                        <ul>
+                        <br>
+                        <ul class="list-decimal list-inside ml-4">
                             <li>Apabila sistem kami sepenuhnya gagal menyediakan server/layanan Anda dalam waktu 48 jam sejak pembayaran pertama berhasil divalidasi.</li>
                             <li>Terdapat kesalahan penagihan teknis yang mengakibatkan biaya ganda pada tagihan yang sama (bukti sah dari pihak bank wajib dilampirkan).</li>
                         </ul>
-
+                        <br>
                         <h2>3. Kewajiban Klien dan Risiko Keamanan</h2>
                         <p>Secara ketat, menjadi kewajiban klien untuk mengamankan aplikasi yang mereka sebarkan (deploy) di Subly. Jika klien—baik secara sengaja maupun akibat kelalaian—mengunggah file yang membahayakan node bersama kami, mendistribusikan malware, atau terlibat dalam kegiatan melanggar hukum, sistem peringatan otomatis kami akan langsung memutus instans tersebut serta menangguhkan akun terkait.</p>
                         <p>Dalam kasus khusus ini:</p>
-                        <ol>
+                        <br>
+                        <ol class="list-decimal list-inside ml-4">
                             <li>Akun pelapor akan diblokir secara permanen.</li>
                             <li>Semua data dan isi database klien akan dihapus total secara paksa guna melindungi keamanan klien lain pada peladen yang sama.</li>
                             <li><strong>Sama sekali tidak ada dana yang dikembalikan, baik itu bersifat pro-rata maupun bentuk kompensasi lain.</strong></li>
                         </ol>
-
+                        <br>
                         <h2>4. Sengketa & Chargeback</h2>
                         <p>Setiap pelaporan sengketa (dispute) pembayaran atau *chargeback* yang diajukan langsung kepada bank atau penyedia kartu kredit Anda tanpa lebih dulu menghubungi Tim Support kami, akan berakibat pada penangguhan langsung seluruh layanan aktif beserta penutupan kredensial akun secara permanen.</p>
-
+                        
                         <p class="text-sm text-gray-500 mt-12 pt-8 border-t border-gray-800">Dengan membeli paket dari Subly, Anda telah memberikan persetujuan digital untuk tunduk sepenuhnya di bawah Syarat Pembelian dan Pengembalian Dana ini.</p>
                     </div>
                 </div>
@@ -123,25 +122,28 @@
 
                         <h2>1. General Purchases</h2>
                         <p>Subly provides subscription-based plans. All plans are billed upfront for the duration indicated during the checkout process (e.g., monthly). Payment gateways used include official providers. By making a purchase, you agree to automatic, non-refundable charges for the selected duration.</p>
-
+                        <br>
                         <h2>2. Refund Eligibility</h2>
                         <p>We pride ourselves on providing a stable and reliable platform. Refunds are generally not accepted. However, we may issue a full or partial refund in the following exceptional cases:</p>
-                        <ul>
+                        <br>
+                        <ul class="list-decimal list-inside ml-4">
                             <li>If our system fails to provision your service entirely within 48 hours of successful payment validation.</li>
                             <li>If there are billing errors resulting in double charges (proof from the payment provider is strictly required).</li>
                         </ul>
-
+                        <br>
                         <h2>3. Client Liability and Security Disasters</h2>
                         <p>It is strictly the client's responsibility to secure their applications deployed on Subly. If a client mistakenly or deliberately uploads files that compromise the security of our shared nodes, distribute malware, or otherwise engage in illegal activities, our automated security sweeps will immediately terminate the deployed instance and suspend the user account.</p>
                         <p>In cases of termination due to client-induced security breaches or rule violations:</p>
-                        <ol>
+                        <br>
+                        <ol class="list-decimal list-inside ml-4">
                             <li>Your account will be permanently banned.</li>
                             <li>All associated data and databases will be forcefully wiped to protect other users on the node.</li>
                             <li><strong>Absolutely no refunds, prorated or otherwise, will be issued for the suspended service.</strong></li>
                         </ol>
-
+                        <br>
                         <h2>4. Chargebacks and Disputes</h2>
                         <p>Any dispute or chargeback initiated via your bank or credit card company without prior contact with our Support Team will result in the immediate suspension of all active services and permanent termination of your account credentials.</p>
+                        <br>
 
                         <p class="text-sm text-gray-500 mt-12 pt-8 border-t border-gray-800">By purchasing any plan from Subly, you digitally sign and consent to strictly follow these Purchase and Refund terms.</p>
                     </div>

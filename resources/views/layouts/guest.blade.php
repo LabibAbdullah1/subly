@@ -28,11 +28,8 @@
         <div class="relative z-10 w-full sm:max-w-md mt-6 px-8 py-10 bg-gray-900/60 backdrop-blur-xl border border-gray-800 shadow-2xl sm:rounded-2xl">
             <div class="flex justify-center mb-8">
                 <a href="/" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center shadow-[0_0_15px_rgba(94,106,210,0.5)] group-hover:scale-105 transition-transform duration-300">
-                        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 9h19M2.5 15h19M12 2c3 0 6 4.477 6 10s-3 10-6 10-6-4.477-6-10 3-10 6-10z"></path>
-                        </svg>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(94,106,210,0.5)] group-hover:scale-105 transition-transform duration-300">
+                        <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
                     </div>
                     <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 tracking-tight">Subly</span>
                 </a>

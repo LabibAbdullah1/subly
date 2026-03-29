@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Application Rules - {{ config('app.name', 'Subly') }}</title>
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
         
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -27,11 +27,8 @@
                 <div class="flex justify-between h-20">
                     <div class="flex items-center">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 group">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center transform group-hover:scale-105 transition-all shadow-[0_0_15px_rgba(94,106,210,0.4)]">
-                                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 9h19M2.5 15h19M12 2c3 0 6 4.477 6 10s-3 10-6 10-6-4.477-6-10 3-10 6-10z"></path>
-                                </svg>
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center">
+                                <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
                             </div>
                             <span class="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
                                 {{ config('app.name', 'Subly') }}
@@ -75,26 +72,28 @@
                         </div>
 
                         <h2>1. Konten Terlarang</h2>
+                        <br>
                         <p>Anda diizinkan menggunakan sistem kami, namun dilarang keras meng-hosting, menransmisikan, atau menyediakan konten yang berupa:</p>
-                        <ul>
+                        <ul class="list-disc list-inside ml-4">
                             <li>Malware, spyware, phishing, shell, atau jenis kode berbahaya apa pun.</li>
                             <li>Situs phishing atau skema penipuan.</li>
                             <li>Situs ilegal menurut hukum lokal dan internasional yang berlaku.</li>
                             <li>Konten dewasa, pornografi, atau materi eksplisit tanpa verifikasi usia dan kepatuhan yang memadai.</li>
                             <li>Materi yang melanggar hak cipta digital (Piracy).</li>
                         </ul>
-
+                        <br>
                         <h2>2. Penyalahgunaan Sumber Daya (Resource Abuse)</h2>
                         <p>Anda setuju untuk tidak secara sengaja menyalahgunakan sumber daya bersama pada server. Hal ini termasuk, namun tidak terbatas pada:</p>
-                        <ul>
+                        <ul class="list-disc list-inside ml-4 wrap-break-word">
                             <li>Menjalankan penambang mata uang kripto (Cryptocurrency, misalnya penambangan server jarak jauh).</li>
                             <li>Alat serangan DDoS yang disengaja atau pemindai (scanner) jaringan publik.</li>
                             <li>Proses CPU atau IO berkelanjutan yang secara sengaja ditujukan untuk menurunkan rasio performa beban pengguna lain yang ada di node tersebut.</li>
                         </ul>
+                        <br>
 
                         <h2>3. Panduan Keamanan</h2>
                         <p>Klien diharapkan mandiri menjaga keamanan infrastruktur aplikasi mereka sendiri:</p>
-                        <ul>
+                        <ul class="list-disc list-inside ml-4">
                             <li>Selalu perbarui dependensi paket dan kerangka kerja (framework) yang terhubung ke platform kami untuk menambal celah keamanan.</li>
                             <li>Jangan menyimpan kata sandi teks biasa atau kunci API rahasia yang tidak dienkripsi di dalam basis data Anda.</li>
                             <li>Segera laporkan kerentanan keamanan yang ditemukan pada infrastruktur kami melalui Live Chat Support, alih-alih mengeksploitasinya secara sepihak.</li>
@@ -125,25 +124,27 @@
 
                         <h2>1. Prohibited Content</h2>
                         <p>You may use our systems, but you may not host, transmit, or otherwise make available any content that is:</p>
-                        <ul>
+                        <ul class="list-disc list-inside ml-4">
                             <li>Malware, spyware, phishing, shells, or malicious code of any kind.</li>
                             <li>Phishing sites or fraudulent schemes.</li>
                             <li>Illegal under applicable local and international laws.</li>
                             <li>Adult content, pornography, or explicit material without proper age verification and compliance.</li>
                             <li>Copyright infringing material (Piracy).</li>
                         </ul>
+                        <br>
 
                         <h2>2. Resource Abuse</h2>
                         <p>You agree not to deliberately abuse the shared resources of the server. This includes, but is not limited to:</p>
-                        <ul>
+                        <ul class="list-disc list-inside ml-4 wrap-break-word">
                             <li>Running cryptocurrency miners (e.g., remote server mining).</li>
                             <li>Deliberate DDoS attack tools or public network scanners.</li>
                             <li>Sustained CPU or IO processes that intentionally degrade the performance load ratio of other users on the node.</li>
                         </ul>
+                        <br>
 
                         <h2>3. Security Guidelines</h2>
                         <p>Clients are expected to independently maintain the security infrastructure of their applications:</p>
-                        <ul>
+                        <ul class="list-disc list-inside ml-4">
                             <li>Always update package dependencies and frameworks connected to our platform to patch security holes.</li>
                             <li>Do not store plaintext passwords or sensitive API keys unencrypted inside your database.</li>
                             <li>Immediately report any discovered security weaknesses in our infrastructure to us via our Live Chat Support, rather than unilaterally exploiting them.</li>
