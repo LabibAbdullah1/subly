@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Subly') }} | Admin Dashboard</title>
-        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('favicon-v2.png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,7 +33,7 @@
                 <div class="h-16 flex items-center px-6 border-b border-gray-800 shrink-0">
                     <a href="{{ route('admin.index') }}" class="flex items-center gap-2 group">
                         <div class="w-8 h-8 rounded flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-all">
-                            <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
+                            <img type="image/png" src="{{ asset('favicon-v2.png') }}" alt="Subly">
                         </div>
                         <span class="font-bold text-xl tracking-tight text-white group-hover:text-gray-200 transition-colors">Subly</span>
                     </a>

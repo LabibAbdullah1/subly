@@ -10,7 +10,7 @@
             <div class="space-y-4">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 group">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
+                        <img type="image/png" src="{{ asset('favicon-v2.png') }}" alt="Subly">
                     </div>
                     <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-400">
                         {{ config('app.name', 'Subly') }}

@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Subly') }} - Authentication</title>
-        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('favicon-v2.png') }}">
         
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
             <div class="flex justify-center mb-8">
                 <a href="/" class="flex items-center gap-3 group">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(94,106,210,0.5)] group-hover:scale-105 transition-transform duration-300">
-                        <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
+                        <img type="image/png" src="{{ asset('favicon-v2.png') }}" alt="Subly">
                     </div>
                     <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 tracking-tight">Subly</span>
                 </a>

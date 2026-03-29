@@ -16,7 +16,7 @@
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @endif
 
-        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('favicon-v2.png') }}">
     </head>
     <body class="font-sans antialiased bg-gray-950 text-gray-300 min-h-screen flex flex-col pt-8 sm:pt-0 relative overflow-x-hidden selection:bg-primary-500/30 selection:text-primary-100">
         
@@ -33,7 +33,7 @@
             <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <div class="w-10 h-10 rounded-lg flex items-center justify-center">
-                        <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
+                        <img type="image/png" src="{{ asset('favicon-v2.png') }}" alt="Subly">
                     </div>
                     <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Subly</span>
                 </div>

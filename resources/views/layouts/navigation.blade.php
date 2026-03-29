@@ -6,7 +6,7 @@
         <a href="{{ route('client.index') }}" class="flex items-center gap-2 group">
             <div class="w-10 h-10 rounded flex items-center justify-center">
                 <!-- pakai icon favicon -->
-                <img type="image/png" src="{{ asset('favicon.png') }}" alt="Subly">
+                <img type="image/png" src="{{ asset('favicon-v2.png') }}" alt="Subly">
             </div>
             <span class="font-bold text-xl tracking-tight text-white group-hover:text-gray-200 transition-colors">Subly</span>
         </a>
