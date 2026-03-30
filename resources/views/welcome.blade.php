@@ -66,7 +66,7 @@
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
                     </span>
-                    Subly Hosting v1.0
+                    Subly Hosting v2.1
                 </div>
                 
                 <h1 class="text-5xl sm:text-7xl font-bold tracking-tight text-white mb-6 leading-tight">
