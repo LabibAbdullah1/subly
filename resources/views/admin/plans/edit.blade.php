@@ -31,9 +31,9 @@
                         <div class="space-y-2">
                             <label class="block text-sm font-medium text-gray-300">Technology Stack</label>
                             <select name="type" class="w-full bg-gray-900 border border-gray-800 rounded-lg py-2.5 px-4 text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" required>
-                                <option value="PHP" {{ old('type', $plan->type) == 'PHP' ? 'selected' : '' }}>PHP Hosting</option>
-                                <option value="NodeJS" {{ old('type', $plan->type) == 'NodeJS' ? 'selected' : '' }}>NodeJS Hosting</option>
-                                <option value="Fullstack" {{ old('type', $plan->type) == 'Fullstack' ? 'selected' : '' }}>Fullstack (PHP + Node)</option>
+                                @foreach(\App\Models\Plan::TYPES as $value => $info)
+                                    <option value="{{ $value }}" {{ old('type', $plan->type) == $value ? 'selected' : '' }}>{{ $info['label'] }}</option>
+                                @endforeach
                             </select>
                         </div>
 

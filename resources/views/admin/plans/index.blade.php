@@ -39,11 +39,9 @@
                             @forelse($plans as $plan)
                                 <tr class="group hover:bg-gray-800/30 transition-colors">
                                     <td class="table-td font-medium text-gray-200 text-center">{{ $plan->name }}</td>
-                                    <td class="table-td">
+                                    <td class="table-td text-center">
                                         <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
-                                            {{ $plan->type === 'PHP' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : '' }}
-                                            {{ $plan->type === 'NodeJS' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : '' }}
-                                            {{ $plan->type === 'Fullstack' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : '' }}">
+                                            {{ \App\Models\Plan::TYPES[$plan->type]['color'] ?? 'bg-gray-500/20 text-gray-400 border border-gray-500/30' }}">
                                             {{ $plan->type }}
                                         </span>
                                     </td>

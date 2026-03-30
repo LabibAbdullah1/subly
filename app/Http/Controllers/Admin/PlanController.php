@@ -23,7 +23,7 @@ class PlanController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:PHP,NodeJS,Fullstack',
+            'type' => 'required|in:' . implode(',', array_keys(Plan::TYPES)),
             'price' => 'required|integer|min:0',
             'duration_months' => 'required|integer|min:1',
             'max_storage_mb' => 'required|integer|min:0',
@@ -54,7 +54,7 @@ class PlanController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:PHP,NodeJS,Fullstack',
+            'type' => 'required|in:' . implode(',', array_keys(Plan::TYPES)),
             'price' => 'required|integer|min:0',
             'duration_months' => 'required|integer|min:1',
             'max_storage_mb' => 'required|integer|min:0',
