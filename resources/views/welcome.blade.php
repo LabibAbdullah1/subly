@@ -60,7 +60,7 @@
             </header>
 
             <!-- Hero Section -->
-            <main class="flex-1 flex flex-col items-center justify-center px-6 text-center max-w-4xl mx-auto py-20 pb-32 w-full">
+            <main class="flex-1 flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto py-20 pb-32 w-full">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-xs font-medium mb-8">
                     <span class="relative flex h-2 w-2">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
