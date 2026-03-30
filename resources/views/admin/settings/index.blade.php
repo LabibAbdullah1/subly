@@ -52,7 +52,7 @@
                 <!-- Advanced Preview Section -->
                 <div class="space-y-4">
                     <label class="block text-sm font-medium text-gray-400 mb-2">Live QRIS Preview</label>
-                    <div class="relative group aspect-square max-w-[320px] bg-white rounded-3xl overflow-hidden p-6 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-800 transition-all duration-500 hover:scale-[1.02]">
+                    <div class="relative group max-w-[320px] bg-white rounded-3xl overflow-hidden p-2 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-800 transition-all duration-500 hover:scale-[1.02]">
                         <div class="absolute inset-0 bg-gradient-to-tr from-primary-500/5 to-transparent pointer-events-none"></div>
                         <img :src="imageUrl" 
                              alt="QRIS Preview" class="w-full h-full object-contain relative z-10 transition-all duration-500"

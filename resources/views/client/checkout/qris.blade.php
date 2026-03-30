@@ -21,21 +21,21 @@
                 <!-- Invoice Details -->
                 <div class="w-full bg-gray-950/50 rounded-2xl border border-gray-800/50 p-6 mb-8 text-left">
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-gray-500">Item</span>
-                        <span class="text-gray-200 font-medium">{{ $payment->plan->name }}</span>
+                        <span class="text-gray-500 text-xs sm:text-sm">Item</span>
+                        <span class="text-gray-200 font-medium text-xs sm:text-sm">{{ $payment->plan->name }}</span>
                     </div>
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-gray-500">Transaction ID</span>
-                        <span class="text-gray-400 text-sm font-mono">{{ $payment->transaction_id }}</span>
+                        <span class="text-gray-500 text-xs sm:text-sm">Transaction ID</span>
+                        <span class="text-gray-400 text-xs sm:text-sm font-mono whitespace-nowrap">{{ $payment->transaction_id }}</span>
                     </div>
                     <div class="h-px bg-gray-800/50 my-4"></div>
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="text-gray-500 block mb-1">Total Bayar</span>
-                            <span class="text-xs text-primary-400 font-medium uppercase tracking-wider">Termasuk Kode Unik: +{{ $payment->unique_code }}</span>
+                            <span class="text-gray-500 block mb-1 text-xs sm:text-sm">Total Bayar</span>
+                            <span class="text-xs text-primary-400 uppercase tracking-wider sm:text-sm">Termasuk Kode Unik: +{{ $payment->unique_code }}</span>
                         </div>
                         <div class="text-right">
-                            <span class="text-2xl sm:text-3xl font-bold text-white">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+                            <span class="text-sm sm:text-lg font-bold text-white whitespace-nowrap">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -49,8 +49,8 @@
                 @endphp
                 <div class="relative group mb-8">
                     <div class="absolute -inset-1 bg-gradient-to-r from-primary-500 to-purple-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative bg-white p-4 rounded-xl shadow-2xl">
-                        <img src="{{ $qrisUrl }}" alt="QRIS Payment" class="w-64 h-64 sm:w-80 sm:h-80 object-contain mx-auto">
+                    <div class="relative bg-black p-4 rounded-xl shadow-2xl">
+                        <img src="{{ $qrisUrl }}" alt="QRIS Payment" class="w-128 object-contain relative z-10 transition-all duration-500 mx-auto">
                     </div>
                 </div>
 
