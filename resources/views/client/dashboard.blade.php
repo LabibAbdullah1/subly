@@ -27,40 +27,7 @@
                 </div>
             @endif
 
-            <!-- 1. Subscription Widget -->
-            @foreach($unusedPayments as $payment)
-                @php $plan = $payment->plan; @endphp
-                <div class="glass-panel overflow-hidden relative group hover-lift mb-6">
-                    <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl group-hover:bg-primary-500/20 transition-all duration-700 pointer-events-none"></div>
-                    <div class="p-4 sm:p-6 flex flex-col lg:flex-row justify-between items-start lg:items-center relative z-10 gap-4">
-                        <div class="w-full lg:w-auto">
-                            <div class="flex items-center gap-3 mb-1">
-                                <h3 class="text-lg sm:text-xl font-semibold text-gray-100">{{ $plan->name }}</h3>
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]">Active</span>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2 mt-3">
-                                <p class="text-xs sm:text-sm text-gray-400 flex items-center gap-1.5 font-medium">
-                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    Expires: <span class="text-gray-200">{{ $payment->created_at->addMonths($plan->duration_months)->format('d M Y') }}</span>
-                                </p>
-                                <p class="text-xs sm:text-sm text-gray-400 flex items-center gap-1.5 font-medium">
-                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    Time left: <span class="text-gray-200 font-bold text-primary-400">{{ max(0, (int)now()->startOfDay()->diffInDays($payment->created_at->addMonths($plan->duration_months)->startOfDay(), false)) }} days</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="w-full lg:w-auto mt-2 lg:mt-0">
-                            @if($loop->first)
-                                <a href="{{ route('client.plans.index') }}" class="btn-primary w-full sm:w-auto shadow-[0_0_15px_rgba(94,106,210,0.3)] block text-center">
-                                    Purchase Another Plan
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-
-            <!-- 2. Start Project & Hosted Environments -->
+            <!-- Start Project & Hosted Environments -->
             @if($subdomains->count() > 0 && $available_slots > $subdomains->count())
                 <div class="glass-panel p-4 sm:p-6 mb-6 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6 border border-primary-500/30 shadow-[0_0_20px_rgba(94,106,210,0.1)]">
                     <div class="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-transparent pointer-events-none"></div>
