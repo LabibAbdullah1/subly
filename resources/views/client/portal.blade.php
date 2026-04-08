@@ -84,7 +84,18 @@
 
                     <div class="flex-1">
                         <label class="block text-sm font-medium text-gray-300 mb-2">Catatan Deployment (Opsional)</label>
-                        <textarea name="notes" rows="2" class="w-full bg-gray-900/50 border border-gray-800 rounded-lg py-2.5 px-4 text-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all text-gray-100 placeholder-gray-600 resize-none" placeholder="Contoh: Perbaikan UI, Update Fitur Login, dll."></textarea>
+                        <textarea id="notes" name="notes" rows="2" class="w-full bg-gray-900/50 border border-gray-800 rounded-lg py-2.5 px-4 text-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all text-gray-100 placeholder-gray-600 resize-none" placeholder="Contoh: Perbaikan UI, Update Fitur Login, dll."></textarea>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div id="progress-container" class="hidden mb-2">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest" id="progress-label">Uploading...</span>
+                            <span class="text-xs font-bold text-primary-400" id="progress-percent">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden shadow-inner">
+                            <div id="progress-bar" class="bg-primary-500 h-1.5 rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(94,106,210,0.5)]" style="width: 0%"></div>
+                        </div>
                     </div>
 
                     @php $hasActiveDeployment = $subdomain->deployments()->where('status', 'success')->exists(); @endphp
@@ -126,15 +137,23 @@
                     @endphp
                     <div class="p-6 border-b border-gray-800/50">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-medium text-gray-300">Plan Storage Size</span>
+                            <span class="text-sm font-medium text-gray-300">Disk Usage (Zips + Extracts)</span>
                             <span class="text-xs font-bold {{ $storageText }} px-2 py-0.5 rounded border">
                                 {{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB Used
                                 <span class="ml-1.5 opacity-80">({{ $storagePercent }}%)</span>
                             </span>
                         </div>
-                        <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden">
+                        <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden mb-3">
                             <div class="{{ $storageColor }} h-2.5 rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,197,94,0.3)]" style="width: {{ $storagePercent }}%"></div>
                         </div>
+                        @if($liveSiteBytes > 0)
+                            <div class="flex justify-between items-center pt-2 border-t border-gray-800/30">
+                                <span class="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Live Site Size (Uncompressed)</span>
+                                <span class="text-[11px] text-primary-400 font-bold">
+                                    {{ $liveSiteBytes >= 1048576 ? round($liveSiteBytes / 1048576, 2) . ' MB' : round($liveSiteBytes / 1024, 2) . ' KB' }}
+                                </span>
+                            </div>
+                        @endif
                     </div>
                 @endif
 
@@ -331,41 +350,98 @@
             if (btn) btn.disabled = true;
         }
 
-        function submitDeployment(event, hasWarning) {
-            const input = document.getElementById('zip_file');
-            if (input.files.length === 0) {
-                event.preventDefault();
+        async function submitDeployment(event, hasWarning) {
+            const fileInput = document.getElementById('zip_file');
+            const notesInput = document.getElementById('notes');
+            
+            if (fileInput.files.length === 0) {
                 alert('Pilih file ZIP terlebih dahulu!');
                 return;
             }
 
             if (!isFileValid) {
-                event.preventDefault();
                 alert('File yang dipilih melebihi batas ukuran plan Anda!');
                 return;
             }
 
             if (hasWarning) {
                 if (!confirm('PERINGATAN: Mengupload file baru akan menimpa dan menghapus file/situs Anda yang sebelumnya. Apakah Anda yakin ingin melanjutkan?')) {
-                    event.preventDefault();
                     return;
                 }
             }
             
-            const form = input.closest('form');
-            
-            // Set loading state
+            const file = fileInput.files[0];
+            const chunkSize = 2 * 1024 * 1024; // 2MB chunks
+            const totalChunks = Math.ceil(file.size / chunkSize);
+            const uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const subdomainId = {{ $subdomain->id }};
+            const notes = notesInput ? notesInput.value : '';
+
+            // UI State
             const btn = document.getElementById('deploy-btn');
             const btnText = document.getElementById('btn-text');
             const spinner = document.getElementById('btn-spinner');
-            
-            if (btn && btnText && spinner) {
-                btn.disabled = true;
-                btn.classList.add('opacity-75', 'cursor-not-allowed');
-                btnText.innerText = "Mengupload Project...";
-                spinner.classList.remove('hidden');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            const progressLabel = document.getElementById('progress-label');
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            spinner.classList.remove('hidden');
+            btnText.innerText = "Processing...";
+            progressContainer.classList.remove('hidden');
+
+            for (let i = 0; i < totalChunks; i++) {
+                const start = i * chunkSize;
+                const end = Math.min(start + chunkSize, file.size);
+                const chunk = file.slice(start, end);
+
+                const formData = new FormData();
+                formData.append('chunk', chunk);
+                formData.append('upload_id', uploadId);
+                formData.append('chunk_index', i);
+                formData.append('total_chunks', totalChunks);
+                formData.append('file_name', file.name);
+                formData.append('subdomain_id', subdomainId);
+                formData.append('notes', notes);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                progressLabel.innerText = `Uploading Part ${i + 1} of ${totalChunks}...`;
+                
+                try {
+                    const response = await fetch('{{ route('client.deployments.upload-chunk') }}', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Upload failed');
+                    }
+
+                    // Update UI Progress
+                    const percent = Math.round(((i + 1) / totalChunks) * 100);
+                    progressBar.style.width = percent + '%';
+                    progressPercent.innerText = percent + '%';
+
+                    if (i === totalChunks - 1) {
+                        btnText.innerText = "Deploying...";
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                } catch (error) {
+                    console.error('Upload Error:', error);
+                    alert('Error during upload: ' + error.message);
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    spinner.classList.add('hidden');
+                    btnText.innerText = "Retry Deployment";
+                    return;
+                }
             }
-            form.submit();
         }
     </script>
 </x-app-layout>

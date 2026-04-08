@@ -13,6 +13,8 @@ class Deployment extends Model
     protected $fillable = [
         'subdomain_id',
         'zip_path',
+        'zip_size',
+        'extracted_size',
         'version',
         'status',
         'notes',

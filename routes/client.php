@@ -24,6 +24,7 @@ Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('c
 Route::prefix('deployments')->name('deployments.')->group(function () {
     Route::get('/', [DeploymentController::class, 'index'])->name('index');
     Route::post('/', [DeploymentController::class, 'store'])->name('store');
+    Route::post('/upload-chunk', [DeploymentController::class, 'uploadChunk'])->name('upload-chunk');
 });
 
 Route::prefix('chat')->name('chat.')->group(function () {

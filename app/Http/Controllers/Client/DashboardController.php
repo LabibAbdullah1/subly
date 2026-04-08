@@ -45,18 +45,29 @@ class DashboardController extends Controller
         $purchasedPlans = $user->payments()->with('plan')->where('status', 'success')->get()->pluck('plan')->filter()->unique('id');
 
         $usedStorageBytes = 0;
+        $liveSiteBytes = 0;
+        
         foreach ($subdomain->deployments as $deployment) {
             if ($deployment->zip_path && \Storage::exists($deployment->zip_path)) {
-                $usedStorageBytes += \Storage::size($deployment->zip_path);
+                // Count the ZIP archive size
+                $usedStorageBytes += $deployment->zip_size > 0 ? $deployment->zip_size : \Storage::size($deployment->zip_path);
             }
         }
+
+        // Add the extracted size of the latest successful deployment (the live site)
+        $latestSuccess = $subdomain->deployments()->where('status', 'success')->latest()->first();
+        if ($latestSuccess) {
+            $liveSiteBytes = $latestSuccess->extracted_size;
+        }
+
+        $totalBytes = $usedStorageBytes + $liveSiteBytes;
         
         // Convert to MB but keep precision for small files
-        $usedStorageMB = round($usedStorageBytes / 1048576, 4);
-        $usedStorageDisplay = $usedStorageBytes >= 1048576 
-            ? round($usedStorageBytes / 1048576, 2) . ' MB' 
-            : round($usedStorageBytes / 1024, 2) . ' KB';
+        $usedStorageMB = round($totalBytes / 1048576, 4);
+        $usedStorageDisplay = $totalBytes >= 1048576 
+            ? round($totalBytes / 1048576, 2) . ' MB' 
+            : round($totalBytes / 1024, 2) . ' KB';
 
-        return view('client.portal', compact('user', 'subdomain', 'plan', 'payment', 'feedbacks', 'purchasedPlans', 'usedStorageMB', 'usedStorageDisplay'));
+        return view('client.portal', compact('user', 'subdomain', 'plan', 'payment', 'feedbacks', 'purchasedPlans', 'usedStorageMB', 'usedStorageDisplay', 'liveSiteBytes'));
     }
 }
