@@ -85,9 +85,24 @@ class DeploymentController extends Controller
             return redirect()->back()->withErrors(['zip_file' => 'Could not detect an active subscription for this subdomain. Please ensure your plan is still active.']);
         }
 
-        // Storage limit from plan
-        if ($request->file('zip_file')->getSize() > ($plan->max_storage_mb * 1024 * 1024)) {
-            return redirect()->back()->withErrors(['zip_file' => "File exceeds your plan storage limit of {$plan->max_storage_mb} MB."]);
+        // Calculate current storage usage
+        $usedStorageBytes = 0;
+        foreach ($subdomain->deployments as $deployment) {
+            if ($deployment->zip_path && \Storage::exists($deployment->zip_path)) {
+                $usedStorageBytes += \Storage::size($deployment->zip_path);
+            }
+        }
+        
+        $newFileSizeBytes = $request->file('zip_file')->getSize();
+
+        if (($usedStorageBytes + $newFileSizeBytes) > ($plan->max_storage_mb * 1024 * 1024)) {
+            $limitMB = $plan->max_storage_mb;
+            $usedMB = round($usedStorageBytes / 1048576, 2);
+            $newMB = round($newFileSizeBytes / 1048576, 2);
+            
+            return redirect()->back()->withErrors([
+                'zip_file' => "File upload failed. Your total used storage ($usedMB MB) plus this new file ($newMB MB) would exceed your plan limit of $limitMB MB."
+            ]);
         }
 
         // Spam prevention: Delete previous queued or processing deployments for this subdomain

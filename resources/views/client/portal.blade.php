@@ -113,17 +113,24 @@
                     @php
                         $maxMB = $plan->max_storage_mb;
                         $storagePercent = $maxMB > 0 ? min(100, round(($usedStorageMB / $maxMB) * 100)) : 0;
-                        $storageColor = 'bg-primary-500';
-                        if ($storagePercent > 80) $storageColor = 'bg-red-500';
-                        elseif ($storagePercent > 60) $storageColor = 'bg-yellow-500';
+                        $storageColor = 'bg-green-500';
+                        $storageText = 'text-green-400 bg-green-500/10 border-green-500/20';
+                        
+                        if ($storagePercent > 80) {
+                            $storageColor = 'bg-red-500';
+                            $storageText = 'text-red-400 bg-red-500/10 border-red-500/20';
+                        } elseif ($storagePercent > 60) {
+                            $storageColor = 'bg-yellow-500';
+                            $storageText = 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
+                        }
                     @endphp
                     <div class="p-6 border-b border-gray-800/50">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm font-medium text-gray-300">Plan Storage Size</span>
-                            <span class="text-xs font-bold text-primary-400 bg-primary-500/10 px-2 py-0.5 rounded border border-primary-500/20">{{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB Used</span>
+                            <span class="text-xs font-bold {{ $storageText }} px-2 py-0.5 rounded border">{{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB Used</span>
                         </div>
                         <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden">
-                            <div class="{{ $storageColor }} h-2.5 rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(94,106,210,0.3)]" style="width: {{ $storagePercent }}%"></div>
+                            <div class="{{ $storageColor }} h-2.5 rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,197,94,0.3)]" style="width: {{ $storagePercent }}%"></div>
                         </div>
                     </div>
                 @endif
@@ -255,6 +262,8 @@
     </div>
 
     <script>
+        let isFileValid = false;
+
         function handleFileSelect(input) {
             const fileNameDisplay = document.getElementById('file-chosen-text');
             const fileInfoText = document.getElementById('file-info-text');
@@ -292,8 +301,10 @@
                     dropzone.classList.add('border-green-500', 'bg-green-500/5', 'ring-2', 'ring-green-500/20');
                     dropzone.classList.remove('border-gray-700', 'border-red-500', 'bg-red-500/5', 'ring-red-500/20');
                     if (btn) btn.disabled = false;
+                    isFileValid = true;
                 }
             } else {
+                isFileValid = false;
                 cancelUpload();
             }
         }
@@ -322,6 +333,12 @@
             if (input.files.length === 0) {
                 event.preventDefault();
                 alert('Pilih file ZIP terlebih dahulu!');
+                return;
+            }
+
+            if (!isFileValid) {
+                event.preventDefault();
+                alert('File yang dipilih melebihi batas ukuran plan Anda!');
                 return;
             }
 
