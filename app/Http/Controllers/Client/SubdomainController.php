@@ -64,7 +64,7 @@ class SubdomainController extends Controller
 
     public function destroy(Subdomain $subdomain)
     {
-        if ($subdomain->user_id !== Auth::id()) {
+        if ($subdomain->user_id != Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -82,7 +82,7 @@ class SubdomainController extends Controller
 
     public function renew(Subdomain $subdomain)
     {
-        if ($subdomain->user_id !== Auth::id()) {
+        if ($subdomain->user_id != Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
