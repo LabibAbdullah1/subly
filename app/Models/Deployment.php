@@ -15,6 +15,7 @@ class Deployment extends Model
         'zip_path',
         'version',
         'status',
+        'notes',
         'admin_note',
         'deployed_at',
     ];

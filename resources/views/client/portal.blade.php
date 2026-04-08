@@ -82,6 +82,11 @@
                         </p>
                     </div>
 
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Catatan Deployment (Opsional)</label>
+                        <textarea name="notes" rows="2" class="w-full bg-gray-900/50 border border-gray-800 rounded-lg py-2.5 px-4 text-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all text-gray-100 placeholder-gray-600 resize-none" placeholder="Contoh: Perbaikan UI, Update Fitur Login, dll."></textarea>
+                    </div>
+
                     @php $hasActiveDeployment = $subdomain->deployments()->where('status', 'success')->exists(); @endphp
                     <button type="button" id="deploy-btn" onclick="submitDeployment(event, {{ $hasActiveDeployment ? 'true' : 'false' }})" class="w-full btn-primary py-3 transition-all rounded-xl {{ (!$plan) ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-[0_0_25px_rgba(94,106,210,0.5)] active:scale-[0.98]' }} flex items-center justify-center gap-2" {{ (!$plan) ? 'disabled' : '' }}>
                         <span id="btn-text" class="font-bold tracking-wide uppercase text-sm">{{ !$plan ? 'Subscription Required' : 'Initiate Deployment' }}</span>

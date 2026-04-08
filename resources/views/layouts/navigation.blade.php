@@ -17,7 +17,7 @@
         
         <!-- Main Group -->
         <div>
-            <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 italic">Menu Utama</h4>
+            <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 italic">Main Menu</h4>
             <ul class="space-y-1">
                 <li>
                     <a href="{{ route('client.index') }}" class="sidebar-link {{ request()->routeIs('client.index') ? 'active' : '' }}">

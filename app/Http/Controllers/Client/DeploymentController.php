@@ -49,6 +49,7 @@ class DeploymentController extends Controller
         $request->validate([
             'subdomain_id' => 'required|exists:subdomains,id',
             'zip_file' => 'required|file|max:51200', // max 50MB
+            'notes' => 'nullable|string|max:255',
         ]);
 
         $user = $request->user();
@@ -108,6 +109,7 @@ class DeploymentController extends Controller
             'zip_path' => $path,
             'version' => $subdomain->deployments()->count() + 1,
             'status' => 'queued',
+            'notes' => $request->notes,
         ]);
 
         return redirect()->back()->with('success', 'Deployment ZIP uploaded successfully. It is now queued.');
