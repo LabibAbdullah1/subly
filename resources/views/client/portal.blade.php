@@ -112,7 +112,7 @@
                 @if($plan)
                     @php
                         $maxMB = $plan->max_storage_mb;
-                        $storagePercent = $maxMB > 0 ? min(100, round(($usedStorageMB / $maxMB) * 100)) : 0;
+                        $storagePercent = $maxMB > 0 ? min(100, round(($usedStorageMB / $maxMB) * 100, 2)) : 0;
                         $storageColor = 'bg-green-500';
                         $storageText = 'text-green-400 bg-green-500/10 border-green-500/20';
                         
@@ -127,7 +127,10 @@
                     <div class="p-6 border-b border-gray-800/50">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm font-medium text-gray-300">Plan Storage Size</span>
-                            <span class="text-xs font-bold {{ $storageText }} px-2 py-0.5 rounded border">{{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB Used</span>
+                            <span class="text-xs font-bold {{ $storageText }} px-2 py-0.5 rounded border">
+                                {{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB Used
+                                <span class="ml-1.5 opacity-80">({{ $storagePercent }}%)</span>
+                            </span>
                         </div>
                         <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden">
                             <div class="{{ $storageColor }} h-2.5 rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,197,94,0.3)]" style="width: {{ $storagePercent }}%"></div>
