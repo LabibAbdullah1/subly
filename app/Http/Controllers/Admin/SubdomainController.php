@@ -37,17 +37,7 @@ class SubdomainController extends Controller
         $docRoot = '/public_html/' . $validated['name'];
         $plan = Plan::find($validated['plan_id']);
 
-        // Create a system-approved payment so the client's dashboard thinks they purchased this plan
-        Payment::create([
-            'user_id' => $validated['user_id'],
-            'plan_id' => $plan->id,
-            'transaction_id' => 'ADMIN-' . time() . '-' . $validated['user_id'],
-            'snap_token' => 'admin-bypass',
-            'amount' => 0,
-            'status' => 'success',
-        ]);
-
-        Subdomain::create([
+        $subdomain = Subdomain::create([
             'user_id' => $validated['user_id'],
             'name' => $validated['name'],
             'full_domain' => $fullDomain,
@@ -56,7 +46,20 @@ class SubdomainController extends Controller
             'expired_at' => now()->addMonths($plan->duration_months),
         ]);
 
-        return redirect()->route('admin.subdomains.index')->with('success', 'Subdomain and Plan assignment created successfully.');
+        // Create a system-approved payment linked to this subdomain
+        Payment::create([
+            'user_id' => $validated['user_id'],
+            'plan_id' => $plan->id,
+            'subdomain_id' => $subdomain->id,
+            'transaction_id' => 'ADMIN-' . time() . '-' . $validated['user_id'],
+            'snap_token' => 'admin-bypass',
+            'amount' => 0,
+            'status' => 'success',
+        ]);
+
+        app(\App\Services\ServerProvisioningService::class)->provisionSubdomain($subdomain);
+
+        return redirect()->route('admin.subdomains.index')->with('success', 'Subdomain and Plan assignment created successfully and server provisioned.');
     }
 
     public function edit(Subdomain $subdomain)

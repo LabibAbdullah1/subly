@@ -44,6 +44,9 @@ class DeploymentController extends Controller
 
         $subdomain = Subdomain::findOrFail($request->subdomain_id);
         if ($subdomain->user_id != Auth::id()) abort(403);
+        if ($subdomain->status !== 'active') {
+            return redirect()->back()->withErrors(['subdomain_id' => 'This subdomain is currently inactive or expired. Please renew your plan.']);
+        }
 
         try {
             $this->validateAndDeploy(
@@ -76,6 +79,9 @@ class DeploymentController extends Controller
         $subdomain = Subdomain::findOrFail($request->subdomain_id);
         if ($subdomain->user_id != Auth::id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        if ($subdomain->status !== 'active') {
+            return response()->json(['error' => 'Subdomain is currently inactive or expired. Please renew your plan.'], 403);
         }
 
         $uploadId = preg_replace('/[^A-Za-z0-9_\-]/', '', $request->upload_id);
@@ -194,6 +200,22 @@ class DeploymentController extends Controller
             if ($old->zip_path && Storage::exists($old->zip_path)) Storage::delete($old->zip_path);
             $old->delete();
         });
+
+        // Storage Retention Policy: Keep only the last 2 successful deployments for rollback
+        $successfulDeployments = $subdomain->deployments()
+            ->where('status', 'success')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($successfulDeployments->count() >= 2) {
+            $olderDeployments = $successfulDeployments->slice(2);
+            foreach ($olderDeployments as $oldSuccess) {
+                if ($oldSuccess->zip_path && Storage::exists($oldSuccess->zip_path)) {
+                    Storage::delete($oldSuccess->zip_path);
+                }
+                $oldSuccess->delete();
+            }
+        }
 
         // Store file
         $newFileName = time() . '_' . preg_replace('/[^A-Za-z0-9\._\-]/', '', $originalName);

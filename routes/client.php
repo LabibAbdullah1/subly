@@ -9,6 +9,7 @@ use App\Http\Controllers\Client\PlanController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\SubdomainController;
 use App\Http\Controllers\Client\NotificationController;
+use App\Http\Controllers\Client\ReportController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('index');
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -32,6 +33,11 @@ Route::prefix('chat')->name('chat.')->group(function () {
     Route::get('/messages', [ChatController::class, 'messages'])->name('messages');
     Route::post('/', [ChatController::class, 'store'])->name('store');
     Route::delete('/{chat}', [ChatController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('reports')->name('reports.')->group(function () {
+    Route::get('/', [ReportController::class, 'index'])->name('index');
+    Route::post('/', [ReportController::class, 'store'])->name('store');
 });
 
 Route::prefix('feedback')->name('feedback.')->group(function () {
