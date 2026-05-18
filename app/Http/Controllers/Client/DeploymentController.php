@@ -44,6 +44,9 @@ class DeploymentController extends Controller
 
         $subdomain = Subdomain::findOrFail($request->subdomain_id);
         if ($subdomain->user_id != Auth::id()) abort(403);
+        if ($subdomain->status !== 'active') {
+            return redirect()->back()->withErrors(['subdomain_id' => 'This subdomain is currently inactive or expired. Please renew your plan.']);
+        }
 
         try {
             $this->validateAndDeploy(
@@ -76,6 +79,9 @@ class DeploymentController extends Controller
         $subdomain = Subdomain::findOrFail($request->subdomain_id);
         if ($subdomain->user_id != Auth::id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        if ($subdomain->status !== 'active') {
+            return response()->json(['error' => 'Subdomain is currently inactive or expired. Please renew your plan.'], 403);
         }
 
         $uploadId = preg_replace('/[^A-Za-z0-9_\-]/', '', $request->upload_id);

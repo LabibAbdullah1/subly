@@ -16,26 +16,26 @@ class CleanupExpiredDeployments extends Command
 
     public function handle()
     {
-        $this->info('Starting deployment cleanup...');
+        $this->info('Starting expired subdomains and deployment cleanup...');
 
-        // Find subdomains whose highest/latest payment is expired
-        // Expiry = payment.created_at + plan.duration_months
-        $deploymentsProcessed = 0;
-        $filesDeleted = 0;
-
-        $deployments = \App\Models\Deployment::whereNotNull('zip_path')
-            ->with('subdomain')
+        // Find active subdomains whose expired_at date has passed
+        $expiredSubdomains = \App\Models\Subdomain::where('status', 'active')
+            ->whereNotNull('expired_at')
+            ->where('expired_at', '<', now())
+            ->with('deployments')
             ->get();
 
-        foreach ($deployments as $deployment) {
-            $subdomain = $deployment->subdomain;
-            
-            if (!$subdomain || !$subdomain->expired_at) {
-                continue;
-            }
+        $subdomainsDeactivated = 0;
+        $filesDeleted = 0;
 
-            if (now()->greaterThan($subdomain->expired_at)) {
-                if (\Storage::exists($deployment->zip_path)) {
+        foreach ($expiredSubdomains as $subdomain) {
+            // Update subdomain status from active to inactive
+            $subdomain->update(['status' => 'inactive']);
+            $subdomainsDeactivated++;
+
+            // Clean up all associated deployment ZIP archives
+            foreach ($subdomain->deployments as $deployment) {
+                if ($deployment->zip_path && \Storage::exists($deployment->zip_path)) {
                     \Storage::delete($deployment->zip_path);
                     $filesDeleted++;
                 }
@@ -45,11 +45,9 @@ class CleanupExpiredDeployments extends Command
                     'status' => 'error',
                     'admin_note' => 'ZIP file removed due to subdomain expiry.'
                 ]);
-
-                $deploymentsProcessed++;
             }
         }
 
-        $this->info("Cleanup finished. Deployments processed: $deploymentsProcessed. Files deleted: $filesDeleted.");
+        $this->info("Cleanup finished. Subdomains deactivated: $subdomainsDeactivated. Files deleted: $filesDeleted.");
     }
 }
