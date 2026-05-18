@@ -34,7 +34,7 @@ class SubdomainController extends Controller
         ]);
 
         $fullDomain = $validated['name'] . config('app.subdomain_suffix');
-        $docRoot = '/public_html/' . $validated['name'];
+        $docRoot = config('app.doc_root_prefix') . $validated['name'];
         $plan = Plan::find($validated['plan_id']);
 
         $subdomain = Subdomain::create([
@@ -77,7 +77,7 @@ class SubdomainController extends Controller
         ]);
 
         $fullDomain = $validated['name'] . config('app.subdomain_suffix');
-        $docRoot = '/public_html/' . $validated['name'];
+        $docRoot = config('app.doc_root_prefix') . $validated['name'];
 
         $subdomain->update([
             'user_id' => $validated['user_id'],
