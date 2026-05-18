@@ -30,8 +30,8 @@ class ServerProvisioningService
         $database = $subdomain->userDatabases()->first();
 
         if (!$database) {
-            $dbName = 'subly_' . strtolower(Str::random(8));
-            $dbUser = 'usr_' . strtolower(Str::random(8));
+            $dbName = 'sublymyi_' . strtolower(Str::random(8));
+            $dbUser = 'sublymyi_' . strtolower(Str::random(8));
             $dbPass = Str::password(16, true, true, true, false);
 
             $database = UserDatabase::create([
@@ -47,7 +47,9 @@ class ServerProvisioningService
             'db_name' => $database->db_name,
         ]);
 
-        if ($this->driver === 'cyberpanel') {
+        if ($this->driver === 'cpanel') {
+            $this->provisionCpanel($subdomain, $database);
+        } elseif ($this->driver === 'cyberpanel') {
             $this->provisionCyberPanel($subdomain, $database);
         } elseif ($this->driver === 'aapanel') {
             $this->provisionAaPanel($subdomain, $database);
@@ -63,6 +65,88 @@ class ServerProvisioningService
         }
 
         return $database;
+    }
+
+    protected function provisionCpanel(Subdomain $subdomain, UserDatabase $database): void
+    {
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'cpaneluser');
+            $rootDomain = config('services.hosting_panel.root_domain', 'subly.my.id');
+
+            $headers = [
+                'Authorization' => "cpanel {$cpanelUser}:{$this->apiKey}"
+            ];
+
+            // 1. Create Subdomain in cPanel
+            $subResponse = Http::withHeaders($headers)
+                ->withoutVerifying()
+                ->timeout(20)
+                ->get("{$this->apiUrl}/execute/SubDomain/addsubdomain", [
+                    'domain' => $subdomain->name,
+                    'rootdomain' => $rootDomain,
+                    'dir' => ltrim($subdomain->doc_root, '/'),
+                ]);
+
+            if ($subResponse->successful()) {
+                Log::info("cPanel Subdomain created: " . $subResponse->body());
+            } else {
+                Log::error("cPanel Subdomain creation failed: " . $subResponse->body());
+            }
+
+            // 2. Create MySQL Database
+            // In cPanel, database and user names must begin with cpanel_username + _
+            $cleanDbName = str_replace('subly_', '', $database->db_name);
+            $cleanUsrName = str_replace('usr_', '', $database->db_user);
+
+            $dbName = substr("{$cpanelUser}_{$cleanDbName}", 0, 64);
+            $dbUser = substr("{$cpanelUser}_{$cleanUsrName}", 0, 32);
+
+            // Update local DB record with prefixed cPanel names
+            $database->update([
+                'db_name' => $dbName,
+                'db_user' => $dbUser,
+            ]);
+
+            $dbCreateResponse = Http::withHeaders($headers)
+                ->withoutVerifying()
+                ->timeout(20)
+                ->get("{$this->apiUrl}/execute/Mysql/create_database", [
+                    'name' => $dbName,
+                ]);
+
+            if ($dbCreateResponse->successful()) {
+                Log::info("cPanel Database created: " . $dbCreateResponse->body());
+            }
+
+            // 3. Create MySQL Database User
+            $usrCreateResponse = Http::withHeaders($headers)
+                ->withoutVerifying()
+                ->timeout(20)
+                ->get("{$this->apiUrl}/execute/Mysql/create_user", [
+                    'name' => $dbUser,
+                    'password' => $database->db_password,
+                ]);
+
+            if ($usrCreateResponse->successful()) {
+                Log::info("cPanel Database User created: " . $usrCreateResponse->body());
+            }
+
+            // 4. Assign All Privileges (Link User to Database)
+            $privResponse = Http::withHeaders($headers)
+                ->withoutVerifying()
+                ->timeout(20)
+                ->get("{$this->apiUrl}/execute/Mysql/set_privileges_on_database", [
+                    'user' => $dbUser,
+                    'database' => $dbName,
+                    'privileges' => 'ALL PRIVILEGES',
+                ]);
+
+            if ($privResponse->successful()) {
+                Log::info("cPanel Database Privileges assigned: " . $privResponse->body());
+            }
+        } catch (\Exception $e) {
+            Log::error("cPanel provisioning failed: " . $e->getMessage());
+        }
     }
 
     protected function provisionCyberPanel(Subdomain $subdomain, UserDatabase $database): void

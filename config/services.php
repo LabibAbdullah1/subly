@@ -36,9 +36,11 @@ return [
     ],
 
     'hosting_panel' => [
-        'driver' => env('HOSTING_PANEL_DRIVER', 'log'), // 'log', 'cyberpanel', 'aapanel', 'webhook'
-        'url' => env('HOSTING_PANEL_URL', 'https://panel.subly.my.id:8090/api'),
-        'api_key' => env('HOSTING_PANEL_KEY', 'default-api-token'),
+        'driver' => env('HOSTING_PANEL_DRIVER', 'cpanel'), // 'log', 'cpanel', 'cyberpanel', 'aapanel', 'webhook'
+        'url' => env('HOSTING_PANEL_URL', 'https://tersius.kencang.id:2083'), // cPanel port 2083
+        'username' => env('HOSTING_PANEL_USER', 'cpaneluser'), // Akun username cPanel
+        'api_key' => env('HOSTING_PANEL_KEY', 'CPANEL_API_TOKEN'), // cPanel API Token
+        'root_domain' => env('HOSTING_PANEL_DOMAIN', 'subly.my.id'), // Root domain utama
     ],
 
 ];
