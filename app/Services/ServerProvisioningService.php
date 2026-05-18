@@ -78,13 +78,16 @@ class ServerProvisioningService
             ];
 
             // 1. Create Subdomain in cPanel
+            // cPanel UAPI expects path relative to home directory (e.g. client/subdomain_name)
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
             $subResponse = Http::withHeaders($headers)
                 ->withoutVerifying()
                 ->timeout(20)
                 ->get("{$this->apiUrl}/execute/SubDomain/addsubdomain", [
                     'domain' => $subdomain->name,
                     'rootdomain' => $rootDomain,
-                    'dir' => ltrim($subdomain->doc_root, '/'),
+                    'dir' => $cleanDir,
                 ]);
 
             if ($subResponse->successful()) {

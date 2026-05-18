@@ -58,7 +58,7 @@ return [
     
     'subdomain_suffix' => env('SUBDOMAIN_SUFFIX', '.subly.my.id'),
 
-    'doc_root_prefix' => env('DOC_ROOT_PREFIX', '/public_html/'),
+    'doc_root_prefix' => env('DOC_ROOT_PREFIX', '/home/sublymyi/client/'),
 
     /*
     |--------------------------------------------------------------------------
