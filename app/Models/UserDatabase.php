@@ -21,6 +21,13 @@ class UserDatabase extends Model
         'db_password',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'db_password' => 'encrypted',
+        ];
+    }
+
     public function subdomain()
     {
         return $this->belongsTo(Subdomain::class);

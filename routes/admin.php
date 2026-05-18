@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DeploymentQueueController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\SubdomainController;
 use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\ReportController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('index');
 Route::resource('plans', PlanController::class);
@@ -33,6 +34,11 @@ Route::prefix('chat')->name('chat.')->group(function () {
     Route::get('/{user}', [ChatController::class, 'show'])->name('show');
     Route::post('/{user}', [ChatController::class, 'store'])->name('store');
     Route::delete('/{chat}', [ChatController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('reports')->name('reports.')->group(function () {
+    Route::get('/', [ReportController::class, 'index'])->name('index');
+    Route::put('/{report}', [ReportController::class, 'update'])->name('update');
 });
 
 Route::prefix('notifications')->name('notifications.')->group(function () {

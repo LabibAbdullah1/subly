@@ -8,6 +8,12 @@ use App\Models\Report;
 
 class ReportController extends Controller
 {
+    public function index(Request $request)
+    {
+        $reports = Report::where('user_id', $request->user()->id)->latest()->paginate(10);
+        return view('client.reports.index', compact('reports'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([

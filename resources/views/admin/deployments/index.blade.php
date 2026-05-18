@@ -48,15 +48,23 @@
                                                 </div>
                                             </td>
                                             <td class="table-td text-right">
-                                                <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">
-                                                    @csrf @method('PUT')
-                                                    <select name="status" class="text-[10px] sm:text-[11px] rounded bg-gray-950 border-gray-700 text-gray-300 focus:ring-primary-500/50 py-1 pl-1 pr-4 sm:pl-2 sm:pr-6 shadow-inner cursor-pointer" onchange="this.form.submit()">
-                                                        <option value="queued" {{ $deployment->status == 'queued' ? 'selected' : '' }}>Queued</option>
-                                                        <option value="processing" {{ $deployment->status == 'processing' ? 'selected' : '' }}>Processing</option>
-                                                        <option value="success" {{ $deployment->status == 'success' ? 'selected' : '' }}>Success</option>
-                                                        <option value="error" {{ $deployment->status == 'error' ? 'selected' : '' }}>Error</option>
-                                                    </select>
-                                                </form>
+                                                <div class="flex items-center justify-end gap-2">
+                                                    <form action="{{ route('admin.deployments.setup_db', $deployment) }}" method="POST" class="inline-block">
+                                                        @csrf
+                                                        <button type="submit" class="text-[10px] sm:text-[11px] rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-1 hover:bg-purple-500/20 transition-all font-medium" title="Setup Virtual Host & Database on Server">
+                                                            Provision Server
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">
+                                                        @csrf @method('PUT')
+                                                        <select name="status" class="text-[10px] sm:text-[11px] rounded bg-gray-950 border-gray-700 text-gray-300 focus:ring-primary-500/50 py-1 pl-1 pr-4 sm:pl-2 sm:pr-6 shadow-inner cursor-pointer" onchange="this.form.submit()">
+                                                            <option value="queued" {{ $deployment->status == 'queued' ? 'selected' : '' }}>Queued</option>
+                                                            <option value="processing" {{ $deployment->status == 'processing' ? 'selected' : '' }}>Processing</option>
+                                                            <option value="success" {{ $deployment->status == 'success' ? 'selected' : '' }}>Success</option>
+                                                            <option value="error" {{ $deployment->status == 'error' ? 'selected' : '' }}>Error</option>
+                                                        </select>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty

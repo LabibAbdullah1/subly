@@ -51,9 +51,20 @@ class DeploymentQueueController extends Controller
         }
 
         $extension = pathinfo($deployment->zip_path, PATHINFO_EXTENSION);
-        $filename = ($deployment->subdomain->domain ?? 'deployment') . "_v" . $deployment->version . "." . $extension;
+        $filename = ($deployment->subdomain->name ?? 'deployment') . "_v" . $deployment->version . "." . $extension;
 
         return \Storage::download($deployment->zip_path, $filename);
+    }
+
+    public function setupDatabase(Deployment $deployment, \App\Services\ServerProvisioningService $provisioningService)
+    {
+        if (!$deployment->subdomain) {
+            return redirect()->back()->with('error', 'Subdomain associated with this deployment no longer exists.');
+        }
+
+        $database = $provisioningService->provisionSubdomain($deployment->subdomain);
+
+        return redirect()->back()->with('success', "Database '{$database->db_name}' successfully provisioned and configured on server.");
     }
 
     public function destroy(Deployment $deployment)

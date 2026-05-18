@@ -21,7 +21,7 @@ class SubdomainController extends Controller
             ->whereNull('subdomain_id')
             ->get()
             ->filter(function ($p) {
-                return $p->plan && $p->created_at->addMonths($p->plan->duration_months)->isFuture();
+                return $p->plan;
             });
 
         if ($unsignedPayments->isEmpty()) {
@@ -54,12 +54,15 @@ class SubdomainController extends Controller
             'full_domain' => $fullDomain,
             'doc_root' => $docRoot,
             'status' => 'active',
-            'expired_at' => $paymentToUse->created_at->addMonths($plan->duration_months),
+            'expired_at' => now()->addMonths($plan->duration_months),
         ]);
 
         $paymentToUse->update(['subdomain_id' => $subdomain->id]);
 
-        return redirect()->route('client.index')->with('success', "Congratulations! Your subdomain '{$fullDomain}' has been claimed successfully.");
+        // Automatically provision virtual host and MySQL database
+        app(\App\Services\ServerProvisioningService::class)->provisionSubdomain($subdomain);
+
+        return redirect()->route('client.index')->with('success', "Congratulations! Your subdomain '{$fullDomain}' has been claimed successfully and server database provisioned.");
     }
 
     public function destroy(Subdomain $subdomain)

@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'hosting_panel' => [
+        'driver' => env('HOSTING_PANEL_DRIVER', 'log'), // 'log', 'cyberpanel', 'aapanel', 'webhook'
+        'url' => env('HOSTING_PANEL_URL', 'https://panel.subly.my.id:8090/api'),
+        'api_key' => env('HOSTING_PANEL_KEY', 'default-api-token'),
+    ],
+
 ];
