@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminChatNotification;
 use App\Models\Chat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ChatController extends Controller
 {
@@ -59,6 +61,17 @@ class ChatController extends Controller
                 'image_path' => $imagePath,
                 'is_admin' => false,
             ]);
+
+            // Notify admin via email about new client message
+            try {
+                $chat->load('user');
+                $adminEmail = config('mail.admin_email', env('MAIL_FROM_ADDRESS'));
+                if ($adminEmail) {
+                    Mail::to($adminEmail)->send(new AdminChatNotification($chat));
+                }
+            } catch (\Exception $emailError) {
+                \Log::error('Admin chat email failed: ' . $emailError->getMessage());
+            }
 
             return response()->json($chat);
         } catch (\Exception $e) {

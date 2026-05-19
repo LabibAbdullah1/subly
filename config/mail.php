@@ -115,4 +115,17 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Notification Email
+    |--------------------------------------------------------------------------
+    |
+    | This is the email address that receives all admin notifications such as
+    | new payments, client chat messages, feedback, and new deployments.
+    | Defaults to MAIL_FROM_ADDRESS if not set.
+    |
+    */
+
+    'admin_email' => env('MAIL_ADMIN_EMAIL', env('MAIL_FROM_ADDRESS')),
+
 ];

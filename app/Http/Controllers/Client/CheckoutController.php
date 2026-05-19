@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminPaymentNotification;
 use App\Models\Plan;
 use App\Models\Payment;
+use App\Models\User;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Midtrans\Config;
 use Midtrans\Snap;
 use Carbon\Carbon;
@@ -119,6 +122,9 @@ class CheckoutController extends Controller
             'status' => 'pending',
         ]);
 
+        // Notify admin via email about new payment
+        $this->notifyAdminPayment($payment);
+
         return redirect()->route('client.checkout.qris', $payment);
     }
 
@@ -185,6 +191,22 @@ class CheckoutController extends Controller
         }
 
         return response()->json(['message' => 'Webhook processed']);
+    }
+
+    /**
+     * Send email notification to admin about a payment event.
+     */
+    private function notifyAdminPayment(Payment $payment): void
+    {
+        try {
+            $payment->load(['user', 'plan', 'subdomain']);
+            $adminEmail = config('mail.admin_email', env('MAIL_FROM_ADDRESS'));
+            if ($adminEmail) {
+                Mail::to($adminEmail)->send(new AdminPaymentNotification($payment));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Admin payment email failed: ' . $e->getMessage());
+        }
     }
 
     public function cancel(Payment $payment)

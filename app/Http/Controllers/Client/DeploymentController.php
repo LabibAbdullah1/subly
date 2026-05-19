@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminDeploymentNotification;
 use Illuminate\Http\Request;
 use App\Models\Deployment;
 use App\Models\Subdomain;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use ZipArchive;
@@ -221,7 +223,7 @@ class DeploymentController extends Controller
         $newFileName = time() . '_' . preg_replace('/[^A-Za-z0-9\._\-]/', '', $originalName);
         $path = Storage::putFileAs('uploads/zips', new \Illuminate\Http\File($filePath), $newFileName);
 
-        Deployment::create([
+        $deployment = Deployment::create([
             'subdomain_id' => $subdomain->id,
             'zip_path' => $path,
             'zip_size' => $zipSize,
@@ -230,6 +232,17 @@ class DeploymentController extends Controller
             'status' => 'queued',
             'notes' => $notes,
         ]);
+
+        // Notify admin via email about new deployment
+        try {
+            $deployment->load(['subdomain.user']);
+            $adminEmail = config('mail.admin_email', env('MAIL_FROM_ADDRESS'));
+            if ($adminEmail) {
+                Mail::to($adminEmail)->send(new AdminDeploymentNotification($deployment));
+            }
+        } catch (\Exception $e) {
+            Log::error('Admin deployment email failed: ' . $e->getMessage());
+        }
     }
 
     private function deleteDirectory($dir) {
