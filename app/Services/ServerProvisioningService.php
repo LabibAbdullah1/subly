@@ -288,12 +288,16 @@ class ServerProvisioningService
                     // Try underscore format for addon domains
                     $underscoreDomain = "{$subdomain->name}_{$rootDomain}";
                     Log::info("Retrying subdomain deletion with underscore format: {$underscoreDomain}");
-                    $this->callCpanelApi('SubDomain', 'delsubdomain', [
-                        'domain' => $underscoreDomain,
-                    ]);
-                    Log::info("cPanel Subdomain deleted (underscore format): {$underscoreDomain}");
+                    try {
+                        $this->callCpanelApi('SubDomain', 'delsubdomain', [
+                            'domain' => $underscoreDomain,
+                        ]);
+                        Log::info("cPanel Subdomain deleted (underscore format): {$underscoreDomain}");
+                    } catch (\Exception $e2) {
+                        Log::error("Failed to delete subdomain in underscore format: " . $e2->getMessage());
+                    }
                 } else {
-                    throw $e;
+                    Log::error("Failed to delete subdomain: " . $e->getMessage());
                 }
             }
 
@@ -310,21 +314,21 @@ class ServerProvisioningService
                 }
 
                 // 3. Delete MySQL User (only if no other subdomains of the same owner are using it)
-                $otherUses = UserDatabase::where('db_user', $database->db_user)
-                    ->where('id', '!=', $database->id)
-                    ->exists();
+                try {
+                    $otherUses = UserDatabase::where('db_user', $database->db_user)
+                        ->where('id', '!=', $database->id)
+                        ->exists();
 
-                if (!$otherUses) {
-                    try {
+                    if (!$otherUses) {
                         $this->callCpanelApi('Mysql', 'delete_user', [
                             'name' => $database->db_user,
                         ]);
                         Log::info("cPanel Database User deleted: {$database->db_user}");
-                    } catch (\Exception $e) {
-                        Log::error("Failed to delete cPanel Database User: " . $e->getMessage());
+                    } else {
+                        Log::info("Database user {$database->db_user} is still used by other subdomains, skipping user deletion.");
                     }
-                } else {
-                    Log::info("Database user {$database->db_user} is still used by other subdomains, skipping user deletion.");
+                } catch (\Exception $e) {
+                    Log::error("Failed to delete cPanel Database User: " . $e->getMessage());
                 }
 
                 // Delete database record
@@ -332,9 +336,13 @@ class ServerProvisioningService
             }
 
             // 4. Delete Directory Files
-            if ($subdomain->doc_root && str_starts_with($subdomain->doc_root, "/home/{$cpanelUser}/")) {
-                Log::info("Deleting document root folder: {$subdomain->doc_root}");
-                shell_exec("rm -rf " . escapeshellarg($subdomain->doc_root));
+            try {
+                if ($subdomain->doc_root && str_contains($subdomain->doc_root, "/home/{$cpanelUser}/")) {
+                    Log::info("Deleting document root folder recursively: {$subdomain->doc_root}");
+                    $this->deleteDirectoryRecursively($subdomain->doc_root);
+                }
+            } catch (\Exception $e) {
+                Log::error("Failed to delete document root folder: " . $e->getMessage());
             }
         } catch (\Exception $e) {
             Log::error("cPanel deprovisioning failed for subdomain {$subdomain->full_domain}: " . $e->getMessage());
@@ -388,29 +396,58 @@ class ServerProvisioningService
             'Authorization' => "cpanel {$cpanelUser}:{$this->apiKey}"
         ];
 
+        $isApi2 = ($module === 'SubDomain' && $function === 'delsubdomain');
+
         // 1. Try HTTP API first
         try {
-            Log::info("Calling cPanel HTTP API: {$module}/{$function}", [
+            Log::info("Calling cPanel HTTP API: {$module}/{$function} (API2: " . ($isApi2 ? 'yes' : 'no') . ")", [
                 'module' => $module,
                 'function' => $function,
                 'params' => array_merge($params, isset($params['password']) ? ['password' => '***'] : [], isset($params['content']) ? ['content' => '...length ' . strlen($params['content'])] : [])
             ]);
 
-            $response = Http::withHeaders($headers)
-                ->withoutVerifying()
-                ->timeout(10) // Lower timeout to quickly trigger CLI fallback if blocked
-                ->get("{$this->apiUrl}/execute/{$module}/{$function}", $params);
+            if ($isApi2) {
+                // cPanel API 2 HTTP Endpoint
+                $api2Params = array_merge([
+                    'cpanel_jsonapi_user' => $cpanelUser,
+                    'cpanel_jsonapi_apiversion' => '2',
+                    'cpanel_jsonapi_module' => $module,
+                    'cpanel_jsonapi_func' => $function,
+                ], $params);
 
-            if ($response->successful()) {
-                $status = $response->json('status') ?? $response->json('result.status');
-                if ($status == 1) {
-                    return [
-                        'success' => true,
-                        'data' => $response->json()
-                    ];
+                $response = Http::withHeaders($headers)
+                    ->withoutVerifying()
+                    ->timeout(15)
+                    ->get("{$this->apiUrl}/json-api/cpanel", $api2Params);
+
+                if ($response->successful()) {
+                    $status = $response->json('cpanelresult.data.result') ?? $response->json('status') ?? 0;
+                    if ($status == 1 || $status == '1') {
+                        return [
+                            'success' => true,
+                            'data' => $response->json()
+                        ];
+                    }
                 }
+                $err = $response->json('cpanelresult.data.reason') ?? $response->json('cpanelresult.error') ?? ($response->json('errors') ?? [])[0] ?? $response->body();
+            } else {
+                // UAPI HTTP Endpoint
+                $response = Http::withHeaders($headers)
+                    ->withoutVerifying()
+                    ->timeout(10) // Lower timeout to quickly trigger CLI fallback if blocked
+                    ->get("{$this->apiUrl}/execute/{$module}/{$function}", $params);
+
+                if ($response->successful()) {
+                    $status = $response->json('status') ?? $response->json('result.status');
+                    if ($status == 1) {
+                        return [
+                            'success' => true,
+                            'data' => $response->json()
+                        ];
+                    }
+                }
+                $err = ($response->json('errors') ?? $response->json('result.errors') ?? [])[0] ?? $response->body();
             }
-            $err = ($response->json('errors') ?? $response->json('result.errors') ?? [])[0] ?? $response->body();
             
             // Check if it's already exists
             if (preg_match('/(already exists|already configured|already exist|does exist)/i', $err)) {
@@ -427,21 +464,27 @@ class ServerProvisioningService
             Log::warning("cPanel HTTP API connection failed for {$module}/{$function}: " . $e->getMessage() . ". Trying local CLI fallback...");
         }
 
-        // 2. Fallback: Try local CLI (uapi command)
+        // 2. Fallback: Try local CLI (uapi or cpapi2 command)
         try {
-            $binaries = ['uapi', '/usr/bin/uapi', '/usr/local/cpanel/bin/uapi'];
+            $binaries = $isApi2
+                ? ['cpapi2', '/usr/bin/cpapi2', '/usr/local/cpanel/bin/cpapi2']
+                : ['uapi', '/usr/bin/uapi', '/usr/local/cpanel/bin/uapi'];
             $output = null;
             $commandRun = '';
             
             foreach ($binaries as $bin) {
                 // Securely construct the command with escapeshellarg
-                $cmd = "{$bin} --output=json " . escapeshellarg($module) . " " . escapeshellarg($function);
+                if ($isApi2) {
+                    $cmd = "{$bin} --user=" . escapeshellarg($cpanelUser) . " " . escapeshellarg($module) . " " . escapeshellarg($function);
+                } else {
+                    $cmd = "{$bin} --output=json " . escapeshellarg($module) . " " . escapeshellarg($function);
+                }
                 foreach ($params as $key => $value) {
                     $cmd .= " " . escapeshellarg($key) . "=" . escapeshellarg($value);
                 }
                 
                 // Execute command
-                Log::info("Running cPanel local CLI: {$bin} --output=json {$module} {$function}");
+                Log::info("Running cPanel local CLI: {$cmd}");
                 $res = shell_exec($cmd);
                 if ($res) {
                     $output = json_decode($res, true);
@@ -453,8 +496,11 @@ class ServerProvisioningService
             }
 
             if ($output) {
-                $status = $output['status'] ?? $output['result']['status'] ?? 0;
-                if ($status == 1) {
+                $status = $isApi2
+                    ? ($output['cpanelresult']['data']['result'] ?? $output['status'] ?? 0)
+                    : ($output['status'] ?? $output['result']['status'] ?? 0);
+
+                if ($status == 1 || $status == '1') {
                     Log::info("cPanel local CLI succeeded using: {$commandRun}");
                     return [
                         'success' => true,
@@ -462,7 +508,10 @@ class ServerProvisioningService
                     ];
                 }
                 
-                $err = ($output['errors'] ?? $output['result']['errors'] ?? [])[0] ?? json_encode($output);
+                $err = $isApi2
+                    ? ($output['cpanelresult']['data']['reason'] ?? $output['cpanelresult']['error'] ?? json_encode($output))
+                    : (($output['errors'] ?? $output['result']['errors'] ?? [])[0] ?? json_encode($output));
+
                 if (preg_match('/(already exists|already configured|already exist|does exist)/i', $err)) {
                     Log::info("cPanel local CLI returned resource already exists, treating as success: {$err}");
                     return [
@@ -475,7 +524,7 @@ class ServerProvisioningService
                 throw new \Exception($err);
             }
             
-            throw new \Exception("Local uapi binary not found, returned empty output, or shell_exec is disabled.");
+            throw new \Exception("Local CLI binary not found, returned empty output, or shell_exec is disabled.");
         } catch (\Exception $e) {
             Log::error("cPanel CLI fallback failed: " . $e->getMessage());
             throw new \Exception("Koneksi cPanel gagal (HTTP Timeout & CLI Fallback Error: " . $e->getMessage() . ")");
@@ -682,5 +731,26 @@ class ServerProvisioningService
         }
         // Append digits to satisfy strength requirements
         return $password . rand(100, 999);
+    }
+
+    /**
+     * Delete directory recursively using native PHP functions.
+     */
+    protected function deleteDirectoryRecursively(string $dir): bool
+    {
+        if (!is_dir($dir)) {
+            return false;
+        }
+
+        $files = array_diff(scandir($dir), ['.', '..']);
+        foreach ($files as $file) {
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($path)) {
+                $this->deleteDirectoryRecursively($path);
+            } else {
+                @unlink($path);
+            }
+        }
+        return @rmdir($dir);
     }
 }
