@@ -280,6 +280,9 @@
         <!-- Global Toast Container -->
         <div id="toast-container" class="fixed top-20 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
+        <!-- Global Toast Container -->
+        <div id="toast-container" class="fixed top-20 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
         <style>
             @keyframes fade-in {
                 from { opacity: 0; transform: translateY(10px); }
@@ -315,6 +318,91 @@
             }
             @keyframes toast-out {
                 to { opacity: 0; transform: translateX(20px) scale(0.95); }
+            }
+
+            /* Custom Premium Dropdown System Styles */
+            .custom-dropdown-hidden {
+                display: none !important;
+            }
+            .custom-dropdown {
+                position: relative;
+            }
+            .custom-dropdown-toggle {
+                cursor: pointer;
+                outline: none !important;
+            }
+            .custom-dropdown-toggle:focus {
+                border-color: rgba(94, 106, 210, 0.5) !important;
+                box-shadow: 0 0 0 2px rgba(94, 106, 210, 0.2) !important;
+            }
+            .custom-dropdown-menu {
+                transform-origin: top;
+                transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .custom-dropdown-item {
+                transition: background-color 0.12s ease, color 0.12s ease;
+            }
+            
+            /* Responsive Font & Styling Details Adjustments */
+            body {
+                font-family: 'Inter', system-ui, -apple-system, sans-serif;
+                letter-spacing: -0.011em;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                letter-spacing: -0.022em;
+            }
+            
+            /* Fluid Typography Scale */
+            html {
+                font-size: 14px;
+            }
+            @media (min-width: 640px) {
+                html {
+                    font-size: 15px;
+                }
+            }
+            @media (min-width: 1024px) {
+                html {
+                    font-size: 16px;
+                }
+            }
+
+            /* Responsive Table Container & Sleek Scrollbars */
+            .table-container,
+            .overflow-x-auto {
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .overflow-x-auto::-webkit-scrollbar,
+            .scrollbar-thin::-webkit-scrollbar,
+            .custom-dropdown-menu::-webkit-scrollbar {
+                height: 5px;
+                width: 5px;
+            }
+            .overflow-x-auto::-webkit-scrollbar-track,
+            .scrollbar-thin::-webkit-scrollbar-track,
+            .custom-dropdown-menu::-webkit-scrollbar-track {
+                background: rgba(9, 9, 11, 0.5);
+            }
+            .overflow-x-auto::-webkit-scrollbar-thumb,
+            .scrollbar-thin::-webkit-scrollbar-thumb,
+            .custom-dropdown-menu::-webkit-scrollbar-thumb {
+                background: rgba(94, 106, 210, 0.3);
+                border-radius: 10px;
+            }
+            .overflow-x-auto::-webkit-scrollbar-thumb:hover,
+            .scrollbar-thin::-webkit-scrollbar-thumb:hover,
+            .custom-dropdown-menu::-webkit-scrollbar-thumb:hover {
+                background: rgba(94, 106, 210, 0.6);
+            }
+            
+            /* Prevent iOS Zooming on Focus */
+            @media (max-width: 640px) {
+                input, select, textarea, .custom-dropdown-toggle {
+                    font-size: 16px !important;
+                }
             }
         </style>
 
@@ -510,6 +598,134 @@
                         }
                     }
                 }, true);
+
+                // Global Custom Dropdown Replacer
+                window.initCustomDropdowns = function() {
+                    const selects = document.querySelectorAll('select:not(.custom-dropdown-hidden)');
+                    selects.forEach(select => {
+                        if (select.closest('.custom-dropdown') || select.style.display === 'none' || select.classList.contains('custom-dropdown-hidden')) return;
+
+                        // Mark native select and hide it
+                        select.classList.add('custom-dropdown-hidden');
+                        select.style.display = 'none';
+
+                        // Create wrapper
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'custom-dropdown relative ' + (select.className.replace('custom-dropdown-hidden', '').replace('w-full', '').trim());
+                        if (select.classList.contains('w-full')) {
+                            wrapper.classList.add('w-full');
+                        } else {
+                            wrapper.classList.add('w-auto');
+                        }
+
+                        // Create toggle button
+                        const toggleBtn = document.createElement('button');
+                        toggleBtn.type = 'button';
+                        
+                        let btnClasses = 'custom-dropdown-toggle w-full flex items-center justify-between bg-gray-950/80 border border-gray-800/80 rounded-xl text-gray-200 hover:border-primary-500/50 hover:bg-gray-900 focus:outline-none transition-all font-semibold select-none cursor-pointer ';
+                        
+                        if (select.className.includes('py-1') || select.className.includes('py-0.5') || select.className.includes('text-[10px]') || select.className.includes('text-xs')) {
+                            btnClasses += 'px-3 py-1.5 text-xs';
+                        } else if (select.className.includes('py-2') || select.className.includes('py-2.5')) {
+                            btnClasses += 'px-3.5 py-2.5 text-xs sm:text-sm';
+                        } else {
+                            btnClasses += 'px-4 py-3 text-xs sm:text-sm';
+                        }
+                        toggleBtn.className = btnClasses;
+
+                        const labelSpan = document.createElement('span');
+                        labelSpan.className = 'custom-dropdown-label truncate mr-2';
+                        
+                        const initialOption = select.options[select.selectedIndex] || select.options[0];
+                        labelSpan.textContent = initialOption ? initialOption.textContent : 'Select...';
+
+                        const chevronSvg = document.createElement('div');
+                        chevronSvg.className = 'transition-transform duration-200 text-gray-500 flex-shrink-0 flex items-center justify-center';
+                        chevronSvg.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>`;
+
+                        toggleBtn.appendChild(labelSpan);
+                        toggleBtn.appendChild(chevronSvg);
+
+                        // Create menu
+                        const menu = document.createElement('div');
+                        menu.className = 'custom-dropdown-menu absolute left-0 right-0 mt-1.5 bg-[#09090b]/98 backdrop-blur-xl border border-gray-800/80 rounded-xl shadow-2xl py-1.5 z-[99999] opacity-0 scale-95 pointer-events-none transition-all duration-200 origin-top max-h-60 overflow-y-auto scrollbar-thin';
+                        
+                        Array.from(select.options).forEach((opt, idx) => {
+                            const item = document.createElement('div');
+                            item.className = 'custom-dropdown-item px-4 py-2.5 text-xs sm:text-sm text-gray-300 hover:bg-primary-500/10 hover:text-primary-400 cursor-pointer transition-colors font-medium select-none truncate';
+                            if (opt.selected) {
+                                item.className += ' bg-primary-500/15 text-primary-400 font-semibold';
+                            }
+                            if (opt.disabled) {
+                                item.className += ' opacity-50 cursor-not-allowed pointer-events-none';
+                            }
+                            item.textContent = opt.textContent;
+                            item.dataset.value = opt.value;
+
+                            item.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                if (opt.disabled) return;
+
+                                select.selectedIndex = idx;
+                                
+                                menu.querySelectorAll('.custom-dropdown-item').forEach(el => el.classList.remove('bg-primary-500/15', 'text-primary-400', 'font-semibold'));
+                                item.classList.add('bg-primary-500/15', 'text-primary-400', 'font-semibold');
+                                
+                                labelSpan.textContent = opt.textContent;
+                                closeMenu();
+
+                                select.dispatchEvent(new Event('change', { bubbles: true }));
+                            });
+
+                            menu.appendChild(item);
+                        });
+
+                        const openMenu = () => {
+                            document.querySelectorAll('.custom-dropdown-menu').forEach(m => {
+                                if (m !== menu) {
+                                    m.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+                                    m.classList.remove('opacity-100', 'scale-100');
+                                    const c = m.previousElementSibling?.querySelector('div');
+                                    if (c) c.style.transform = 'rotate(0deg)';
+                                }
+                            });
+
+                            menu.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+                            menu.classList.add('opacity-100', 'scale-100');
+                            chevronSvg.style.transform = 'rotate(180deg)';
+                        };
+
+                        const closeMenu = () => {
+                            menu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+                            menu.classList.remove('opacity-100', 'scale-100');
+                            chevronSvg.style.transform = 'rotate(0deg)';
+                        };
+
+                        toggleBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const isOpen = !menu.classList.contains('pointer-events-none');
+                            if (isOpen) {
+                                closeMenu();
+                            } else {
+                                openMenu();
+                            }
+                        });
+
+                        document.addEventListener('click', () => {
+                            closeMenu();
+                        });
+
+                        // Insert custom element structure
+                        select.parentNode.insertBefore(wrapper, select);
+                        wrapper.appendChild(select);
+                        wrapper.appendChild(toggleBtn);
+                        wrapper.appendChild(menu);
+                    });
+                };
+
+                // Run replacer on load and check periodically for dynamically added dropdowns
+                window.initCustomDropdowns();
+                setInterval(window.initCustomDropdowns, 800);
             });
         </script>
         @stack('scripts')
