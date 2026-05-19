@@ -317,7 +317,11 @@
                             isDelete: isDeleteAction,
                             onConfirm: () => {
                                 e.target.dataset.confirmed = 'true';
-                                e.target.submit();
+                                if (e.target.classList.contains('deprovision-form') && typeof window.startDeprovisioningSteps === 'function') {
+                                    window.startDeprovisioningSteps(e.target);
+                                } else {
+                                    e.target.submit();
+                                }
                             }
                         });
                     }
