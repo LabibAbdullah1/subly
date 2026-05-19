@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Subdomain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class SubdomainController extends Controller
@@ -74,10 +75,14 @@ class SubdomainController extends Controller
         // Delete all payments explicitly linked to this subdomain so the plan is removed
         $subdomain->payments()->delete();
 
+        // Deprovision from cPanel (delete subdomain, database, files)
+        try {
+            app(\App\Services\ServerProvisioningService::class)->deprovisionSubdomain($subdomain);
+        } catch (\Exception $e) {
+            Log::error("Failed to deprovision subdomain from cPanel during user cancellation: " . $e->getMessage());
+        }
+
         // The Subdomain model has SoftDeletes, so this will soft delete it.
-        // It's also linked via foreign keys so cascades might happen depending on DB schema, 
-        // but Laravel handles soft delete relationships mostly manually. 
-        // We leave deployments alone as they have their own SoftDeletes and can be cleaned by Admin.
         $subdomain->delete();
 
         return redirect()->route('client.index')->with('success', 'Subdomain and its active plan have been successfully cancelled and removed.');

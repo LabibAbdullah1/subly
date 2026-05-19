@@ -189,7 +189,10 @@
                                             </button>
                                         </div>
                                         <h4 class="font-medium text-gray-200 flex items-center mb-4 pb-3 border-b border-gray-800">
-                                            {{ $sub->full_domain }}
+                                            <a href="https://{{ $sub->full_domain }}" target="_blank" class="hover:text-primary-400 hover:underline transition-colors flex items-center gap-1">
+                                                {{ $sub->full_domain }}
+                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                            </a>
                                         </h4>
                                         <ul class="text-sm space-y-3">
                                             <li class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-950 px-4 py-3 rounded-xl border border-gray-800 group/item gap-2">

@@ -77,7 +77,7 @@
                     </div>
                     <div>
                         <span class="text-gray-500 block">External URL:</span>
-                        <a href="http://{{ $subdomain->full_domain }}" target="_blank" class="text-primary-400 hover:underline">http://{{ $subdomain->full_domain }}</a>
+                        <a href="https://{{ $subdomain->full_domain }}" target="_blank" class="text-primary-400 hover:underline">https://{{ $subdomain->full_domain }}</a>
                     </div>
                  </div>
             </div>

@@ -263,6 +263,86 @@ class ServerProvisioningService
     }
 
     /**
+     * Deprovision Virtual Host, Database, and files for a Subdomain when unsubscribed/deleted.
+     */
+    public function deprovisionSubdomain(Subdomain $subdomain): void
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Subdomain {$subdomain->full_domain} deprovisioned.");
+            return;
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $rootDomain = config('services.hosting_panel.root_domain', 'subly.my.id');
+
+            // 1. Delete Subdomain from cPanel
+            try {
+                // Try dot format first
+                $this->callCpanelApi('SubDomain', 'delsubdomain', [
+                    'domain' => $subdomain->full_domain,
+                ]);
+                Log::info("cPanel Subdomain deleted (dot format): {$subdomain->full_domain}");
+            } catch (\Exception $e) {
+                if (str_contains($e->getMessage(), 'does not belong to') || str_contains($e->getMessage(), 'tidak dimiliki')) {
+                    // Try underscore format for addon domains
+                    $underscoreDomain = "{$subdomain->name}_{$rootDomain}";
+                    Log::info("Retrying subdomain deletion with underscore format: {$underscoreDomain}");
+                    $this->callCpanelApi('SubDomain', 'delsubdomain', [
+                        'domain' => $underscoreDomain,
+                    ]);
+                    Log::info("cPanel Subdomain deleted (underscore format): {$underscoreDomain}");
+                } else {
+                    throw $e;
+                }
+            }
+
+            // 2. Delete MySQL Database
+            $database = $subdomain->userDatabases()->first();
+            if ($database) {
+                try {
+                    $this->callCpanelApi('Mysql', 'delete_database', [
+                        'name' => $database->db_name,
+                    ]);
+                    Log::info("cPanel Database deleted: {$database->db_name}");
+                } catch (\Exception $e) {
+                    Log::error("Failed to delete cPanel Database: " . $e->getMessage());
+                }
+
+                // 3. Delete MySQL User (only if no other subdomains of the same owner are using it)
+                $otherUses = UserDatabase::where('db_user', $database->db_user)
+                    ->where('id', '!=', $database->id)
+                    ->exists();
+
+                if (!$otherUses) {
+                    try {
+                        $this->callCpanelApi('Mysql', 'delete_user', [
+                            'name' => $database->db_user,
+                        ]);
+                        Log::info("cPanel Database User deleted: {$database->db_user}");
+                    } catch (\Exception $e) {
+                        Log::error("Failed to delete cPanel Database User: " . $e->getMessage());
+                    }
+                } else {
+                    Log::info("Database user {$database->db_user} is still used by other subdomains, skipping user deletion.");
+                }
+
+                // Delete database record
+                $database->delete();
+            }
+
+            // 4. Delete Directory Files
+            if ($subdomain->doc_root && str_starts_with($subdomain->doc_root, "/home/{$cpanelUser}/")) {
+                Log::info("Deleting document root folder: {$subdomain->doc_root}");
+                shell_exec("rm -rf " . escapeshellarg($subdomain->doc_root));
+            }
+        } catch (\Exception $e) {
+            Log::error("cPanel deprovisioning failed for subdomain {$subdomain->full_domain}: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
      * Suspend a subdomain by writing suspended landing page and .htaccess redirect.
      */
     public function suspendSubdomain(Subdomain $subdomain): void

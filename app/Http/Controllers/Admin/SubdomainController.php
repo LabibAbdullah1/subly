@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Plan;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SubdomainController extends Controller
 {
@@ -92,6 +93,12 @@ class SubdomainController extends Controller
 
     public function destroy(Subdomain $subdomain)
     {
+        try {
+            app(\App\Services\ServerProvisioningService::class)->deprovisionSubdomain($subdomain);
+        } catch (\Exception $e) {
+            Log::error("Failed to deprovision subdomain from cPanel during admin deletion: " . $e->getMessage());
+        }
+
         $subdomain->delete();
         return redirect()->route('admin.subdomains.index')->with('success', 'Subdomain deleted successfully.');
     }
