@@ -45,5 +45,19 @@ Route::get('/link-storage', function () {
     abort(403);
 });
 
+// Temporary migration runner route for production cPanel
+Route::get('/run-migrations', function () {
+    if (auth()->check() && auth()->user()->role === 'Admin') {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            $output = \Illuminate\Support\Facades\Artisan::output();
+            return "Migrations run successfully!<br><pre>" . $output . "</pre>";
+        } catch (\Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
+    }
+    abort(403);
+});
+
 require __DIR__.'/auth.php';
 
