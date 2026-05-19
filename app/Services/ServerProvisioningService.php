@@ -44,7 +44,7 @@ class ServerProvisioningService
             } else {
                 // Create new database user & password
                 $dbUser = 'sublymyi_' . strtolower(Str::random(8));
-                $dbPass = Str::password(16, true, true, true, false);
+                $dbPass = $this->generateSafeDbPassword();
             }
 
             $database = UserDatabase::create([
@@ -112,7 +112,7 @@ class ServerProvisioningService
             ]);
 
             $this->callCpanelApi('Mysql', 'create_database', [
-                'name' => $dbName,
+                'name' => $cleanDbName,
             ]);
             Log::info("cPanel Database created: {$dbName}");
 
@@ -124,7 +124,7 @@ class ServerProvisioningService
 
             if (!$userExistsOnServer) {
                 $this->callCpanelApi('Mysql', 'create_user', [
-                    'name' => $dbUser,
+                    'name' => $cleanUsrName,
                     'password' => $database->db_password,
                 ]);
                 Log::info("cPanel Database User created: {$dbUser}");
@@ -136,9 +136,9 @@ class ServerProvisioningService
 
             // 4. Assign All Privileges (Link User to Database)
             $this->callCpanelApi('Mysql', 'set_privileges_on_database', [
-                'user' => $dbUser,
-                'database' => $dbName,
-                'privileges' => 'ALL PRIVILEGES',
+                'user' => $cleanUsrName,
+                'database' => $cleanDbName,
+                'privileges' => 'ALL',
             ]);
             Log::info("cPanel Database Privileges assigned.");
 
@@ -668,5 +668,19 @@ class ServerProvisioningService
     </div>
 </body>
 </html>';
+    }
+
+    /**
+     * Generate a secure database password without problematic symbols.
+     */
+    protected function generateSafeDbPassword(): string
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $password = '';
+        for ($i = 0; $i < 20; $i++) {
+            $password .= $chars[rand(0, strlen($chars) - 1)];
+        }
+        // Append digits to satisfy strength requirements
+        return $password . rand(100, 999);
     }
 }
