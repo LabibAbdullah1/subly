@@ -331,9 +331,9 @@ class ServerProvisioningService
                 }
             }
             $err = ($response->json('errors') ?? $response->json('result.errors') ?? [])[0] ?? $response->body();
-            Log::warn("cPanel HTTP API returned error for {$module}/{$function}: " . $err . ". Trying local CLI fallback...");
+            Log::warning("cPanel HTTP API returned error for {$module}/{$function}: " . $err . ". Trying local CLI fallback...");
         } catch (\Exception $e) {
-            Log::warn("cPanel HTTP API connection failed for {$module}/{$function}: " . $e->getMessage() . ". Trying local CLI fallback...");
+            Log::warning("cPanel HTTP API connection failed for {$module}/{$function}: " . $e->getMessage() . ". Trying local CLI fallback...");
         }
 
         // 2. Fallback: Try local CLI (uapi command)
