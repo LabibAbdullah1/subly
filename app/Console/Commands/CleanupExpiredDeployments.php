@@ -33,6 +33,14 @@ class CleanupExpiredDeployments extends Command
             $subdomain->update(['status' => 'inactive']);
             $subdomainsDeactivated++;
 
+            // Suspend the subdomain in cPanel (overwrites index.html & .htaccess)
+            try {
+                app(\App\Services\ServerProvisioningService::class)->suspendSubdomain($subdomain);
+                $this->info("Suspended cPanel site for: {$subdomain->full_domain}");
+            } catch (\Exception $e) {
+                $this->error("Failed to suspend cPanel site for {$subdomain->full_domain}: " . $e->getMessage());
+            }
+
             // Clean up all associated deployment ZIP archives
             foreach ($subdomain->deployments as $deployment) {
                 if ($deployment->zip_path && \Storage::exists($deployment->zip_path)) {
