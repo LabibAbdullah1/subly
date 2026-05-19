@@ -112,7 +112,7 @@ class ServerProvisioningService
             ]);
 
             $this->callCpanelApi('Mysql', 'create_database', [
-                'name' => $cleanDbName,
+                'name' => $dbName,
             ]);
             Log::info("cPanel Database created: {$dbName}");
 
@@ -124,7 +124,7 @@ class ServerProvisioningService
 
             if (!$userExistsOnServer) {
                 $this->callCpanelApi('Mysql', 'create_user', [
-                    'name' => $cleanUsrName,
+                    'name' => $dbUser,
                     'password' => $database->db_password,
                 ]);
                 Log::info("cPanel Database User created: {$dbUser}");
@@ -136,8 +136,8 @@ class ServerProvisioningService
 
             // 4. Assign All Privileges (Link User to Database)
             $this->callCpanelApi('Mysql', 'set_privileges_on_database', [
-                'user' => $cleanUsrName,
-                'database' => $cleanDbName,
+                'user' => $dbUser,
+                'database' => $dbName,
                 'privileges' => 'ALL',
             ]);
             Log::info("cPanel Database Privileges assigned.");
