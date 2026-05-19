@@ -49,6 +49,11 @@ Route::get('/link-storage', function () {
 Route::get('/run-migrations', function () {
     if (auth()->check() && auth()->user()->role === 'Admin') {
         try {
+            // Hapus riwayat migrasi reports agar dipaksa jalan ulang
+            \Illuminate\Support\Facades\DB::table('migrations')
+                ->where('migration', '2026_03_08_101228_create_reports_table')
+                ->delete();
+
             \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
             $output = \Illuminate\Support\Facades\Artisan::output();
             return "Migrations run successfully!<br><pre>" . $output . "</pre>";
