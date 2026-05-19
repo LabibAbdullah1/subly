@@ -417,56 +417,31 @@
 
                     const result = await response.json();
 
-        }
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Upload failed');
+                    }
 
-        // Chunk upload function
-        async function uploadChunk(file, chunkIndex, totalChunks, btn, btnText, spinner, progressBar, progressPercent) {
-            const start = chunkIndex * CHUNK_SIZE;
-            const end = Math.min(file.size, start + CHUNK_SIZE);
-            const chunk = file.slice(start, end);
+                    // Update UI Progress
+                    const percent = Math.round(((i + 1) / totalChunks) * 100);
+                    progressBar.style.width = percent + '%';
+                    progressPercent.innerText = percent + '%';
 
-            const formData = new FormData();
-            formData.append('file', chunk);
-            formData.append('chunkIndex', chunkIndex);
-            formData.append('totalChunks', totalChunks);
-            formData.append('fileName', file.name);
-
-            try {
-                const response = await fetch("{{ route('client.deployments.upload', $subdomain->id) }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result.error || 'Upload failed');
+                    if (i === totalChunks - 1) {
+                        btnText.innerText = "Deploying...";
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                } catch (error) {
+                    console.error('Upload Error:', error);
+                    alert('Error during upload: ' + error.message);
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    spinner.classList.add('hidden');
+                    btnText.innerText = "Retry Deployment";
+                    return;
                 }
-
-                // Update UI Progress
-                const percent = Math.round(((chunkIndex + 1) / totalChunks) * 100);
-                progressBar.style.width = percent + '%';
-                progressPercent.innerText = percent + '%';
-
-                if (chunkIndex === totalChunks - 1) {
-                    btnText.innerText = "Deploying...";
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
-                }
-            } catch (error) {
-                console.error('Upload Error:', error);
-                alert('Error during upload: ' + error.message);
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                spinner.classList.add('hidden');
-                btnText.innerText = "Retry Deployment";
-                throw error; // Rethrow to stop the loop
             }
-        }
     </script>
 
     <!-- Fullscreen Deprovisioning Glassmorphic Stepper Overlay -->
