@@ -323,7 +323,7 @@ class ServerProvisioningService
 
             if ($response->successful()) {
                 $status = $response->json('status') ?? $response->json('result.status');
-                if ($status === 1) {
+                if ($status == 1) {
                     return [
                         'success' => true,
                         'data' => $response->json()
@@ -331,6 +331,17 @@ class ServerProvisioningService
                 }
             }
             $err = ($response->json('errors') ?? $response->json('result.errors') ?? [])[0] ?? $response->body();
+            
+            // Check if it's already exists
+            if (preg_match('/(already exists|already configured|already exist|does exist)/i', $err)) {
+                Log::info("cPanel HTTP API returned resource already exists, treating as success: {$err}");
+                return [
+                    'success' => true,
+                    'data' => $response->json(),
+                    'warning' => 'already_exists'
+                ];
+            }
+
             Log::warning("cPanel HTTP API returned error for {$module}/{$function}: " . $err . ". Trying local CLI fallback...");
         } catch (\Exception $e) {
             Log::warning("cPanel HTTP API connection failed for {$module}/{$function}: " . $e->getMessage() . ". Trying local CLI fallback...");
@@ -363,7 +374,7 @@ class ServerProvisioningService
 
             if ($output) {
                 $status = $output['status'] ?? $output['result']['status'] ?? 0;
-                if ($status === 1) {
+                if ($status == 1) {
                     Log::info("cPanel local CLI succeeded using: {$commandRun}");
                     return [
                         'success' => true,
@@ -372,6 +383,15 @@ class ServerProvisioningService
                 }
                 
                 $err = ($output['errors'] ?? $output['result']['errors'] ?? [])[0] ?? json_encode($output);
+                if (preg_match('/(already exists|already configured|already exist|does exist)/i', $err)) {
+                    Log::info("cPanel local CLI returned resource already exists, treating as success: {$err}");
+                    return [
+                        'success' => true,
+                        'data' => $output,
+                        'warning' => 'already_exists'
+                    ];
+                }
+                
                 throw new \Exception($err);
             }
             
