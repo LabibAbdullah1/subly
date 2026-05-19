@@ -529,6 +529,12 @@
     <script>
         window.startDeprovisioningSteps = function(formElement) {
             const overlay = document.getElementById('deprovision-overlay');
+            
+            // Move overlay to document body to bypass parent container transform/filter limitations
+            if (overlay && overlay.parentNode !== document.body) {
+                document.body.appendChild(overlay);
+            }
+
             const logsContainer = document.getElementById('deprovision-logs');
             const progressLine = document.getElementById('deprovision-progress-line');
 
