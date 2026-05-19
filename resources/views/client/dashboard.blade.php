@@ -294,28 +294,227 @@
             });
         }
 
-        // Handle Claim Subdomain Form Submission (Disable button & show loading spinner)
+        // Handle Claim Subdomain Form Submission (Show premium animated stepper overlay)
         document.addEventListener('DOMContentLoaded', function() {
             const claimForms = document.querySelectorAll('form[action="{{ route("client.subdomains.store") }}"]');
             claimForms.forEach(form => {
                 form.addEventListener('submit', function(e) {
                     const button = this.querySelector('button[type="submit"]');
                     if (button) {
-                        // Prevent double clicks
                         button.disabled = true;
                         button.classList.add('opacity-75', 'cursor-not-allowed', 'pointer-events-none');
-                        
-                        // Replace button content with a premium spinner and text
-                        button.innerHTML = `
-                            <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Claiming...
-                        `;
+                    }
+
+                    // Show Provision Stepper Overlay
+                    const overlay = document.getElementById('provision-overlay');
+                    if (overlay) {
+                        overlay.classList.remove('hidden');
+                        setTimeout(() => {
+                            overlay.classList.remove('opacity-0');
+                            overlay.classList.add('opacity-100');
+                        }, 50);
+
+                        // Start Provisioning Stepper Animations
+                        startProvisioningSteps();
                     }
                 });
             });
         });
+
+        function startProvisioningSteps() {
+            const step1 = document.getElementById('step-1');
+            const step2 = document.getElementById('step-2');
+            const step3 = document.getElementById('step-3');
+            const progressLine = document.getElementById('stepper-progress-line');
+            const logText = document.getElementById('provision-log-text');
+
+            // Helper to activate a step
+            const activateStep = (stepEl, iconColor) => {
+                const icon = stepEl.querySelector('.step-icon');
+                const num = stepEl.querySelector('.step-number');
+                const spinner = stepEl.querySelector('.step-spinner');
+                const title = stepEl.querySelector('.step-title');
+                
+                icon.classList.remove('border-gray-800', 'text-gray-500');
+                icon.classList.add(`border-${iconColor}-500`, 'text-white', `shadow-[0_0_15px_rgba(94,106,210,0.3)]`);
+                if(num) num.classList.add('hidden');
+                if(spinner) spinner.classList.remove('hidden');
+                if(title) {
+                    title.classList.remove('text-gray-500');
+                    title.classList.add('text-white');
+                }
+            };
+
+            // Helper to complete a step
+            const completeStep = (stepEl) => {
+                const icon = stepEl.querySelector('.step-icon');
+                const spinner = stepEl.querySelector('.step-spinner');
+                const check = stepEl.querySelector('.step-check');
+                const desc = stepEl.querySelector('.step-desc');
+                
+                if(spinner) spinner.classList.add('hidden');
+                if(check) check.classList.remove('hidden');
+                
+                icon.classList.remove('shadow-[0_0_15px_rgba(94,106,210,0.3)]');
+                icon.classList.add('bg-green-500', 'border-green-500', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
+                
+                if(desc) {
+                    desc.classList.remove('text-gray-500');
+                    desc.classList.add('text-green-400', 'font-medium');
+                }
+            };
+
+            // Phase 1: Subdomain creation (0s - 2.2s)
+            setTimeout(() => {
+                activateStep(step1, 'primary');
+                logText.innerText = "Menghubungi web server panel...";
+                
+                setTimeout(() => {
+                    logText.innerText = "Membuat Virtual Host subdomain...";
+                }, 800);
+
+                setTimeout(() => {
+                    logText.innerText = "Mengkonfigurasi dokumen root di server...";
+                }, 1500);
+            }, 100);
+
+            // Phase 2: Database creation (2.2s - 4.4s)
+            setTimeout(() => {
+                completeStep(step1);
+                progressLine.style.height = '50%';
+                
+                activateStep(step2, 'purple');
+                logText.innerText = "Menghubungi server MySQL...";
+
+                setTimeout(() => {
+                    logText.innerText = "Membuat MySQL Database baru...";
+                }, 3000);
+
+                setTimeout(() => {
+                    logText.innerText = "Mengamankan skema basis data...";
+                }, 3700);
+            }, 2200);
+
+            // Phase 3: Database User creation (4.4s - 6.6s)
+            setTimeout(() => {
+                completeStep(step2);
+                progressLine.style.height = '100%';
+
+                activateStep(step3, 'pink');
+                logText.innerText = "Membuat MySQL user database...";
+
+                setTimeout(() => {
+                    logText.innerText = "Menghubungkan user ke database (ALL PRIVILEGES)...";
+                }, 5200);
+
+                setTimeout(() => {
+                    logText.innerText = "Menyimpan kredensial basis data secara aman...";
+                }, 6000);
+            }, 4400);
+
+            // Phase 4: Finalization (6.6s+)
+            setTimeout(() => {
+                completeStep(step3);
+                logText.innerText = "Hampir selesai... Menyelesaikan konfigurasi server...";
+                logText.parentElement.classList.remove('border-gray-800');
+                logText.parentElement.classList.add('border-green-500/20', 'bg-green-500/5');
+                logText.classList.remove('text-primary-400');
+                logText.classList.add('text-green-400');
+            }, 6600);
+        }
     </script>
+
+    <!-- Provision Stepper Overlay -->
+    <div id="provision-overlay" class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-black/85 backdrop-blur-xl transition-all duration-500 opacity-0">
+        <div class="glass-panel max-w-lg w-full p-8 mx-4 bg-[#0B0F19]/90 border border-primary-500/20 shadow-[0_0_50px_rgba(94,106,210,0.15)] flex flex-col items-center text-center">
+            <!-- Animated Ambient Ring -->
+            <div class="relative w-24 h-24 mb-6 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full border-2 border-dashed border-primary-500/30 animate-spin" style="animation-duration: 10s;"></div>
+                <div class="absolute inset-2 rounded-full bg-primary-500/10 backdrop-blur-sm border border-primary-500/20"></div>
+                <svg class="w-10 h-10 text-primary-400 relative z-10 animate-bounce" style="animation-duration: 2s;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-2">Menyiapkan Server Anda</h3>
+            <p class="text-gray-400 text-xs sm:text-sm mb-8">Mohon tunggu sebentar, sistem sedang melakukan konfigurasi server dan database untuk subdomain baru Anda.</p>
+
+            <!-- Stepper Container -->
+            <div class="w-full space-y-6 relative mb-8">
+                <!-- Connecting Line -->
+                <div class="absolute left-6 top-4 bottom-4 w-0.5 bg-gray-800">
+                    <div id="stepper-progress-line" class="w-full bg-gradient-to-b from-primary-500 to-green-500 transition-all duration-[800ms] h-0"></div>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="flex items-start gap-4 text-left relative z-10" id="step-1">
+                    <div class="step-icon w-12 h-12 rounded-full border-2 border-gray-800 bg-gray-950 flex items-center justify-center flex-shrink-0 transition-all duration-300 text-gray-500">
+                        <span class="step-number text-sm font-bold">1</span>
+                        <!-- Spinner -->
+                        <svg class="step-spinner hidden w-5 h-5 text-primary-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <!-- Success Tick -->
+                        <svg class="step-check hidden w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="step-title text-sm font-bold text-gray-500 transition-colors">Pembuatan Subdomain</h4>
+                        <p class="step-desc text-xs text-gray-500">Membuat Virtual Host dan mengkonfigurasi dokumen root.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex items-start gap-4 text-left relative z-10" id="step-2">
+                    <div class="step-icon w-12 h-12 rounded-full border-2 border-gray-800 bg-gray-950 flex items-center justify-center flex-shrink-0 transition-all duration-300 text-gray-500">
+                        <span class="step-number text-sm font-bold">2</span>
+                        <!-- Spinner -->
+                        <svg class="step-spinner hidden w-5 h-5 text-purple-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <!-- Success Tick -->
+                        <svg class="step-check hidden w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="step-title text-sm font-bold text-gray-500 transition-colors">Pembuatan Database</h4>
+                        <p class="step-desc text-xs text-gray-500">Membuat MySQL Database di server hosting panel.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex items-start gap-4 text-left relative z-10" id="step-3">
+                    <div class="step-icon w-12 h-12 rounded-full border-2 border-gray-800 bg-gray-950 flex items-center justify-center flex-shrink-0 transition-all duration-300 text-gray-500">
+                        <span class="step-number text-sm font-bold">3</span>
+                        <!-- Spinner -->
+                        <svg class="step-spinner hidden w-5 h-5 text-pink-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <!-- Success Tick -->
+                        <svg class="step-check hidden w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="step-title text-sm font-bold text-gray-500 transition-colors">Pembuatan User & Privileges</h4>
+                        <p class="step-desc text-xs text-gray-500">Membuat user database baru dan menetapkan hak akses penuh.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal-like dynamic log -->
+            <div class="w-full bg-gray-950/60 rounded-xl px-4 py-3 border border-gray-800 flex items-center gap-3">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+                </span>
+                <span id="provision-log-text" class="text-xs font-mono text-primary-400">Menghubungi panel server...</span>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

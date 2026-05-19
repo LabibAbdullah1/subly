@@ -343,6 +343,174 @@
                     setTimeout(() => toast.remove(), 500);
                 }, 3000);
             };
+
+            // Intercept standard browser confirm() dialogs in the capture phase for forms and links
+            document.addEventListener('DOMContentLoaded', function() {
+                // 1. Define showCustomConfirmModal globally
+                window.showCustomConfirmModal = function(options) {
+                    const { title, message, isDelete, onConfirm } = options;
+
+                    // Check if modal already exists to prevent duplicates
+                    if (document.getElementById('custom-confirm-modal')) {
+                        return;
+                    }
+
+                    // Create overlay
+                    const overlay = document.createElement('div');
+                    overlay.id = 'custom-confirm-modal';
+                    overlay.className = 'fixed inset-0 z-[99999] flex items-center justify-center transition-all duration-300 opacity-0 pointer-events-auto';
+                    
+                    // Create separate backdrop to avoid CSS backdrop-filter blurring the children elements
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'absolute inset-0 bg-black/85 backdrop-blur-sm';
+                    overlay.appendChild(backdrop);
+                    
+                    // Create container card
+                    const container = document.createElement('div');
+                    container.className = 'relative bg-[#09090b]/98 border border-gray-800 rounded-2xl max-w-md w-full p-6 mx-4 shadow-[0_25px_60px_rgba(0,0,0,0.95),_0_0_50px_rgba(239,68,68,0.08)] transform scale-95 transition-all duration-300 flex flex-col overflow-hidden z-10';
+                    
+                    // Ambient glows
+                    const accentGlow = isDelete 
+                        ? '<div class="absolute -right-16 -top-16 w-36 h-36 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>'
+                        : '<div class="absolute -right-16 -top-16 w-36 h-36 bg-primary-600/10 rounded-full blur-3xl pointer-events-none"></div>';
+
+                    // Select styles based on theme/action
+                    const iconContainerClass = isDelete 
+                        ? 'text-red-500 bg-red-500/10 border-red-500/20' 
+                        : 'text-primary-400 bg-primary-500/10 border-primary-500/20';
+
+                    const confirmButtonClass = isDelete
+                        ? 'bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-[0.98]'
+                        : 'bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white shadow-[0_0_15px_rgba(94,106,210,0.3)] hover:shadow-[0_0_20px_rgba(94,106,210,0.5)] active:scale-[0.98]';
+
+                    const iconSvg = isDelete
+                        ? `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>`
+                        : `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+
+                    container.innerHTML = `
+                        ${accentGlow}
+                        <div class="flex items-center gap-4 mb-4 relative z-10">
+                            <div class="p-3 rounded-xl border ${iconContainerClass} flex-shrink-0 animate-pulse">
+                                ${iconSvg}
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white tracking-wide">${title}</h3>
+                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Konfirmasi Tindakan</p>
+                            </div>
+                        </div>
+                        <div class="mb-6 text-sm text-gray-300 leading-relaxed relative z-10">
+                            ${message}
+                        </div>
+                        <div class="flex items-center justify-end gap-3 relative z-10">
+                            <button type="button" class="btn-cancel px-4 py-2.5 rounded-xl border border-gray-800 text-gray-400 hover:text-white hover:bg-gray-800/50 transition-all duration-200 text-sm font-bold">
+                                Batal
+                            </button>
+                            <button type="button" class="btn-confirm px-5 py-2.5 rounded-xl ${confirmButtonClass} transition-all duration-200 text-sm font-bold">
+                                Konfirmasi
+                            </button>
+                        </div>
+                    `;
+
+                    overlay.appendChild(container);
+                    document.body.appendChild(overlay);
+
+                    // Open transition
+                    setTimeout(() => {
+                        overlay.classList.remove('opacity-0');
+                        container.classList.remove('scale-95');
+                    }, 10);
+
+                    const closeModal = () => {
+                        overlay.classList.add('opacity-0');
+                        container.classList.add('scale-95');
+                        setTimeout(() => overlay.remove(), 300);
+                    };
+
+                    container.querySelector('.btn-cancel').addEventListener('click', closeModal);
+                    container.querySelector('.btn-confirm').addEventListener('click', () => {
+                        closeModal();
+                        if (typeof onConfirm === 'function') {
+                            onConfirm();
+                        }
+                    });
+                };
+
+                // 2. Intercept all Form Submissions in capture phase
+                document.addEventListener('submit', function(e) {
+                    if (e.target.dataset.confirmed === 'true') {
+                        return;
+                    }
+
+                    const onsubmitAttr = e.target.getAttribute('onsubmit');
+                    if (onsubmitAttr && onsubmitAttr.includes('confirm(')) {
+                        // Prevent submission and inline code execution
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Extract message
+                        let message = "Apakah Anda yakin ingin melanjutkan?";
+                        const match = onsubmitAttr.match(/confirm\(['"](.*?)['"]\)/);
+                        if (match && match[1]) {
+                            message = match[1];
+                        }
+
+                        // Decide title and style
+                        let isDeleteAction = onsubmitAttr.toLowerCase().includes('delete') || 
+                                             onsubmitAttr.toLowerCase().includes('destroy') || 
+                                             onsubmitAttr.toLowerCase().includes('hapus') || 
+                                             onsubmitAttr.toLowerCase().includes('cancel') ||
+                                             onsubmitAttr.toLowerCase().includes('berhenti');
+
+                        let titleText = "Konfirmasi Tindakan";
+                        if (onsubmitAttr.toLowerCase().includes('berhenti') || onsubmitAttr.toLowerCase().includes('langganan')) {
+                            titleText = "Berhenti Berlangganan";
+                        } else if (isDeleteAction) {
+                            titleText = "Hapus Data Permanen";
+                        }
+
+                        window.showCustomConfirmModal({
+                            title: titleText,
+                            message: message,
+                            isDelete: isDeleteAction,
+                            onConfirm: () => {
+                                e.target.dataset.confirmed = 'true';
+                                e.target.submit();
+                            }
+                        });
+                    }
+                }, true);
+
+                // 3. Intercept all Anchor clicks in capture phase
+                document.addEventListener('click', function(e) {
+                    const anchor = e.target.closest('a');
+                    if (anchor) {
+                        if (anchor.dataset.confirmed === 'true') {
+                            return;
+                        }
+                        const onclickAttr = anchor.getAttribute('onclick');
+                        if (onclickAttr && onclickAttr.includes('confirm(')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            let message = "Apakah Anda yakin?";
+                            const match = onclickAttr.match(/confirm\(['"](.*?)['"]\)/);
+                            if (match && match[1]) {
+                                message = match[1];
+                            }
+
+                            window.showCustomConfirmModal({
+                                title: 'Konfirmasi Tindakan',
+                                message: message,
+                                isDelete: true,
+                                onConfirm: () => {
+                                    anchor.dataset.confirmed = 'true';
+                                    anchor.click();
+                                }
+                            });
+                        }
+                    }
+                }, true);
+            });
         </script>
         @stack('scripts')
     </body>
