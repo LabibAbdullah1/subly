@@ -64,10 +64,33 @@ class TestCpanelConnection extends Command
 
                 // cPanel API 2 returns root error key under "cpanelresult.error" or "cpanelresult.data.reason"
                 $subStatus = $subResponse->json('cpanelresult.data.result') ?? $subResponse->json('status') ?? 0;
+                $err = $subResponse->json('cpanelresult.data.reason') ?? $subResponse->body();
+
                 if ($subResponse->successful() && ($subStatus == 1 || $subStatus == '1')) {
                     $this->info("   [SUKSES] Subdomain berhasil dihapus.");
+                } elseif (str_contains($err, 'does not belong to') || str_contains($err, 'not belong to') || str_contains($err, 'tidak dimiliki')) {
+                    $underscoreSubdomain = "{$testSubName}_{$domain}";
+                    $this->warn("   [MENCOBA FORMAT UNDERSCORE] Gagal dengan format dot. Mencoba menghapus dengan format: {$underscoreSubdomain}...");
+                    
+                    $retryResponse = Http::withHeaders($headers)
+                        ->withoutVerifying()
+                        ->timeout(60)
+                        ->get("{$url}/json-api/cpanel", [
+                            'cpanel_jsonapi_user' => $username,
+                            'cpanel_jsonapi_apiversion' => '2',
+                            'cpanel_jsonapi_module' => 'SubDomain',
+                            'cpanel_jsonapi_func' => 'delsubdomain',
+                            'domain' => $underscoreSubdomain,
+                        ]);
+
+                    $retryStatus = $retryResponse->json('cpanelresult.data.result') ?? $retryResponse->json('status') ?? 0;
+                    if ($retryResponse->successful() && ($retryStatus == 1 || $retryStatus == '1')) {
+                        $this->info("   [SUKSES] Subdomain berhasil dihapus menggunakan format underscore.");
+                    } else {
+                        $err2 = $retryResponse->json('cpanelresult.data.reason') ?? $retryResponse->body();
+                        $this->error("   [GAGAL] " . $err2);
+                    }
                 } else {
-                    $err = $subResponse->json('cpanelresult.data.reason') ?? $subResponse->body();
                     $this->error("   [GAGAL] " . $err);
                 }
             } catch (\Exception $e) {

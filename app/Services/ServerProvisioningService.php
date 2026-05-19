@@ -86,33 +86,16 @@ class ServerProvisioningService
             $cpanelUser = config('services.hosting_panel.username', 'cpaneluser');
             $rootDomain = config('services.hosting_panel.root_domain', 'subly.my.id');
 
-            $headers = [
-                'Authorization' => "cpanel {$cpanelUser}:{$this->apiKey}"
-            ];
-
             // 1. Create Subdomain in cPanel
             // cPanel UAPI expects path relative to home directory (e.g. client/subdomain_name)
             $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-            $subResponse = Http::withHeaders($headers)
-                ->withoutVerifying()
-                ->timeout(60)
-                ->get("{$this->apiUrl}/execute/SubDomain/addsubdomain", [
-                    'domain' => $subdomain->name,
-                    'rootdomain' => $rootDomain,
-                    'dir' => $cleanDir,
-                ]);
-
-            $status = $subResponse->json('status') ?? $subResponse->json('result.status');
-            $errors = $subResponse->json('errors') ?? $subResponse->json('result.errors') ?? [];
-            $firstErr = is_array($errors) ? ($errors[0] ?? null) : $errors;
-
-            if (!$subResponse->successful() || $status === 0) {
-                $err = $firstErr ?? $subResponse->body();
-                Log::error("cPanel Subdomain creation failed: " . $err);
-                throw new \Exception("Gagal membuat subdomain di cPanel: " . $err);
-            }
-            Log::info("cPanel Subdomain created: " . $subResponse->body());
+            $this->callCpanelApi('SubDomain', 'addsubdomain', [
+                'domain' => $subdomain->name,
+                'rootdomain' => $rootDomain,
+                'dir' => $cleanDir,
+            ]);
+            Log::info("cPanel Subdomain created: {$subdomain->name}");
 
             // 2. Create MySQL Database
             // In cPanel, database and user names must begin with cpanel_username + _
@@ -128,23 +111,10 @@ class ServerProvisioningService
                 'db_user' => $dbUser,
             ]);
 
-            $dbCreateResponse = Http::withHeaders($headers)
-                ->withoutVerifying()
-                ->timeout(60)
-                ->get("{$this->apiUrl}/execute/Mysql/create_database", [
-                    'name' => $dbName,
-                ]);
-
-            $dbStatus = $dbCreateResponse->json('status') ?? $dbCreateResponse->json('result.status');
-            $dbErrors = $dbCreateResponse->json('errors') ?? $dbCreateResponse->json('result.errors') ?? [];
-            $dbFirstErr = is_array($dbErrors) ? ($dbErrors[0] ?? null) : $dbErrors;
-
-            if (!$dbCreateResponse->successful() || $dbStatus === 0) {
-                $err = $dbFirstErr ?? $dbCreateResponse->body();
-                Log::error("cPanel Database creation failed: " . $err);
-                throw new \Exception("Gagal membuat database di cPanel: " . $err);
-            }
-            Log::info("cPanel Database created: " . $dbCreateResponse->body());
+            $this->callCpanelApi('Mysql', 'create_database', [
+                'name' => $dbName,
+            ]);
+            Log::info("cPanel Database created: {$dbName}");
 
             // 3. Create MySQL Database User
             // Check if this MySQL user already exists for another database of the same owner
@@ -153,24 +123,11 @@ class ServerProvisioningService
                 ->exists();
 
             if (!$userExistsOnServer) {
-                $usrCreateResponse = Http::withHeaders($headers)
-                    ->withoutVerifying()
-                    ->timeout(60)
-                    ->get("{$this->apiUrl}/execute/Mysql/create_user", [
-                        'name' => $dbUser,
-                        'password' => $database->db_password,
-                    ]);
-
-                $usrStatus = $usrCreateResponse->json('status') ?? $usrCreateResponse->json('result.status');
-                $usrErrors = $usrCreateResponse->json('errors') ?? $usrCreateResponse->json('result.errors') ?? [];
-                $usrFirstErr = is_array($usrErrors) ? ($usrErrors[0] ?? null) : $usrErrors;
-
-                if (!$usrCreateResponse->successful() || $usrStatus === 0) {
-                    $err = $usrFirstErr ?? $usrCreateResponse->body();
-                    Log::error("cPanel Database User creation failed: " . $err);
-                    throw new \Exception("Gagal membuat user database di cPanel: " . $err);
-                }
-                Log::info("cPanel Database User created: " . $usrCreateResponse->body());
+                $this->callCpanelApi('Mysql', 'create_user', [
+                    'name' => $dbUser,
+                    'password' => $database->db_password,
+                ]);
+                Log::info("cPanel Database User created: {$dbUser}");
             } else {
                 Log::info("cPanel Database User already exists on server, skipping user creation.", [
                     'db_user' => $dbUser,
@@ -178,37 +135,21 @@ class ServerProvisioningService
             }
 
             // 4. Assign All Privileges (Link User to Database)
-            $privResponse = Http::withHeaders($headers)
-                ->withoutVerifying()
-                ->timeout(60)
-                ->get("{$this->apiUrl}/execute/Mysql/set_privileges_on_database", [
-                    'user' => $dbUser,
-                    'database' => $dbName,
-                    'privileges' => 'ALL PRIVILEGES',
-                ]);
-
-            $privStatus = $privResponse->json('status') ?? $privResponse->json('result.status');
-            $privErrors = $privResponse->json('errors') ?? $privResponse->json('result.errors') ?? [];
-            $privFirstErr = is_array($privErrors) ? ($privErrors[0] ?? null) : $privErrors;
-
-            if (!$privResponse->successful() || $privStatus === 0) {
-                $err = $privFirstErr ?? $privResponse->body();
-                Log::error("cPanel Database Privileges assignment failed: " . $err);
-                throw new \Exception("Gagal memberikan hak akses database di cPanel: " . $err);
-            }
-            Log::info("cPanel Database Privileges assigned: " . $privResponse->body());
+            $this->callCpanelApi('Mysql', 'set_privileges_on_database', [
+                'user' => $dbUser,
+                'database' => $dbName,
+                'privileges' => 'ALL PRIVILEGES',
+            ]);
+            Log::info("cPanel Database Privileges assigned.");
 
             // 5. Create default index.html for new subdomain
             try {
                 $defaultHtml = $this->getDefaultHtmlTemplate($subdomain->full_domain);
-                Http::withHeaders($headers)
-                    ->withoutVerifying()
-                    ->timeout(30)
-                    ->get("{$this->apiUrl}/execute/Fileman/save_file_content", [
-                        'dir' => $cleanDir,
-                        'file' => 'index.html',
-                        'content' => $defaultHtml,
-                    ]);
+                $this->callCpanelApi('Fileman', 'save_file_content', [
+                    'dir' => $cleanDir,
+                    'file' => 'index.html',
+                    'content' => $defaultHtml,
+                ]);
                 Log::info("Default index.html created for subdomain: {$subdomain->full_domain}");
             } catch (\Exception $e) {
                 Log::error("Failed to create default index.html: " . $e->getMessage());
@@ -333,37 +274,111 @@ class ServerProvisioningService
 
         try {
             $cpanelUser = config('services.hosting_panel.username', 'cpaneluser');
-            $headers = [
-                'Authorization' => "cpanel {$cpanelUser}:{$this->apiKey}"
-            ];
-
             $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
             // 1. Write suspended index.html
             $suspendedHtml = $this->getSuspendedHtmlTemplate($subdomain->full_domain);
-            Http::withHeaders($headers)
-                ->withoutVerifying()
-                ->timeout(30)
-                ->get("{$this->apiUrl}/execute/Fileman/save_file_content", [
-                    'dir' => $cleanDir,
-                    'file' => 'index.html',
-                    'content' => $suspendedHtml,
-                ]);
+            $this->callCpanelApi('Fileman', 'save_file_content', [
+                'dir' => $cleanDir,
+                'file' => 'index.html',
+                'content' => $suspendedHtml,
+            ]);
 
             // 2. Write .htaccess to redirect all requests to index.html
             $htaccess = "DirectoryIndex index.html\nRewriteEngine On\nRewriteCond %{REQUEST_URI} !/index.html$\nRewriteRule ^(.*)$ /index.html [R=302,L]\n";
-            Http::withHeaders($headers)
-                ->withoutVerifying()
-                ->timeout(30)
-                ->get("{$this->apiUrl}/execute/Fileman/save_file_content", [
-                    'dir' => $cleanDir,
-                    'file' => '.htaccess',
-                    'content' => $htaccess,
-                ]);
+            $this->callCpanelApi('Fileman', 'save_file_content', [
+                'dir' => $cleanDir,
+                'file' => '.htaccess',
+                'content' => $htaccess,
+            ]);
 
             Log::info("Subdomain {$subdomain->full_domain} suspended successfully on cPanel.");
         } catch (\Exception $e) {
             Log::error("Failed to suspend subdomain on cPanel: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Call cPanel API via HTTP, falling back to local CLI (uapi) if HTTP times out or fails.
+     */
+    protected function callCpanelApi(string $module, string $function, array $params): array
+    {
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $headers = [
+            'Authorization' => "cpanel {$cpanelUser}:{$this->apiKey}"
+        ];
+
+        // 1. Try HTTP API first
+        try {
+            Log::info("Calling cPanel HTTP API: {$module}/{$function}", [
+                'module' => $module,
+                'function' => $function,
+                'params' => array_merge($params, isset($params['password']) ? ['password' => '***'] : [], isset($params['content']) ? ['content' => '...length ' . strlen($params['content'])] : [])
+            ]);
+
+            $response = Http::withHeaders($headers)
+                ->withoutVerifying()
+                ->timeout(10) // Lower timeout to quickly trigger CLI fallback if blocked
+                ->get("{$this->apiUrl}/execute/{$module}/{$function}", $params);
+
+            if ($response->successful()) {
+                $status = $response->json('status') ?? $response->json('result.status');
+                if ($status === 1) {
+                    return [
+                        'success' => true,
+                        'data' => $response->json()
+                    ];
+                }
+            }
+            $err = ($response->json('errors') ?? $response->json('result.errors') ?? [])[0] ?? $response->body();
+            Log::warn("cPanel HTTP API returned error for {$module}/{$function}: " . $err . ". Trying local CLI fallback...");
+        } catch (\Exception $e) {
+            Log::warn("cPanel HTTP API connection failed for {$module}/{$function}: " . $e->getMessage() . ". Trying local CLI fallback...");
+        }
+
+        // 2. Fallback: Try local CLI (uapi command)
+        try {
+            $binaries = ['uapi', '/usr/bin/uapi', '/usr/local/cpanel/bin/uapi'];
+            $output = null;
+            $commandRun = '';
+            
+            foreach ($binaries as $bin) {
+                // Securely construct the command with escapeshellarg
+                $cmd = "{$bin} --output=json " . escapeshellarg($module) . " " . escapeshellarg($function);
+                foreach ($params as $key => $value) {
+                    $cmd .= " " . escapeshellarg($key) . "=" . escapeshellarg($value);
+                }
+                
+                // Execute command
+                Log::info("Running cPanel local CLI: {$bin} --output=json {$module} {$function}");
+                $res = shell_exec($cmd);
+                if ($res) {
+                    $output = json_decode($res, true);
+                    if ($output) {
+                        $commandRun = $bin;
+                        break;
+                    }
+                }
+            }
+
+            if ($output) {
+                $status = $output['status'] ?? $output['result']['status'] ?? 0;
+                if ($status === 1) {
+                    Log::info("cPanel local CLI succeeded using: {$commandRun}");
+                    return [
+                        'success' => true,
+                        'data' => $output
+                    ];
+                }
+                
+                $err = ($output['errors'] ?? $output['result']['errors'] ?? [])[0] ?? json_encode($output);
+                throw new \Exception($err);
+            }
+            
+            throw new \Exception("Local uapi binary not found, returned empty output, or shell_exec is disabled.");
+        } catch (\Exception $e) {
+            Log::error("cPanel CLI fallback failed: " . $e->getMessage());
+            throw new \Exception("Koneksi cPanel gagal (HTTP Timeout & CLI Fallback Error: " . $e->getMessage() . ")");
         }
     }
 
