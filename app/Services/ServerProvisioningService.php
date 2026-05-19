@@ -331,8 +331,8 @@ class ServerProvisioningService
                     Log::error("Failed to delete cPanel Database User: " . $e->getMessage());
                 }
 
-                // Delete database record
-                $database->delete();
+                // Delete database record permanently
+                $database->forceDelete();
             }
 
             // 4. Delete Directory Files

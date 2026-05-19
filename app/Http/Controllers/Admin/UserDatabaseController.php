@@ -11,7 +11,7 @@ class UserDatabaseController extends Controller
 {
     public function index()
     {
-        $databases = UserDatabase::with('subdomain.user')->latest()->paginate(15);
+        $databases = UserDatabase::has('subdomain')->with('subdomain.user')->latest()->paginate(15);
         return view('admin.databases.index', compact('databases'));
     }
 
