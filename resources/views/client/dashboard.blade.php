@@ -293,7 +293,7 @@
 
         // Handle Claim Subdomain Form Submission (Disable button & show loading spinner)
         document.addEventListener('DOMContentLoaded', function() {
-            const claimForms = document.querySelectorAll('form[action="{{ route(\'client.subdomains.store\') }}"]');
+            const claimForms = document.querySelectorAll('form[action="{{ route("client.subdomains.store") }}"]');
             claimForms.forEach(form => {
                 form.addEventListener('submit', function(e) {
                     const button = this.querySelector('button[type="submit"]');
