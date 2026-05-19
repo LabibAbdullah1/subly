@@ -28,7 +28,7 @@
             @endif
 
             <!-- Start Project & Hosted Environments -->
-            @if($subdomains->count() > 0 && $available_slots > $subdomains->count())
+            @if($subdomains->count() > 0 && $available_slots > 0)
                 <div class="glass-panel p-4 sm:p-6 mb-6 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6 border border-primary-500/30 shadow-[0_0_20px_rgba(94,106,210,0.1)]">
                     <div class="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-transparent pointer-events-none"></div>
                     <div class="relative z-10 w-full lg:w-auto text-center lg:text-left">
@@ -36,7 +36,7 @@
                             <svg class="w-5 h-5 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
                             Claim Your Next Subdomain
                         </h3>
-                        <p class="text-gray-400 text-xs sm:text-sm">You have <span class="text-white font-bold">{{ $available_slots - $subdomains->count() }}</span> unused subdomain slot(s) available.</p>
+                        <p class="text-gray-400 text-xs sm:text-sm">You have <span class="text-white font-bold">{{ $available_slots }}</span> unused subdomain slot(s) available.</p>
                     </div>
                     <div class="relative z-10 w-full lg:w-auto mt-2 lg:mt-0">
                         <form action="{{ route('client.subdomains.store') }}" method="POST" class="flex flex-col sm:flex-row items-center gap-3">
