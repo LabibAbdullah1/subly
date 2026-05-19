@@ -45,6 +45,16 @@
                                 <input type="text" name="name" class="bg-transparent border-none p-0 focus:ring-0 text-gray-100 font-mono text-sm w-full" placeholder="project-name" required pattern="[a-zA-Z0-9\-_]+">
                                 <span class="text-gray-500 font-mono text-[10px] sm:text-xs pl-2 ml-2 border-l border-gray-800 shrink-0">{{ config('app.subdomain_suffix') }}</span>
                             </div>
+                            
+                            <!-- Plan Selector Dropdown -->
+                            <div class="relative group/select w-full sm:w-auto">
+                                <select name="payment_id" class="w-full sm:w-auto bg-gray-900 border border-gray-800 rounded-lg px-3 py-2.5 text-xs text-gray-300 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all font-semibold cursor-pointer outline-none">
+                                    @foreach($unusedPayments as $p)
+                                        <option value="{{ $p->id }}">{{ $p->plan->name }} ({{ $p->plan->max_storage_mb }}MB)</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <button type="submit" class="btn-primary py-2.5 px-6 shadow-[0_0_15px_rgba(94,106,210,0.3)] whitespace-nowrap w-full sm:w-auto hover:scale-[1.02] transition-transform">Claim</button>
                         </form>
                     </div>
@@ -125,6 +135,19 @@
                                         <p class="text-red-400 text-xs mt-2 text-left bg-red-400/5 py-1 px-3 rounded border border-red-400/10">{{ $message }}</p>
                                     @enderror
                                 </div>
+                                
+                                <!-- Plan Selector Dropdown -->
+                                <div class="flex flex-col gap-1.5 text-left">
+                                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-wider pl-1">Pilih Paket Hosting</label>
+                                    <select name="payment_id" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3.5 text-sm text-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all font-semibold cursor-pointer outline-none">
+                                        @forelse($unusedPayments as $p)
+                                            <option value="{{ $p->id }}">{{ $p->plan->name }} ({{ $p->plan->max_storage_mb }}MB SSD Storage - {{ $p->plan->duration_months }} Bulan)</option>
+                                        @empty
+                                            <option disabled>No purchased plans available</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+
                                 <button type="submit" class="btn-primary py-3.5 px-8 shadow-[0_0_20px_rgba(94,106,210,0.3)] flex items-center justify-center gap-2 font-bold text-base group animate-pulsar hover:animate-none">
                                     Claim This Subdomain
                                     <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">

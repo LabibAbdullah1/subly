@@ -46,7 +46,17 @@ class SubdomainController extends Controller
         $fullDomain = $subdomainName . config('app.subdomain_suffix');
         $docRoot = config('app.doc_root_prefix') . $subdomainName;
 
-        $paymentToUse = $unsignedPayments->first();
+        $paymentId = $request->input('payment_id');
+        $paymentToUse = null;
+        
+        if ($paymentId) {
+            $paymentToUse = $unsignedPayments->firstWhere('id', $paymentId);
+        }
+        
+        if (!$paymentToUse) {
+            $paymentToUse = $unsignedPayments->first();
+        }
+        
         $plan = $paymentToUse->plan;
         
         $subdomain = Subdomain::create([
