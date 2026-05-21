@@ -22,5 +22,7 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
+
+        \Illuminate\Support\Facades\Blade::component('emails.admin.layout', 'emails.admin.layout');
     }
 }
