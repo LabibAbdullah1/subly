@@ -330,6 +330,10 @@
             .custom-dropdown-toggle {
                 cursor: pointer;
                 outline: none !important;
+                padding: 0.625rem 1rem !important; /* Add premium horizontal and vertical padding */
+            }
+            .custom-dropdown-toggle.text-xs {
+                padding: 0.375rem 0.75rem !important; /* Smaller padding for text-xs dropdowns */
             }
             .custom-dropdown-toggle:focus {
                 border-color: rgba(94, 106, 210, 0.5) !important;
