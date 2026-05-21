@@ -15,6 +15,13 @@
                 </div>
             @endif
 
+            @if ($errors->any())
+                <div class="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg flex items-center gap-3 shadow-lg" role="alert">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <p>{{ $errors->first() }}</p>
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 <!-- Column 1: Active Queue -->
                 <div class="space-y-4">
@@ -53,6 +60,13 @@
                                                         @csrf
                                                         <button type="submit" class="text-[10px] sm:text-[11px] rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-1 hover:bg-purple-500/20 transition-all font-medium" title="Setup Virtual Host & Database on Server">
                                                             Provision Server
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ route('admin.deployments.extract', $deployment) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin mengekstrak dan mempublikasikan deployment ini ke server?')">
+                                                        @csrf
+                                                        <button type="submit" class="text-[10px] sm:text-[11px] rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 hover:bg-emerald-500/20 transition-all font-medium flex items-center gap-1" title="Extract ZIP on cPanel and Deploy Live">
+                                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                                            Extract & Deploy
                                                         </button>
                                                     </form>
                                                     <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">

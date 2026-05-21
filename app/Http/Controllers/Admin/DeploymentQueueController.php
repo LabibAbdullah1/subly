@@ -44,6 +44,40 @@ class DeploymentQueueController extends Controller
         return redirect()->back()->with('success', 'Deployment status updated successfully.');
     }
 
+    public function extractAndDeploy(Deployment $deployment, \App\Services\ServerProvisioningService $provisioningService)
+    {
+        if (!$deployment->subdomain) {
+            return redirect()->back()->withErrors(['error' => 'Subdomain associated with this deployment no longer exists.']);
+        }
+
+        try {
+            $cpanelFileName = "deployment_v" . $deployment->version . ".zip";
+            
+            // 1. Extract the ZIP archive inside the subdomain's document root
+            $provisioningService->extractZipInSubdomain($deployment->subdomain, $cpanelFileName);
+            
+            // 2. Clean up the temporary ZIP archive from the server to free up space
+            $provisioningService->deleteFileInSubdomain($deployment->subdomain, $cpanelFileName);
+
+            // 3. Mark deployment as successful
+            $deployment->update([
+                'status' => 'success',
+                'deployed_at' => now(),
+            ]);
+
+            return redirect()->back()->with('success', "Deployment v{$deployment->version} berhasil diekstrak dan dipublikasikan di server!");
+        } catch (\Exception $e) {
+            \Log::error("Deployment extraction failed for v{$deployment->version}: " . $e->getMessage());
+            
+            $deployment->update([
+                'status' => 'error',
+                'admin_note' => 'Extraction error: ' . $e->getMessage()
+            ]);
+
+            return redirect()->back()->withErrors(['error' => "Gagal mengekstrak deployment: " . $e->getMessage()]);
+        }
+    }
+
     public function download(Deployment $deployment)
     {
         if (!$deployment->zip_path || !\Storage::exists($deployment->zip_path)) {

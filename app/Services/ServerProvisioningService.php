@@ -870,4 +870,93 @@ class ServerProvisioningService
         }
         return @rmdir($dir);
     }
+
+    /**
+     * Upload a file to the subdomain's document root on cPanel.
+     */
+    public function uploadFileToSubdomain(Subdomain $subdomain, string $localFilePath, string $targetFileName): void
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Uploaded file {$targetFileName} to subdomain {$subdomain->full_domain}");
+            return;
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            // Use direct cPanel HTTP POST multi-part upload
+            $url = rtrim(config('services.hosting_panel.url'), '/');
+            $apiKey = config('services.hosting_panel.api_key');
+            $headers = [
+                'Authorization' => "cpanel {$cpanelUser}:{$apiKey}"
+            ];
+
+            Log::info("Uploading file {$targetFileName} to cPanel UAPI Fileman...");
+            $response = Http::withHeaders($headers)
+                ->withoutVerifying()
+                ->attach('file-0', file_get_contents($localFilePath), $targetFileName)
+                ->post("{$url}/execute/Fileman/upload_files", [
+                    'dir' => $cleanDir,
+                    'overwrite' => 1
+                ]);
+
+            $status = $response->json('status') ?? $response->json('result.status');
+            if ($response->successful() && $status == 1) {
+                Log::info("Successfully uploaded file {$targetFileName} to cPanel document root for {$subdomain->full_domain}");
+            } else {
+                $err = ($response->json('errors') ?? $response->json('result.errors') ?? [])[0] ?? $response->body();
+                throw new \Exception("cPanel upload API error: " . $err);
+            }
+        } catch (\Exception $e) {
+            Log::error("Failed to upload file to cPanel: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Extract a ZIP file in the subdomain's document root on cPanel.
+     */
+    public function extractZipInSubdomain(Subdomain $subdomain, string $fileName): void
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Extracted file {$fileName} in subdomain {$subdomain->full_domain}");
+            return;
+        }
+
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+        $this->callCpanelApi('Fileman', 'extract', [
+            'dir' => $cleanDir,
+            'file' => $fileName,
+            'to_dir' => $cleanDir,
+        ]);
+
+        Log::info("Successfully triggered cPanel UAPI extract for {$fileName} in {$cleanDir}");
+    }
+
+    /**
+     * Delete a file in the subdomain's document root on cPanel.
+     */
+    public function deleteFileInSubdomain(Subdomain $subdomain, string $fileName): void
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Deleted file {$fileName} in subdomain {$subdomain->full_domain}");
+            return;
+        }
+
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+        try {
+            $this->callCpanelApi('Fileman', 'unlink', [
+                'dir' => $cleanDir,
+                'file' => $fileName,
+            ]);
+            Log::info("Successfully deleted file {$fileName} in {$cleanDir}");
+        } catch (\Exception $e) {
+            Log::warning("Failed to delete file {$fileName} in cPanel: " . $e->getMessage());
+        }
+    }
 }

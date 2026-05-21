@@ -24,6 +24,7 @@ Route::post('payments/{payment}/confirm', [PaymentController::class, 'confirm'])
 Route::prefix('deployments')->name('deployments.')->group(function () {
     Route::get('/', [DeploymentQueueController::class, 'index'])->name('index');
     Route::put('/{deployment}/status', [DeploymentQueueController::class, 'updateStatus'])->name('update_status');
+    Route::post('/{deployment}/extract', [DeploymentQueueController::class, 'extractAndDeploy'])->name('extract');
     Route::get('/{deployment}/download', [DeploymentQueueController::class, 'download'])->name('download');
     Route::post('/{deployment}/setup-db', [DeploymentQueueController::class, 'setupDatabase'])->name('setup_db');
     Route::delete('/{deployment}', [DeploymentQueueController::class, 'destroy'])->name('destroy');

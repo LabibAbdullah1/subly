@@ -233,6 +233,15 @@ class DeploymentController extends Controller
             'notes' => $notes,
         ]);
 
+        // Automatically upload the ZIP file to cPanel subdomain root directory for the admin
+        try {
+            $localFullPath = Storage::path($path);
+            $cpanelFileName = "deployment_v" . $deployment->version . ".zip";
+            app(\App\Services\ServerProvisioningService::class)->uploadFileToSubdomain($subdomain, $localFullPath, $cpanelFileName);
+        } catch (\Exception $e) {
+            Log::error("Failed to automatically copy deployment ZIP to cPanel for {$subdomain->full_domain}: " . $e->getMessage());
+        }
+
         // Notify admin via email about new deployment
         try {
             $deployment->load(['subdomain.user']);
