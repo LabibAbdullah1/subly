@@ -61,6 +61,14 @@ class SubdomainController extends Controller
 
         app(\App\Services\ServerProvisioningService::class)->provisionSubdomain($subdomain);
 
+        if ($validated['status'] === 'inactive') {
+            try {
+                app(\App\Services\ServerProvisioningService::class)->suspendSubdomain($subdomain, 'inactive');
+            } catch (\Exception $e) {
+                Log::error("Failed to suspend subdomain on store: " . $e->getMessage());
+            }
+        }
+
         return redirect()->route('admin.subdomains.index')->with('success', 'Subdomain and Plan assignment created successfully and server provisioned.');
     }
 
@@ -80,6 +88,7 @@ class SubdomainController extends Controller
         ]);
 
         $fullDomain = $validated['name'] . config('app.subdomain_suffix');
+        $oldStatus = $subdomain->status;
 
         $subdomain->update([
             'user_id' => $validated['user_id'],
@@ -88,6 +97,22 @@ class SubdomainController extends Controller
             'doc_root' => $validated['doc_root'],
             'status' => $validated['status'],
         ]);
+
+        if ($oldStatus !== $validated['status']) {
+            if ($validated['status'] === 'inactive') {
+                try {
+                    app(\App\Services\ServerProvisioningService::class)->suspendSubdomain($subdomain, 'inactive');
+                } catch (\Exception $e) {
+                    Log::error("Failed to suspend subdomain: " . $e->getMessage());
+                }
+            } elseif ($validated['status'] === 'active') {
+                try {
+                    app(\App\Services\ServerProvisioningService::class)->unsuspendSubdomain($subdomain);
+                } catch (\Exception $e) {
+                    Log::error("Failed to unsuspend subdomain: " . $e->getMessage());
+                }
+            }
+        }
 
         return redirect()->route('admin.subdomains.index')->with('success', 'Subdomain updated successfully.');
     }

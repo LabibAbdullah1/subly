@@ -353,10 +353,10 @@ class ServerProvisioningService
     /**
      * Suspend a subdomain by writing suspended landing page and .htaccess redirect.
      */
-    public function suspendSubdomain(Subdomain $subdomain): void
+    public function suspendSubdomain(Subdomain $subdomain, string $reason = 'inactive'): void
     {
         if ($this->driver !== 'cpanel') {
-            Log::info("SIMULATION: Subdomain {$subdomain->full_domain} suspended.");
+            Log::info("SIMULATION: Subdomain {$subdomain->full_domain} suspended. Reason: {$reason}");
             return;
         }
 
@@ -365,7 +365,7 @@ class ServerProvisioningService
             $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
             // 1. Write suspended index.html
-            $suspendedHtml = $this->getSuspendedHtmlTemplate($subdomain->full_domain);
+            $suspendedHtml = $this->getSuspendedHtmlTemplate($subdomain->full_domain, $reason);
             $this->callCpanelApi('Fileman', 'save_file_content', [
                 'dir' => $cleanDir,
                 'file' => 'index.html',
@@ -380,9 +380,66 @@ class ServerProvisioningService
                 'content' => $htaccess,
             ]);
 
-            Log::info("Subdomain {$subdomain->full_domain} suspended successfully on cPanel.");
+            Log::info("Subdomain {$subdomain->full_domain} suspended successfully on cPanel. Reason: {$reason}");
         } catch (\Exception $e) {
             Log::error("Failed to suspend subdomain on cPanel: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Unsuspend a subdomain by removing the .htaccess and suspended index.html from cPanel.
+     */
+    public function unsuspendSubdomain(Subdomain $subdomain): void
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Subdomain {$subdomain->full_domain} unsuspended.");
+            return;
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'cpaneluser');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            // 1. Delete suspended index.html
+            try {
+                $this->callCpanelApi('Fileman', 'unlink', [
+                    'dir' => $cleanDir,
+                    'file' => 'index.html',
+                ]);
+                Log::info("cPanel: Deleted suspended index.html for {$subdomain->full_domain}");
+            } catch (\Exception $e) {
+                Log::warning("Failed to delete suspended index.html for {$subdomain->full_domain}: " . $e->getMessage());
+            }
+
+            // 2. Delete .htaccess redirect
+            try {
+                $this->callCpanelApi('Fileman', 'unlink', [
+                    'dir' => $cleanDir,
+                    'file' => '.htaccess',
+                ]);
+                Log::info("cPanel: Deleted suspended .htaccess redirect for {$subdomain->full_domain}");
+            } catch (\Exception $e) {
+                Log::warning("Failed to delete suspended .htaccess for {$subdomain->full_domain}: " . $e->getMessage());
+            }
+
+            // 3. Restore default index.html template only if there are no successful deployments
+            $hasDeployments = $subdomain->deployments()->where('status', 'success')->exists();
+            if (!$hasDeployments) {
+                try {
+                    $defaultHtml = $this->getDefaultHtmlTemplate($subdomain->full_domain);
+                    $this->callCpanelApi('Fileman', 'save_file_content', [
+                        'dir' => $cleanDir,
+                        'file' => 'index.html',
+                        'content' => $defaultHtml,
+                    ]);
+                    Log::info("cPanel: Restored default index.html for {$subdomain->full_domain}");
+                } catch (\Exception $e) {
+                    Log::error("Failed to restore default index.html: " . $e->getMessage());
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("cPanel unsuspension failed for subdomain {$subdomain->full_domain}: " . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -621,14 +678,26 @@ class ServerProvisioningService
 </html>';
     }
 
-    protected function getSuspendedHtmlTemplate(string $domainName): string
+    protected function getSuspendedHtmlTemplate(string $domainName, string $reason = 'inactive'): string
     {
+        $title = $reason === 'inactive' ? 'Subdomain Nonaktif (Inactive)' : 'Subdomain Ditangguhkan (Suspended)';
+        
+        if ($reason === 'inactive') {
+            $message = 'Subdomain <strong>' . htmlspecialchars($domainName) . '</strong> saat ini sedang dinonaktifkan oleh administrator. Silakan hubungi admin untuk informasi lebih lanjut.';
+            $buttonText = 'Hubungi Admin';
+            $buttonUrl = 'https://subly.my.id/contact';
+        } else {
+            $message = 'Masa aktif subdomain <strong>' . htmlspecialchars($domainName) . '</strong> telah berakhir. Silakan lakukan perpanjangan layanan untuk mengaktifkannya kembali.';
+            $buttonText = 'Perpanjang Layanan Sekarang';
+            $buttonUrl = 'https://subly.my.id/dashboard';
+        }
+
         return '<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subdomain Ditangguhkan - Subly</title>
+    <title>' . $title . ' - Subly</title>
     <style>
         body {
             margin: 0;
@@ -708,9 +777,9 @@ class ServerProvisioningService
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
         </div>
-        <h1>Subdomain Ditangguhkan (Suspended)</h1>
-        <p>Masa aktif subdomain <strong>' . htmlspecialchars($domainName) . '</strong> telah berakhir. Silakan lakukan perpanjangan layanan untuk mengaktifkannya kembali.</p>
-        <a href="https://subly.my.id/dashboard" class="btn">Perpanjang Layanan Sekarang</a>
+        <h1>' . $title . '</h1>
+        <p>' . $message . '</p>
+        <a href="' . $buttonUrl . '" class="btn">' . $buttonText . '</a>
         <div class="contact-info">
             Butuh bantuan? Silakan hubungi admin atau customer service kami.
         </div>
