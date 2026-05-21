@@ -505,7 +505,7 @@ class ServerProvisioningService
                 }
                 $err = ($response->json('errors') ?? $response->json('result.errors') ?? [])[0] ?? $response->body();
             }
-            
+
             // Check if it's already exists
             if (preg_match('/(already exists|already configured|already exist|does exist)/i', $err)) {
                 Log::info("cPanel HTTP API returned resource already exists, treating as success: {$err}");
@@ -528,7 +528,7 @@ class ServerProvisioningService
                 : ['uapi', '/usr/bin/uapi', '/usr/local/cpanel/bin/uapi'];
             $output = null;
             $commandRun = '';
-            
+
             foreach ($binaries as $bin) {
                 // Securely construct the command with escapeshellarg
                 if ($isApi2) {
@@ -539,7 +539,7 @@ class ServerProvisioningService
                 foreach ($params as $key => $value) {
                     $cmd .= " " . escapeshellarg($key) . "=" . escapeshellarg($value);
                 }
-                
+
                 // Execute command
                 Log::info("Running cPanel local CLI: {$cmd}");
                 $res = shell_exec($cmd);
@@ -564,7 +564,7 @@ class ServerProvisioningService
                         'data' => $output
                     ];
                 }
-                
+
                 $err = $isApi2
                     ? ($output['cpanelresult']['data']['reason'] ?? $output['cpanelresult']['error'] ?? json_encode($output))
                     : (($output['errors'] ?? $output['result']['errors'] ?? [])[0] ?? json_encode($output));
@@ -577,10 +577,10 @@ class ServerProvisioningService
                         'warning' => 'already_exists'
                     ];
                 }
-                
+
                 throw new \Exception($err);
             }
-            
+
             throw new \Exception("Local CLI binary not found, returned empty output, or shell_exec is disabled.");
         } catch (\Exception $e) {
             Log::error("cPanel CLI fallback failed: " . $e->getMessage());
@@ -681,11 +681,11 @@ class ServerProvisioningService
     protected function getSuspendedHtmlTemplate(string $domainName, string $reason = 'inactive'): string
     {
         $title = $reason === 'inactive' ? 'Subdomain Nonaktif (Inactive)' : 'Subdomain Ditangguhkan (Suspended)';
-        
+
         if ($reason === 'inactive') {
             $message = 'Subdomain <strong>' . htmlspecialchars($domainName) . '</strong> saat ini sedang dinonaktifkan oleh administrator. Silakan hubungi admin untuk informasi lebih lanjut.';
             $buttonText = 'Hubungi Admin';
-            $buttonUrl = 'https://subly.my.id/contact';
+            $buttonUrl = 'https://subly.my.id/dashboard/chat';
         } else {
             $message = 'Masa aktif subdomain <strong>' . htmlspecialchars($domainName) . '</strong> telah berakhir. Silakan lakukan perpanjangan layanan untuk mengaktifkannya kembali.';
             $buttonText = 'Perpanjang Layanan Sekarang';
