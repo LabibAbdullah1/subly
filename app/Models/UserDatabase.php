@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
+
 class UserDatabase extends Model
 {
     use HasFactory, SoftDeletes;
@@ -21,11 +25,31 @@ class UserDatabase extends Model
         'db_password',
     ];
 
-    protected function casts(): array
+    protected function dbPassword(): Attribute
     {
-        return [
-            'db_password' => 'encrypted',
-        ];
+        return Attribute::make(
+            get: function (?string $value) {
+                if (empty($value)) {
+                    return $value;
+                }
+                try {
+                    return Crypt::decryptString($value);
+                } catch (DecryptException $e) {
+                    return $value;
+                }
+            },
+            set: function (?string $value) {
+                if (empty($value)) {
+                    return null;
+                }
+                try {
+                    Crypt::decryptString($value);
+                    return $value;
+                } catch (DecryptException $e) {
+                    return Crypt::encryptString($value);
+                }
+            }
+        );
     }
 
     public function subdomain()
