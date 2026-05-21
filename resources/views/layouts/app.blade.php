@@ -455,11 +455,39 @@
 
                         // Create wrapper
                         const wrapper = document.createElement('div');
-                        wrapper.className = 'custom-dropdown relative ' + (select.className.replace('custom-dropdown-hidden', '').replace('w-full', '').trim());
-                        if (select.classList.contains('w-full')) {
-                            wrapper.classList.add('w-full');
-                        } else {
-                            wrapper.classList.add('w-auto');
+                        wrapper.className = 'custom-dropdown relative';
+                        
+                        // Copy only safe layout, width, and margin classes to the wrapper
+                        const safeClasses = [];
+                        select.className.split(/\s+/).forEach(cls => {
+                            if (!cls || cls === 'custom-dropdown-hidden') return;
+                            
+                            const isMargin = cls.startsWith('m-') || cls.startsWith('mt-') || cls.startsWith('mb-') || cls.startsWith('ml-') || cls.startsWith('mr-') || cls.startsWith('mx-') || cls.startsWith('my-') ||
+                                             cls.startsWith('sm:m-') || cls.startsWith('sm:mt-') || cls.startsWith('sm:mb-') || cls.startsWith('sm:ml-') || cls.startsWith('sm:mr-') || cls.startsWith('sm:mx-') || cls.startsWith('sm:my-') ||
+                                             cls.startsWith('md:m-') || cls.startsWith('md:mt-') || cls.startsWith('md:mb-') || cls.startsWith('md:ml-') || cls.startsWith('md:mr-') || cls.startsWith('md:mx-') || cls.startsWith('md:my-');
+                            
+                            const isLayout = cls === 'block' || cls === 'inline-block' || cls === 'inline' || cls === 'flex' || cls === 'inline-flex' || cls === 'grid' || cls === 'hidden' ||
+                                             cls.startsWith('sm:block') || cls.startsWith('sm:inline-block') || cls.startsWith('sm:flex') || cls.startsWith('sm:hidden') ||
+                                             cls.startsWith('md:block') || cls.startsWith('md:inline-block') || cls.startsWith('md:flex') || cls.startsWith('md:hidden');
+                            
+                            const isWidth = cls.startsWith('w-') || cls.startsWith('sm:w-') || cls.startsWith('md:w-');
+                            
+                            if (isMargin || isLayout || isWidth) {
+                                safeClasses.push(cls);
+                            }
+                        });
+                        
+                        if (safeClasses.length > 0) {
+                            wrapper.className += ' ' + safeClasses.join(' ');
+                        }
+                        
+                        // Ensure we have a width container class if not already added
+                        if (!wrapper.className.includes('w-')) {
+                            if (select.classList.contains('w-full')) {
+                                wrapper.classList.add('w-full');
+                            } else {
+                                wrapper.classList.add('w-auto');
+                            }
                         }
 
                         // Create toggle button
