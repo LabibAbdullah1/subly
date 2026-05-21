@@ -31,11 +31,12 @@ class SubdomainController extends Controller
             'user_id' => 'required|exists:users,id',
             'plan_id' => 'required|exists:plans,id',
             'name' => 'required|string|max:255|unique:subdomains,name',
+            'doc_root' => 'nullable|string|max:255',
             'status' => 'required|in:active,inactive',
         ]);
 
         $fullDomain = $validated['name'] . config('app.subdomain_suffix');
-        $docRoot = config('app.doc_root_prefix') . $validated['name'];
+        $docRoot = $validated['doc_root'] ?: (config('app.doc_root_prefix') . $validated['name']);
         $plan = Plan::find($validated['plan_id']);
 
         $subdomain = Subdomain::create([
@@ -74,17 +75,17 @@ class SubdomainController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255|unique:subdomains,name,' . $subdomain->id,
+            'doc_root' => 'required|string|max:255',
             'status' => 'required|in:active,inactive',
         ]);
 
         $fullDomain = $validated['name'] . config('app.subdomain_suffix');
-        $docRoot = config('app.doc_root_prefix') . $validated['name'];
 
         $subdomain->update([
             'user_id' => $validated['user_id'],
             'name' => $validated['name'],
             'full_domain' => $fullDomain,
-            'doc_root' => $docRoot,
+            'doc_root' => $validated['doc_root'],
             'status' => $validated['status'],
         ]);
 

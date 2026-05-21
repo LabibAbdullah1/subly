@@ -35,13 +35,22 @@
                         <div class="space-y-2">
                             <label class="block text-sm font-medium text-gray-300">Subdomain Name</label>
                             <div class="flex items-center gap-2">
-                                <input type="text" name="name" value="{{ old('name', $subdomain->name) }}" 
+                                <input type="text" name="name" id="name" value="{{ old('name', $subdomain->name) }}" 
                                     class="flex-1 bg-gray-900 border border-gray-800 rounded-lg py-2.5 px-4 text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all font-mono" 
                                     placeholder="my-cool-project" required>
                                 <span class="text-gray-500 font-mono">{{ config('app.subdomain_suffix') }}</span>
                             </div>
                             <p class="text-xs text-gray-500 italic">Changing this will update the URL and directory name. Use with caution for active projects.</p>
                             @error('name') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-300">Document Root Folder (Folder Root Asli)</label>
+                            <input type="text" name="doc_root" id="doc_root" value="{{ old('doc_root', $subdomain->doc_root) }}" 
+                                class="w-full bg-gray-900 border border-gray-800 rounded-lg py-2.5 px-4 text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all font-mono" 
+                                placeholder="/home/username/public_html/subdomain" required>
+                            <p class="text-xs text-gray-500 italic">The absolute path to the subdomain's root directory on the server.</p>
+                            @error('doc_root') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="space-y-2">
@@ -83,4 +92,30 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameInput = document.getElementById('name');
+            const docRootInput = document.getElementById('doc_root');
+            const prefix = "{{ config('app.doc_root_prefix') }}";
+            
+            if (nameInput && docRootInput) {
+                let isManuallyEdited = false;
+                
+                if (docRootInput.value !== prefix + nameInput.value) {
+                    isManuallyEdited = true;
+                }
+                
+                docRootInput.addEventListener('input', function() {
+                    isManuallyEdited = true;
+                });
+                
+                nameInput.addEventListener('input', function() {
+                    if (!isManuallyEdited) {
+                        docRootInput.value = prefix + nameInput.value;
+                    }
+                });
+            }
+        });
+    </script>
 </x-admin-layout>
