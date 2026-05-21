@@ -42,4 +42,15 @@ class Subdomain extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    /**
+     * Check if the subdomain's active period has expired in real-time.
+     *
+     * @return bool
+     */
+    public function isExpired(): bool
+    {
+        return $this->expired_at && $this->expired_at->isPast();
+    }
 }
+
