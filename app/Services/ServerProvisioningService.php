@@ -364,7 +364,30 @@ class ServerProvisioningService
             $cpanelUser = config('services.hosting_panel.username', 'cpaneluser');
             $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-            // 1. Write suspended index.html
+            // 1. Rename existing index.html and .htaccess to .bak if they exist to protect user assets
+            try {
+                $this->callCpanelApi('Fileman', 'rename', [
+                    'dir' => $cleanDir,
+                    'file' => 'index.html',
+                    'newname' => 'index.html.bak',
+                ]);
+                Log::info("cPanel: Backed up existing index.html to index.html.bak for {$subdomain->full_domain}");
+            } catch (\Exception $e) {
+                // Fail silently if file doesn't exist
+            }
+
+            try {
+                $this->callCpanelApi('Fileman', 'rename', [
+                    'dir' => $cleanDir,
+                    'file' => '.htaccess',
+                    'newname' => '.htaccess.bak',
+                ]);
+                Log::info("cPanel: Backed up existing .htaccess to .htaccess.bak for {$subdomain->full_domain}");
+            } catch (\Exception $e) {
+                // Fail silently if file doesn't exist
+            }
+
+            // 2. Write suspended index.html
             $suspendedHtml = $this->getSuspendedHtmlTemplate($subdomain->full_domain, $reason);
             $this->callCpanelApi('Fileman', 'save_file_content', [
                 'dir' => $cleanDir,
@@ -372,7 +395,7 @@ class ServerProvisioningService
                 'content' => $suspendedHtml,
             ]);
 
-            // 2. Write .htaccess to redirect all requests to index.html
+            // 3. Write .htaccess to redirect all requests to index.html
             $htaccess = "DirectoryIndex index.html\nRewriteEngine On\nRewriteCond %{REQUEST_URI} !/index.html$\nRewriteRule ^(.*)$ /index.html [R=302,L]\n";
             $this->callCpanelApi('Fileman', 'save_file_content', [
                 'dir' => $cleanDir,
@@ -422,9 +445,34 @@ class ServerProvisioningService
                 Log::warning("Failed to delete suspended .htaccess for {$subdomain->full_domain}: " . $e->getMessage());
             }
 
-            // 3. Restore default index.html template only if there are no successful deployments
+            // 3. Restore backup index.html.bak and .htaccess.bak if they exist
+            $restoredIndex = false;
+            try {
+                $this->callCpanelApi('Fileman', 'rename', [
+                    'dir' => $cleanDir,
+                    'file' => 'index.html.bak',
+                    'newname' => 'index.html',
+                ]);
+                $restoredIndex = true;
+                Log::info("cPanel: Restored index.html from index.html.bak for {$subdomain->full_domain}");
+            } catch (\Exception $e) {
+                // Fail silently if backup doesn't exist
+            }
+
+            try {
+                $this->callCpanelApi('Fileman', 'rename', [
+                    'dir' => $cleanDir,
+                    'file' => '.htaccess.bak',
+                    'newname' => '.htaccess',
+                ]);
+                Log::info("cPanel: Restored .htaccess from .htaccess.bak for {$subdomain->full_domain}");
+            } catch (\Exception $e) {
+                // Fail silently if backup doesn't exist
+            }
+
+            // 4. Restore default index.html template only if there are no successful deployments AND we didn't restore a backup
             $hasDeployments = $subdomain->deployments()->where('status', 'success')->exists();
-            if (!$hasDeployments) {
+            if (!$hasDeployments && !$restoredIndex) {
                 try {
                     $defaultHtml = $this->getDefaultHtmlTemplate($subdomain->full_domain);
                     $this->callCpanelApi('Fileman', 'save_file_content', [
