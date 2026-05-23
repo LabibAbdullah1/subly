@@ -11,20 +11,10 @@ use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Midtrans\Config;
-use Midtrans\Snap;
 use Carbon\Carbon;
 
 class CheckoutController extends Controller
 {
-    public function __construct()
-    {
-        Config::$serverKey = config('midtrans.server_key');
-        Config::$isProduction = config('midtrans.is_production');
-        Config::$isSanitized = config('midtrans.is_sanitized');
-        Config::$is3ds = config('midtrans.is_3ds');
-    }
-
     public function process(Request $request, Plan $plan)
     {
         $user = Auth::user();
@@ -144,53 +134,6 @@ class CheckoutController extends Controller
     public function success(Request $request)
     {
         return redirect()->route('client.index')->with('success', 'Payment successful! Your hosting plan is now active.');
-    }
-
-    public function webhook(Request $request)
-    {
-        $serverKey = config('midtrans.server_key');
-        $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
-
-        if ($hashed !== $request->signature_key) {
-            return response()->json(['message' => 'Invalid signature'], 403);
-        }
-
-        $transactionStatus = $request->transaction_status;
-        $orderId = $request->order_id;
-
-        $payment = Payment::where('transaction_id', $orderId)->first();
-
-        if (!$payment) {
-            return response()->json(['message' => 'Payment not found'], 404);
-        }
-
-        if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
-            $payment->update(['status' => 'success']);
-            
-            // Decrement voucher usage if applicable
-            if ($payment->voucher_id) {
-                $payment->voucher->decrement('usage_limit');
-            }
-
-            // Extend the subdomain if this was a renewal
-            if ($payment->subdomain_id) {
-                $subdomainToRenew = \App\Models\Subdomain::find($payment->subdomain_id);
-                if ($subdomainToRenew) {
-                    $currentExpiry = $subdomainToRenew->expired_at && $subdomainToRenew->expired_at->isFuture() 
-                        ? $subdomainToRenew->expired_at 
-                        : now();
-                    $subdomainToRenew->update([
-                        'expired_at' => $currentExpiry->addMonths($payment->plan->duration_months)
-                    ]);
-                }
-            }
-        } elseif ($transactionStatus == 'pending') {
-            $payment->update(['status' => 'pending']);
-        } elseif ($transactionStatus == 'deny' || $transactionStatus == 'expire' || $transactionStatus == 'cancel') {
-            $payment->update(['status' => 'failed']);
-        }
-
-        return response()->json(['message' => 'Webhook processed']);
     }
 
     /**

@@ -17,8 +17,6 @@ Route::get('/home', function () {
     return redirect()->route('login');
 })->name('dashboard');
 
-Route::post('dashboard/midtrans/webhook', [App\Http\Controllers\Client\CheckoutController::class, 'webhook'])->name('midtrans.webhook');
-
 // Static Policy Pages
 Route::view('/terms', 'pages.terms')->name('pages.terms');
 Route::view('/rules', 'pages.rules')->name('pages.rules');

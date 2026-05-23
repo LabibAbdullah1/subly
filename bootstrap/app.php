@@ -31,10 +31,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'pending_payment' => \App\Http\Middleware\CheckPendingPayment::class,
         ]);
-
-        $middleware->validateCsrfTokens(except: [
-            'dashboard/midtrans/webhook',
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

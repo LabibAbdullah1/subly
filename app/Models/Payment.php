@@ -16,7 +16,6 @@ class Payment extends Model
         'voucher_id',
         'subdomain_id',
         'transaction_id',
-        'snap_token',
         'amount',
         'unique_code',
         'proof_path',

@@ -54,7 +54,6 @@ class SubdomainController extends Controller
             'plan_id' => $plan->id,
             'subdomain_id' => $subdomain->id,
             'transaction_id' => 'ADMIN-' . time() . '-' . $validated['user_id'],
-            'snap_token' => 'admin-bypass',
             'amount' => 0,
             'status' => 'success',
         ]);
