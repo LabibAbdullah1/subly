@@ -17,12 +17,12 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased bg-black text-neutral-200 selection:bg-neutral-200 selection:text-black overflow-x-hidden" x-data="{ sidebarOpen: false }">
-        
+
         <!-- Background Ambient Glow & Dot Matrix Grid -->
         <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-black">
             <!-- Fine SVG Dot Matrix Pattern -->
             <div class="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_80%,transparent_100%)] opacity-70"></div>
-            
+
             <!-- Soft Ambient Radial Glows -->
             <div class="absolute top-[-15%] left-[10%] w-[50%] h-[45%] rounded-full bg-primary-500/7 blur-[140px]"></div>
             <div class="absolute top-[25%] right-[-10%] w-[40%] h-[45%] rounded-full bg-purple-500/5 blur-[130px]"></div>
@@ -52,7 +52,7 @@
                                 <li>
                                     <a href="{{ route('admin.index') }}" class="sidebar-link {{ request()->routeIs('admin.index') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zm-10 10a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                                        {{ __('Overview') }}
+                                        {{ __('Ringkasan') }}
                                     </a>
                                 </li>
                             </ul>
@@ -60,24 +60,24 @@
 
                         <!-- Infrastructure Group -->
                         <div>
-                            <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Infrastructure</h4>
+                            <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Infrastruktur</h4>
                             <ul class="space-y-1">
                                 <li>
                                     <a href="{{ route('admin.deployments.index') }}" class="sidebar-link {{ request()->routeIs('admin.deployments.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                                        {{ __('Deployments') }}
+                                        {{ __('Deployment') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ route('admin.subdomains.index') }}" class="sidebar-link {{ request()->routeIs('admin.subdomains.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                                        {{ __('Subdomains') }}
+                                        {{ __('Subdomain') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ route('admin.databases.index') }}" class="sidebar-link {{ request()->routeIs('admin.databases.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                                        {{ __('Databases') }}
+                                        {{ __('Database') }}
                                     </a>
                                 </li>
                             </ul>
@@ -85,24 +85,24 @@
 
                         <!-- Billing Group -->
                         <div>
-                            <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Billing</h4>
+                            <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Tagihan</h4>
                             <ul class="space-y-1">
                                 <li>
                                     <a href="{{ route('admin.plans.index') }}" class="sidebar-link {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                                        {{ __('Plans') }}
+                                        {{ __('Paket') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ route('admin.payments.index') }}" class="sidebar-link {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        {{ __('Payments') }}
+                                        {{ __('Pembayaran') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ route('admin.vouchers.index') }}" class="sidebar-link {{ request()->routeIs('admin.vouchers.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
-                                        {{ __('Vouchers') }}
+                                        {{ __('Voucher') }}
                                     </a>
                                 </li>
                             </ul>
@@ -115,7 +115,7 @@
                                 <li>
                                     <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                                        {{ __('Clients') }}
+                                        {{ __('Klien') }}
                                     </a>
                                 </li>
                                 <li>
@@ -127,25 +127,25 @@
                                 <li>
                                     <a href="{{ route('admin.feedback.index') }}" class="sidebar-link {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.36 1.243.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.178 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.883c-.772-.567-.373-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z" /></svg>
-                                        {{ __('Testimonials') }}
+                                        {{ __('Testimoni') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ route('admin.notifications.index') }}" class="sidebar-link {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
-                                        {{ __('Notifications') }}
+                                        {{ __('Notifikasi') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ route('admin.reports.index') }}" class="sidebar-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                                        {{ __('Support Tickets') }}
+                                        {{ __('Tiket Dukungan') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ route('admin.settings.index') }}" class="sidebar-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                        {{ __('Settings') }}
+                                        {{ __('Pengaturan') }}
                                     </a>
                                 </li>
                             </ul>
@@ -160,7 +160,7 @@
                         <button type="submit" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-neutral-450 hover:text-red-400 hover:bg-red-500/5 border border-transparent hover:border-red-950/20 transition-all duration-200 active:scale-[0.98] group cursor-pointer">
                             <span class="flex items-center gap-2.5">
                                 <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
-                                {{ __('Log Out') }}
+                                {{ __('Keluar') }}
                             </span>
                         </button>
                     </form>
@@ -170,27 +170,27 @@
             <!-- Mobile Sticky Bottom Action Tab-Bar (Hidden on Desktop) -->
             <nav class="fixed bottom-0 left-0 right-0 h-16 bg-neutral-950/80 backdrop-blur-xl border-t border-neutral-900/80 z-40 px-6 flex items-center justify-between xl:hidden select-none pb-safe">
                 <!-- Home Link -->
-                <a href="{{ route('admin.index') }}" class="flex flex-col items-center justify-center flex-1 h-full py-1 {{ request()->routeIs('admin.index') ? 'text-white' : 'text-neutral-450' }} active:scale-[0.94] transition-all">
+                <a href="{{ route('admin.index') }}" class="flex flex-col items-center justify-center flex-1 h-full py-1 {{ request()->routeIs('admin.index') ? 'text-white' : 'text-neutral-455' }} active:scale-[0.94] transition-all">
                     <svg class="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zm-10 10a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
-                    <span class="text-[9px] font-bold mt-0.5 tracking-tight">Overview</span>
+                    <span class="text-[9px] font-bold mt-0.5 tracking-tight">Ringkasan</span>
                 </a>
 
                 <!-- Deployments Link -->
-                <a href="{{ route('admin.deployments.index') }}" class="flex flex-col items-center justify-center flex-1 h-full py-1 {{ request()->routeIs('admin.deployments.*') ? 'text-white' : 'text-neutral-450' }} active:scale-[0.94] transition-all">
+                <a href="{{ route('admin.deployments.index') }}" class="flex flex-col items-center justify-center flex-1 h-full py-1 {{ request()->routeIs('admin.deployments.*') ? 'text-white' : 'text-neutral-455' }} active:scale-[0.94] transition-all">
                     <svg class="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                    <span class="text-[9px] font-bold mt-0.5 tracking-tight">Deploys</span>
+                    <span class="text-[9px] font-bold mt-0.5 tracking-tight">Deployment</span>
                 </a>
 
                 <!-- Subdomains Link -->
-                <a href="{{ route('admin.subdomains.index') }}" class="flex flex-col items-center justify-center flex-1 h-full py-1 {{ request()->routeIs('admin.subdomains.*') ? 'text-white' : 'text-neutral-450' }} active:scale-[0.94] transition-all">
+                <a href="{{ route('admin.subdomains.index') }}" class="flex flex-col items-center justify-center flex-1 h-full py-1 {{ request()->routeIs('admin.subdomains.*') ? 'text-white' : 'text-neutral-455' }} active:scale-[0.94] transition-all">
                     <svg class="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
-                    <span class="text-[9px] font-bold mt-0.5 tracking-tight">Hosts</span>
+                    <span class="text-[9px] font-bold mt-0.5 tracking-tight">Subdomain</span>
                 </a>
 
                 <!-- Menu Link -->
@@ -203,7 +203,7 @@
             </nav>
 
             <!-- Mobile Drawer Sidebar (Hidden on Desktop) -->
-            <div x-show="sidebarOpen" 
+            <div x-show="sidebarOpen"
                  x-transition:enter="transition ease-out duration-250"
                  x-transition:enter-start="-translate-x-full"
                  x-transition:enter-end="translate-x-0"
@@ -212,7 +212,7 @@
                  x-transition:leave-end="-translate-x-full"
                  class="fixed inset-y-0 left-0 w-[280px] max-w-[85vw] bg-neutral-950 border-r border-neutral-900 z-50 flex flex-col justify-between p-6 shadow-2xl xl:hidden select-none"
                  style="display: none;">
-                
+
                 <div>
                     <!-- Drawer Header -->
                     <div class="flex items-center justify-between mb-8 pb-4 border-b border-neutral-900">
@@ -235,55 +235,55 @@
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.index') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zm-10 10a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-                                        {{ __('Overview') }}
+                                        {{ __('Ringkasan') }}
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
                         <div>
-                            <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Infrastructure</h4>
+                            <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Infrastruktur</h4>
                             <ul class="space-y-1">
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.deployments.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.deployments.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                                        {{ __('Deployments') }}
+                                        {{ __('Deployment') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.subdomains.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.subdomains.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
-                                        {{ __('Subdomains') }}
+                                        {{ __('Subdomain') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.databases.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.databases.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>
-                                        {{ __('Databases') }}
+                                        {{ __('Database') }}
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
                         <div>
-                            <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Billing</h4>
+                            <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Tagihan</h4>
                             <ul class="space-y-1">
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.plans.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.plans.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-                                        {{ __('Plans') }}
+                                        {{ __('Paket') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.payments.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.payments.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                        {{ __('Payments') }}
+                                        {{ __('Pembayaran') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.vouchers.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.vouchers.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
-                                        {{ __('Vouchers') }}
+                                        {{ __('Voucher') }}
                                     </a>
                                 </li>
                             </ul>
@@ -295,37 +295,37 @@
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.users.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.users.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                                        {{ __('Clients') }}
+                                        {{ __('Klien') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.chat.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.chat.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
-                                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                                        <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
                                         {{ __('Live Chat') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.feedback.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.feedback.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
-                                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.36 1.243.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.178 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.883c-.772-.567-.373-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z" /></svg>
-                                        {{ __('Testimonials') }}
+                                        <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.36 1.243.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.178 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.883c-.772-.567-.373-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z" /></svg>
+                                        {{ __('Testimoni') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.notifications.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.notifications.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
-                                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
-                                        {{ __('Notifications') }}
+                                        <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
+                                        {{ __('Notifikasi') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.reports.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.reports.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                                        {{ __('Support Tickets') }}
+                                        {{ __('Tiket Dukungan') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.settings.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.settings.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
-                                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                        {{ __('Settings') }}
+                                        <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                        {{ __('Pengaturan') }}
                                     </a>
                                 </li>
                             </ul>
@@ -339,30 +339,30 @@
                         @csrf
                         <button type="submit" class="w-full flex items-center gap-3 px-4 h-12 rounded-xl text-xs font-semibold text-neutral-450 hover:text-red-400 hover:bg-red-500/5 transition-all duration-200 active:scale-[0.98] cursor-pointer">
                             <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
-                            {{ __('Log Out') }}
+                            {{ __('Keluar') }}
                         </button>
                     </form>
                 </div>
             </div>
 
             <!-- Mobile Sidebar Backdrop Blur Overlay -->
-            <div x-show="sidebarOpen" 
+            <div x-show="sidebarOpen"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100"
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
-                 @click="sidebarOpen = false" 
-                 class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 xl:hidden" 
+                 @click="sidebarOpen = false"
+                 class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 xl:hidden"
                  style="display: none;"></div>
 
             <!-- Main Content Area -->
             <div class="flex-1 flex flex-col h-screen overflow-hidden relative z-10 w-full">
-                
+
                 <!-- Top Navbar (Mobile Hamburger & User Profile) -->
                 <header class="h-16 border-b border-neutral-900/60 bg-black/40 backdrop-blur-md flex items-center justify-between px-6 shrink-0 relative z-20">
-                    
+
                     <div class="flex items-center gap-4">
                         <button @click="sidebarOpen = !sidebarOpen" class="xl:hidden text-neutral-400 hover:text-white transition-colors focus:outline-none p-2 -ml-2 rounded-lg hover:bg-neutral-900/50">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -377,12 +377,6 @@
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <!-- Switch App View -->
-                        <a href="{{ route('client.index') }}" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 border border-neutral-850 hover:border-neutral-700 bg-neutral-950 hover:bg-neutral-900 rounded-xl text-xs font-semibold text-neutral-300 hover:text-white transition-all active:scale-[0.98]">
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
-                            Client View
-                        </a>
-
                         <!-- Notifications -->
                         <x-dropdown align="right" width="80" contentClasses="py-1 bg-neutral-950 border border-neutral-900 rounded-xl shadow-2xl overflow-hidden">
                             <x-slot name="trigger">
@@ -396,17 +390,17 @@
                                     @endif
                                 </button>
                             </x-slot>
-                        
+
                             <x-slot name="content">
                                 <div class="px-4 py-3 border-b border-neutral-900 flex justify-between items-center bg-neutral-950/80 backdrop-blur-md">
                                     <a href="{{ route('admin.notifications.index') }}" class="text-xs font-bold text-neutral-350 hover:text-white uppercase tracking-widest transition-colors flex items-center gap-1.5">
-                                        Notifications
+                                        Notifikasi
                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                                     </a>
                                     @if(Auth::user()->unreadNotifications->count() > 0)
                                         <form method="POST" action="{{ route('notifications.readAll') }}" class="inline">
                                             @csrf
-                                            <button type="submit" class="text-xs font-bold text-primary-400 hover:text-primary-300">Mark all read</button>
+                                            <button type="submit" class="text-xs font-bold text-primary-400 hover:text-primary-300">Tandai semua dibaca</button>
                                         </form>
                                     @endif
                                 </div>
@@ -425,14 +419,14 @@
                                             <span class="text-[10px] text-neutral-500 font-medium mt-1 block">{{ $notification->created_at->diffForHumans() }}</span>
                                         </div>
                                     @empty
-                                        <div class="px-4 py-6 text-center text-neutral-500 text-xs font-medium">No new notifications.</div>
+                                        <div class="px-4 py-6 text-center text-neutral-500 text-xs font-medium">Tidak ada notifikasi baru.</div>
                                     @endforelse
                                 </div>
                                 @if(Auth::user()->notifications->count() > 0)
                                     <div class="px-4 py-2 border-t border-neutral-900 text-center">
                                        <form method="POST" action="{{ route('notifications.clearAll') }}">
                                             @csrf
-                                            <button type="submit" class="text-xs font-bold text-red-400 hover:text-red-300">Clear all</button>
+                                            <button type="submit" class="text-xs font-bold text-red-400 hover:text-red-300">Hapus semua</button>
                                         </form>
                                     </div>
                                 @endif
@@ -453,19 +447,15 @@
 
                             <x-slot name="content">
                                 <x-dropdown-link :href="route('profile.edit')" class="hover:bg-neutral-900 text-neutral-300 hover:text-white text-xs font-semibold">
-                                    {{ __('Account Settings') }}
+                                    {{ __('Pengaturan Akun') }}
                                 </x-dropdown-link>
 
-                                <x-dropdown-link :href="route('client.index')" class="hover:bg-neutral-900 text-neutral-300 hover:text-white text-xs font-semibold">
-                                    {{ __('Client View') }}
-                                </x-dropdown-link>
-                                
                                 <div class="border-t border-neutral-900 my-1"></div>
-                                
+
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-xs font-semibold leading-5 text-neutral-300 hover:bg-neutral-900 hover:text-white focus:outline-none transition duration-150 ease-in-out">
-                                        {{ __('Log Out') }}
+                                        {{ __('Keluar') }}
                                     </button>
                                 </form>
                             </x-slot>
@@ -546,17 +536,17 @@
             window.showToast = function(message, type = 'success') {
                 const container = document.getElementById('toast-container');
                 if(!container) return;
-                
+
                 const toast = document.createElement('div');
                 toast.className = `toast border-l-2 ${type === 'success' ? 'border-l-white' : 'border-l-red-500'}`;
-                
-                const icon = type === 'success' 
+
+                const icon = type === 'success'
                     ? '<svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
                     : '<svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>';
 
                 toast.innerHTML = `
                     <div class="absolute inset-0 bg-gradient-to-r ${type === 'success' ? 'from-white/5' : 'from-red-500/5'} to-transparent opacity-50 pointer-events-none"></div>
-                    ${icon} 
+                    ${icon}
                     <span class="text-xs font-semibold tracking-wide relative z-10">${message}</span>
                     <div class="toast-progress ${type === 'success' ? 'bg-white' : 'bg-red-500'}"></div>
                 `;
@@ -583,24 +573,24 @@
                     const overlay = document.createElement('div');
                     overlay.id = 'custom-confirm-modal';
                     overlay.className = 'fixed inset-0 z-[99999] flex items-center justify-center transition-all duration-300 opacity-0 pointer-events-auto';
-                    
+
                     // Create separate backdrop to avoid CSS backdrop-filter blurring the children elements
                     const backdrop = document.createElement('div');
                     backdrop.className = 'absolute inset-0 bg-black/85 backdrop-blur-sm';
                     overlay.appendChild(backdrop);
-                    
+
                     // Create container card
                     const container = document.createElement('div');
                     container.className = 'relative bg-[#0a0a0a] border border-neutral-900 rounded-2xl max-w-md w-full p-6 mx-4 shadow-2xl transform scale-95 transition-all duration-300 flex flex-col overflow-hidden z-10';
-                    
+
                     // Ambient glows
-                    const accentGlow = isDelete 
+                    const accentGlow = isDelete
                         ? '<div class="absolute -right-16 -top-16 w-36 h-36 bg-red-600/5 rounded-full blur-3xl pointer-events-none"></div>'
                         : '<div class="absolute -right-16 -top-16 w-36 h-36 bg-neutral-500/5 rounded-full blur-3xl pointer-events-none"></div>';
 
                     // Select styles based on theme/action
-                    const iconContainerClass = isDelete 
-                        ? 'text-red-400 bg-red-500/5 border-red-950/20' 
+                    const iconContainerClass = isDelete
+                        ? 'text-red-400 bg-red-500/5 border-red-950/20'
                         : 'text-neutral-200 bg-neutral-900 border-neutral-850';
 
                     const confirmButtonClass = isDelete
@@ -679,9 +669,9 @@
                         }
 
                         // Decide title and style
-                        let isDeleteAction = onsubmitAttr.toLowerCase().includes('delete') || 
-                                             onsubmitAttr.toLowerCase().includes('destroy') || 
-                                             onsubmitAttr.toLowerCase().includes('hapus') || 
+                        let isDeleteAction = onsubmitAttr.toLowerCase().includes('delete') ||
+                                             onsubmitAttr.toLowerCase().includes('destroy') ||
+                                             onsubmitAttr.toLowerCase().includes('hapus') ||
                                              onsubmitAttr.toLowerCase().includes('cancel') ||
                                              onsubmitAttr.toLowerCase().includes('berhenti');
 
@@ -748,31 +738,31 @@
                         // Create wrapper
                         const wrapper = document.createElement('div');
                         wrapper.className = 'custom-dropdown relative';
-                        
+
                         // Copy only safe layout, width, and margin classes to the wrapper
                         const safeClasses = [];
                         select.className.split(/\s+/).forEach(cls => {
                             if (!cls || cls === 'custom-dropdown-hidden') return;
-                            
+
                             const isMargin = cls.startsWith('m-') || cls.startsWith('mt-') || cls.startsWith('mb-') || cls.startsWith('ml-') || cls.startsWith('mr-') || cls.startsWith('mx-') || cls.startsWith('my-') ||
                                              cls.startsWith('sm:m-') || cls.startsWith('sm:mt-') || cls.startsWith('sm:mb-') || cls.startsWith('sm:ml-') || cls.startsWith('sm:mr-') || cls.startsWith('sm:mx-') || cls.startsWith('sm:my-') ||
                                              cls.startsWith('md:m-') || cls.startsWith('md:mt-') || cls.startsWith('md:mb-') || cls.startsWith('md:ml-') || cls.startsWith('md:mr-') || cls.startsWith('md:mx-') || cls.startsWith('md:my-');
-                            
+
                             const isLayout = cls === 'block' || cls === 'inline-block' || cls === 'inline' || cls === 'flex' || cls === 'inline-flex' || cls === 'grid' || cls === 'hidden' ||
                                              cls.startsWith('sm:block') || cls.startsWith('sm:inline-block') || cls.startsWith('sm:flex') || cls.startsWith('sm:hidden') ||
                                              cls.startsWith('md:block') || cls.startsWith('md:inline-block') || cls.startsWith('md:flex') || cls.startsWith('md:hidden');
-                            
+
                             const isWidth = cls.startsWith('w-') || cls.startsWith('sm:w-') || cls.startsWith('md:w-');
-                            
+
                             if (isMargin || isLayout || isWidth) {
                                   safeClasses.push(cls);
                             }
                         });
-                        
+
                         if (safeClasses.length > 0) {
                             wrapper.className += ' ' + safeClasses.join(' ');
                         }
-                        
+
                         // Ensure we have a width container class if not already added
                         if (!wrapper.className.includes('w-')) {
                             if (select.classList.contains('w-full')) {
@@ -785,9 +775,9 @@
                         // Create toggle button
                         const toggleBtn = document.createElement('button');
                         toggleBtn.type = 'button';
-                        
+
                         let btnClasses = 'custom-dropdown-toggle w-full flex items-center justify-between bg-neutral-950 border border-neutral-900 rounded-xl text-neutral-200 hover:border-neutral-700 hover:bg-neutral-900 focus:outline-none transition-all font-semibold select-none cursor-pointer ';
-                        
+
                         if (select.className.includes('py-1') || select.className.includes('py-0.5') || select.className.includes('text-[10px]') || select.className.includes('text-xs')) {
                             btnClasses += 'px-3 py-1.5 text-xs';
                         } else if (select.className.includes('py-2') || select.className.includes('py-2.5')) {
@@ -799,7 +789,7 @@
 
                         const labelSpan = document.createElement('span');
                         labelSpan.className = 'custom-dropdown-label truncate mr-2';
-                        
+
                         const initialOption = select.options[select.selectedIndex] || select.options[0];
                         labelSpan.textContent = initialOption ? initialOption.textContent : 'Select...';
 
@@ -813,7 +803,7 @@
                         // Create menu
                         const menu = document.createElement('div');
                         menu.className = 'custom-dropdown-menu absolute left-0 right-0 mt-1.5 bg-neutral-950 border border-neutral-900 rounded-xl shadow-2xl py-1.5 z-[99999] opacity-0 scale-95 pointer-events-none transition-all duration-200 origin-top max-h-60 overflow-y-auto scrollbar-thin';
-                        
+
                         Array.from(select.options).forEach((opt, idx) => {
                             const item = document.createElement('div');
                             item.className = 'custom-dropdown-item px-4 py-2.5 text-xs sm:text-sm text-neutral-300 hover:bg-neutral-900 hover:text-white cursor-pointer transition-colors font-medium select-none truncate';
@@ -831,10 +821,10 @@
                                 if (opt.disabled) return;
 
                                 select.selectedIndex = idx;
-                                
+
                                 menu.querySelectorAll('.custom-dropdown-item').forEach(el => el.classList.remove('bg-neutral-900', 'text-white', 'font-semibold'));
                                 item.classList.add('bg-neutral-900', 'text-white', 'font-semibold');
-                                
+
                                 labelSpan.textContent = opt.textContent;
                                 closeMenu();
 

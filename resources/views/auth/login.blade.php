@@ -18,7 +18,7 @@
                 <x-input-label for="password" :value="__('Password')" class="text-xs font-bold text-neutral-450 uppercase tracking-widest pl-0.5" />
                 @if (Route::has('password.request'))
                     <a class="text-[10px] text-neutral-450 hover:text-white font-extrabold uppercase tracking-wider transition-colors" href="{{ route('password.request') }}">
-                        {{ __('Forgot password?') }}
+                        {{ __('Lupa kata sandi?') }}
                     </a>
                 @endif
             </div>
@@ -34,20 +34,20 @@
         <div class="block pt-1 select-none">
             <label for="remember_me" class="inline-flex items-center cursor-pointer group">
                 <input id="remember_me" type="checkbox" class="rounded border-neutral-850 bg-black text-white focus:ring-offset-0 focus:ring-0 focus:ring-transparent h-4 w-4 cursor-pointer checked:bg-neutral-200 checked:border-neutral-200" name="remember">
-                <span class="ms-2.5 text-xs text-neutral-450 group-hover:text-neutral-300 font-semibold transition-colors">{{ __('Stay signed in') }}</span>
+                <span class="ms-2.5 text-xs text-neutral-450 group-hover:text-neutral-300 font-semibold transition-colors">{{ __('Tetap masuk') }}</span>
             </label>
         </div>
 
         <div class="pt-2">
             <x-primary-button class="h-12 uppercase font-extrabold text-xs tracking-wider">
-                {{ __('Access Account') }}
+                {{ __('Masuk Akun') }}
             </x-primary-button>
         </div>
         
         @if (Route::has('register'))
             <p class="text-center text-[10px] text-neutral-500 mt-6 select-none font-bold uppercase tracking-wider">
-                Don't have an account? 
-                <a href="{{ route('register') }}" class="text-white hover:text-neutral-350 transition-colors">Sign up</a>
+                Belum punya akun? 
+                <a href="{{ route('register') }}" class="text-white hover:text-neutral-350 transition-colors">Daftar sekarang</a>
             </p>
         @endif
     </form>

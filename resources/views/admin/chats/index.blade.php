@@ -4,7 +4,7 @@
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
-            {{ __('Live Chat Support') }}
+            {{ __('Dukungan Live Chat') }}
         </h2>
     </x-slot>
 
@@ -16,8 +16,8 @@
                      :class="currentUserId ? 'hidden sm:flex' : 'flex'">
                     <div class="p-5 border-b border-neutral-900 flex items-center justify-between shrink-0">
                         <div class="flex flex-col gap-0.5">
-                            <h3 class="text-sm font-semibold text-white">Active Channels</h3>
-                            <p class="text-[10px] text-neutral-500 font-medium">Select a client to respond.</p>
+                            <h3 class="text-sm font-semibold text-white">Saluran Aktif</h3>
+                            <p class="text-[10px] text-neutral-500 font-medium">Pilih klien untuk merespons.</p>
                         </div>
                     </div>
                     <div class="flex-1 overflow-y-auto divide-y divide-neutral-900/40 scrollbar-thin">
@@ -34,7 +34,7 @@
                                 @endif
                             </button>
                         @empty
-                            <div class="p-8 text-center text-neutral-500 text-xs font-medium">No active chat channels.</div>
+                            <div class="p-8 text-center text-neutral-500 text-xs font-medium">Tidak ada saluran chat aktif.</div>
                         @endforelse
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                                 <div class="w-8 h-8 rounded-full bg-neutral-900 border border-neutral-850 flex items-center justify-center text-xs font-bold text-neutral-300 uppercase select-none" x-text="currentUserName.substring(0,1)"></div>
                                 <div>
                                     <h3 class="text-xs font-bold text-white tracking-wide" x-text="currentUserName"></h3>
-                                    <p class="text-[9px] text-neutral-500 font-bold uppercase tracking-wider mt-0.5">Support Session</p>
+                                    <p class="text-[9px] text-neutral-500 font-bold uppercase tracking-wider mt-0.5">Sesi Dukungan</p>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +83,7 @@
                                     <!-- Time & Delete Action Row -->
                                     <div class="text-[9px] text-neutral-500 font-semibold mt-1.5 flex items-center gap-2">
                                         <span x-text="new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})"></span>
-                                        <button @click="removeChatMessage(msg.id)" class="text-neutral-600 hover:text-red-400 transition-colors p-1 rounded hover:bg-neutral-900/50 outline-none" title="Delete message">
+                                        <button @click="removeChatMessage(msg.id)" class="text-neutral-600 hover:text-red-400 transition-colors p-1 rounded hover:bg-neutral-900/50 outline-none" title="Hapus pesan">
                                             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         </button>
                                     </div>
@@ -91,7 +91,7 @@
                             </div>
                         </template>
                         <div x-show="messages.length === 0" class="h-full flex flex-col items-center justify-center text-neutral-500 italic text-xs font-semibold py-20 select-none">
-                            No chat logs recorded yet.
+                            Belum ada obrolan terekam.
                         </div>
                     </div>
 
@@ -108,7 +108,7 @@
                         
                         <form @submit.prevent="sendMessage" class="p-4 flex gap-3 items-center">
                             <!-- Attachment Trigger -->
-                            <button type="button" @click="$refs.fileInput.click()" class="p-2.5 text-neutral-400 hover:text-white rounded-xl hover:bg-neutral-900/50 transition-all duration-200 active:scale-[0.95]" title="Upload file attachment">
+                            <button type="button" @click="$refs.fileInput.click()" class="p-2.5 text-neutral-400 hover:text-white rounded-xl hover:bg-neutral-900/50 transition-all duration-200 active:scale-[0.95]" title="Unggah lampiran file">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
@@ -116,11 +116,11 @@
                             <input type="file" x-ref="fileInput" @change="onFileSelected" class="hidden" accept="image/*">
                             
                             <!-- Messages Input Box -->
-                            <input type="text" x-model="newMessage" placeholder="Type a response message..." class="input-field flex-1 py-2 text-xs bg-neutral-950 hover:bg-neutral-900/40 placeholder-neutral-500 focus:border-neutral-700 focus:ring-neutral-700 rounded-xl" autocomplete="off">
+                            <input type="text" x-model="newMessage" placeholder="Ketik pesan balasan..." class="input-field flex-1 py-2 text-xs bg-neutral-950 hover:bg-neutral-900/40 placeholder-neutral-500 focus:border-neutral-700 focus:ring-neutral-700 rounded-xl" autocomplete="off">
                             
                             <!-- Send Button -->
                             <button type="submit" class="btn-primary px-5 py-2.5 shrink-0" :disabled="sending || (newMessage.trim().length === 0 && !selectedFile)">
-                                <span x-show="!sending" class="hidden sm:inline">Send</span>
+                                <span x-show="!sending" class="hidden sm:inline">Kirim</span>
                                 <svg x-show="!sending" class="sm:hidden w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                                 <svg x-show="sending" class="animate-spin h-4 w-4 text-black" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                             </button>
@@ -130,7 +130,7 @@
                 
                 <!-- Chat Empty State Panel (Desktop only) -->
                 <div class="hidden sm:flex w-2/3 items-center justify-center h-full text-neutral-500 text-xs font-semibold py-20 select-none bg-neutral-950/10" x-show="!currentUserId">
-                    Select a support channel client to respond.
+                    Pilih klien saluran dukungan untuk merespons.
                 </div>
             </div>
         </div>
@@ -176,7 +176,7 @@
                     const file = event.target.files[0];
                     if (!file) return;
                     if (!file.type.startsWith('image/')) {
-                        alert('Please select an image file.');
+                        alert('Silakan pilih file gambar.');
                         return;
                     }
                     this.selectedFile = file;
@@ -238,7 +238,7 @@
                 },
 
                 async removeChatMessage(id) {
-                    if(!confirm('Delete this message permanently?')) return;
+                    if(!confirm('Hapus pesan ini secara permanen?')) return;
                     
                     this.deletingIds.add(id);
                     this.messages = this.messages.filter(m => m.id !== id);
@@ -257,13 +257,13 @@
                         
                         if(!res.ok) {
                             const data = await res.json();
-                            alert('Failed to delete: ' + (data.error || 'Unknown error'));
+                            alert('Gagal menghapus: ' + (data.error || 'Kesalahan tidak diketahui'));
                             this.deletingIds.delete(id);
                             await this.fetchMessages();
                         }
                     } catch(e) { 
                         console.error('Delete error:', e); 
-                        alert('Connection error: ' + e.message);
+                        alert('Kesalahan koneksi: ' + e.message);
                         this.deletingIds.delete(id);
                     } finally {
                         this.isProcessing = false;

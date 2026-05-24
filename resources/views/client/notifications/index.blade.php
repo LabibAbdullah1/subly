@@ -4,7 +4,7 @@
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
             </svg>
-            {{ __('Notifications') }}
+            Notifikasi
         </h2>
     </x-slot>
 
@@ -75,11 +75,11 @@
                                     <td class="table-td text-center">
                                         @if(is_null($notification->read_at))
                                             <span class="px-2 py-0.5 inline-flex text-[9px] font-bold uppercase tracking-wider rounded-md border bg-neutral-900 border-neutral-850 text-white shadow-[0_0_10px_rgba(255,255,255,0.05)]">
-                                                New
+                                                Baru
                                             </span>
                                         @else
                                             <span class="px-2 py-0.5 inline-flex text-[9px] font-bold uppercase tracking-wider rounded-md border bg-neutral-900/40 border-neutral-900 text-neutral-550">
-                                                Read
+                                                Dibaca
                                             </span>
                                         @endif
                                     </td>

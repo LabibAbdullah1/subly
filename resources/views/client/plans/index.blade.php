@@ -4,7 +4,7 @@
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            {{ __('Hosting Plans') }}
+            Paket Hosting
         </h2>
     </x-slot>
 
@@ -13,8 +13,8 @@
             
             <!-- Sleek Page Description Header -->
             <div class="text-center max-w-2xl mx-auto mb-10">
-                <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight">Simple, transparent pricing</h3>
-                <p class="text-neutral-400 text-xs sm:text-sm font-medium">All hosting plans include secure subdomains, automated database provisioning, and one-click ZIP deployments. No hidden fees.</p>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight">Harga Sederhana & Transparan</h3>
+                <p class="text-neutral-400 text-xs sm:text-sm font-medium">Semua paket hosting mencakup subdomain aman, penyediaan database otomatis, dan deployment ZIP satu klik. Tanpa biaya tersembunyi.</p>
             </div>
 
             <!-- Error Banner -->
@@ -47,12 +47,12 @@
                             <!-- Price & Term -->
                             <div class="flex items-baseline gap-1.5 mb-5 flex-wrap">
                                 <span class="text-2xl font-extrabold text-white">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
-                                <span class="text-xs font-semibold text-neutral-500">/ {{ $plan->duration_months }} mo</span>
+                                <span class="text-xs font-semibold text-neutral-500">/ {{ $plan->duration_months }} bln</span>
                             </div>
                             
                             <!-- Description -->
                             <p class="text-xs text-neutral-400 mb-6 font-medium leading-relaxed min-h-[36px]">
-                                {{ $plan->description ?: "Perfect for hosting secure and reliable projects on Subly's infrastructure." }}
+                                {{ $plan->description ?: "Sangat cocok untuk menghosting proyek yang aman dan andal di infrastruktur Subly." }}
                             </p>
 
                             <!-- Features List -->
@@ -65,19 +65,19 @@
                                     <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                                     <span class="text-neutral-350 font-bold">
                                         @if($plan->max_databases > 0)
-                                            Up to {{ $plan->max_databases }} Auto-Databases
+                                            Hingga {{ $plan->max_databases }} Database Otomatis
                                         @else
-                                            No Database Included
+                                            Tidak Termasuk Database
                                         @endif
                                     </span>
                                 </div>
                                 <div class="flex items-center gap-2.5">
                                     <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                                    <span class="text-neutral-350 font-bold">Free Secure Subdomain</span>
+                                    <span class="text-neutral-350 font-bold">Subdomain Aman Gratis</span>
                                 </div>
                                 <div class="flex items-center gap-2.5">
                                     <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                                    <span class="text-neutral-350 font-bold">Free SSL Certificate</span>
+                                    <span class="text-neutral-350 font-bold">Sertifikat SSL Gratis</span>
                                 </div>
                             </div>
                             
@@ -85,11 +85,11 @@
                             <form action="{{ route('client.checkout.process', ['plan' => $plan->id] + (request()->has('renew') ? ['renew' => request()->query('renew')] : [])) }}" method="POST" class="mt-auto space-y-3.5 border-t border-neutral-900/60 pt-5">
                                 @csrf
                                 <div class="relative group/input">
-                                    <input type="text" name="voucher_code" placeholder="Voucher Code (Opsional)" 
+                                    <input type="text" name="voucher_code" placeholder="Kode Voucher (Opsional)" 
                                         class="mt-1 block w-full rounded-xl bg-black border border-neutral-850 text-neutral-200 px-3.5 py-2.5 placeholder-neutral-600 focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 text-xs sm:text-sm transition-all duration-200 outline-none">
                                 </div>
                                 <button type="submit" class="w-full btn-primary h-12 uppercase font-extrabold text-xs tracking-wider active:scale-[0.98]">
-                                    {{ request()->has('renew') ? 'Renew Now' : 'Get Started' }}
+                                    {{ request()->has('renew') ? 'Perpanjang Sekarang' : 'Mulai Sekarang' }}
                                 </button>
                             </form>
                         </div>
@@ -99,8 +99,8 @@
                         <svg class="mx-auto h-10 w-10 text-neutral-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
                         </svg>
-                        <h3 class="text-sm font-bold text-neutral-350 uppercase tracking-widest">No Plans Available</h3>
-                        <p class="text-neutral-500 text-xs mt-2 font-semibold">The administrator has not configured any hosting plans yet. Please check back later.</p>
+                        <h3 class="text-sm font-bold text-neutral-350 uppercase tracking-widest">Tidak Ada Paket Tersedia</h3>
+                        <p class="text-neutral-500 text-xs mt-2 font-semibold">Administrator belum mengonfigurasi paket hosting apa pun. Silakan periksa kembali nanti.</p>
                     </div>
                 @endforelse
             </div>
@@ -109,11 +109,11 @@
             <div class="bg-neutral-950/40 border border-neutral-900 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
                 <div class="absolute -right-20 -top-20 w-48 h-48 bg-white/2 rounded-full blur-3xl pointer-events-none"></div>
                 <div>
-                    <h4 class="text-sm font-extrabold text-white uppercase tracking-wider mb-2">Need a custom enterprise solution?</h4>
-                    <p class="text-neutral-450 text-xs sm:text-sm max-w-xl font-medium leading-relaxed">If your application requires dedicated infrastructure, massive SSD capacities, custom database permissions, or high concurrency limits, our support team can build a tailor-made sandbox for you.</p>
+                    <h4 class="text-sm font-extrabold text-white uppercase tracking-wider mb-2">Butuh solusi kustom perusahaan?</h4>
+                    <p class="text-neutral-455 text-xs sm:text-sm max-w-xl font-medium leading-relaxed">Jika aplikasi Anda memerlukan infrastruktur khusus, kapasitas SSD besar, izin database khusus, atau batas konkurensi tinggi, tim dukungan kami dapat membuat sandbox khusus untuk Anda.</p>
                 </div>
                 <a href="{{ route('client.chat.index') }}" class="btn-secondary h-11 px-6 whitespace-nowrap text-xs uppercase tracking-wider font-bold active:scale-[0.98] inline-flex items-center justify-center">
-                    Contact Sales
+                    Hubungi Kami
                 </a>
             </div>
 

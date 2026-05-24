@@ -4,7 +4,7 @@
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            {{ __('Master Control') }}
+            {{ __('Panel Utama') }}
         </h2>
     </x-slot>
 
@@ -12,8 +12,8 @@
         
         <!-- Welcome Title -->
         <div class="flex flex-col gap-1.5 px-4 sm:px-0">
-            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">System Console Overview</h1>
-            <p class="text-xs text-neutral-500 font-medium">Global platform analytics, provisioning logs, and live support requests.</p>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Ringkasan Konsol Sistem</h1>
+            <p class="text-xs text-neutral-500 font-medium">Analitik platform global, log provisioning, dan permintaan dukungan langsung.</p>
         </div>
 
         <!-- Quick Stats Grid -->
@@ -23,7 +23,7 @@
                 <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/2 rounded-full blur-xl group-hover:bg-white/5 transition-all duration-500"></div>
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Total Clients</p>
+                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Total Klien</p>
                         <p class="text-2xl font-bold text-white tracking-tight mt-1.5">{{ $totalUsers }}</p>
                     </div>
                     <div class="p-3 rounded-xl bg-neutral-900 border border-neutral-850 text-neutral-400 group-hover:text-white group-hover:border-neutral-700 transition-all duration-300">
@@ -37,10 +37,10 @@
                 <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/2 rounded-full blur-xl group-hover:bg-white/5 transition-all duration-500"></div>
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Deployments</p>
+                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Deployment</p>
                         <p class="text-2xl font-bold text-white tracking-tight mt-1.5 flex items-baseline gap-1.5">
                             {{ $queuedDeployments }}
-                            <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-wide">Queued</span>
+                            <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-wide">Antrian</span>
                         </p>
                     </div>
                     <div class="p-3 rounded-xl bg-neutral-900 border border-neutral-850 text-neutral-400 group-hover:text-white group-hover:border-neutral-700 transition-all duration-300">
@@ -54,7 +54,7 @@
                 <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/2 rounded-full blur-xl group-hover:bg-white/5 transition-all duration-500"></div>
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Unread Chats</p>
+                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Chat Belum Dibaca</p>
                         <p class="text-2xl font-bold text-white tracking-tight mt-1.5 flex items-baseline gap-1.5">
                             {{ $unreadChats }}
                             @if($unreadChats > 0)
@@ -76,7 +76,7 @@
                 <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/2 rounded-full blur-xl group-hover:bg-white/5 transition-all duration-500"></div>
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Monthly Revenue</p>
+                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Pendapatan Bulanan</p>
                         <p class="text-xl sm:text-2xl font-bold text-white tracking-tight mt-1.5">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
                     </div>
                     <div class="p-3 rounded-xl bg-neutral-900 border border-neutral-850 text-neutral-400 group-hover:text-white group-hover:border-neutral-700 transition-all duration-300">
@@ -92,18 +92,18 @@
             <div class="glass-panel overflow-hidden border-neutral-900">
                 <div class="p-5 border-b border-neutral-900/60 bg-neutral-950/40 flex justify-between items-center">
                     <div class="flex flex-col gap-0.5">
-                        <h3 class="text-sm font-semibold text-white">Recent Deployments</h3>
-                        <p class="text-[10px] text-neutral-500 font-medium">Latest background build queues.</p>
+                        <h3 class="text-sm font-semibold text-white">Deployment Terbaru</h3>
+                        <p class="text-[10px] text-neutral-500 font-medium">Antrean build terbaru di latar belakang.</p>
                     </div>
                     <a href="{{ route('admin.deployments.index') }}" class="text-xs font-semibold text-neutral-400 hover:text-white transition-colors active:scale-[0.98]">
-                        View Queue →
+                                                Lihat Antrian →
                     </a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
                             <tr>
-                                <th class="table-th text-[10px]">Client</th>
+                                <th class="table-th text-[10px]">Klien</th>
                                 <th class="table-th text-[10px]">Subdomain</th>
                                 <th class="table-th text-[10px] text-right">Status</th>
                             </tr>
@@ -111,7 +111,7 @@
                         <tbody class="divide-y divide-neutral-900/40">
                             @forelse($recentDeployments as $deployment)
                             <tr class="group hover:bg-neutral-900/20 transition-all duration-300">
-                                <td class="table-td text-xs font-semibold text-neutral-300">{{ $deployment->subdomain?->user?->name ?? 'Unknown' }}</td>
+                                <td class="table-td text-xs font-semibold text-neutral-300">{{ $deployment->subdomain?->user?->name ?? 'Tidak Diketahui' }}</td>
                                 <td class="table-td text-xs font-mono text-neutral-450">{{ $deployment->subdomain?->full_domain ?? 'N/A' }}</td>
                                 <td class="table-td text-right">
                                     <span class="px-2 py-0.5 inline-flex text-[9px] leading-5 font-bold uppercase rounded-md tracking-wider border
@@ -120,13 +120,13 @@
                                         {{ $deployment->status === 'processing' ? 'bg-neutral-900/50 text-white border-neutral-750' : '' }}
                                         {{ $deployment->status === 'error' ? 'bg-red-950/20 text-red-400 border-red-900/20' : '' }}
                                     ">
-                                        {{ $deployment->status }}
+                                        {{ $deployment->status === 'success' ? 'Sukses' : ($deployment->status === 'queued' ? 'Antrean' : ($deployment->status === 'processing' ? 'Diproses' : ($deployment->status === 'error' ? 'Gagal' : $deployment->status))) }}
                                     </span>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="3" class="table-td text-center py-8 text-xs text-neutral-500 font-medium">No recent deployments.</td>
+                                <td colspan="3" class="table-td text-center py-8 text-xs text-neutral-500 font-medium">Tidak ada deployment terbaru.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -138,38 +138,38 @@
             <div class="glass-panel overflow-hidden border-neutral-900">
                 <div class="p-5 border-b border-neutral-900/60 bg-neutral-950/40 flex justify-between items-center">
                     <div class="flex flex-col gap-0.5">
-                        <h3 class="text-sm font-semibold text-white">Recent Support Chats</h3>
-                        <p class="text-[10px] text-neutral-500 font-medium">Latest active client chat channels.</p>
+                        <h3 class="text-sm font-semibold text-white">Chat Dukungan Terbaru</h3>
+                        <p class="text-[10px] text-neutral-500 font-medium">Saluran chat klien aktif terbaru.</p>
                     </div>
                     <a href="{{ route('admin.chat.index') }}" class="text-xs font-semibold text-neutral-400 hover:text-white transition-colors active:scale-[0.98]">
-                        Live Chat →
+                                                Live Chat →
                     </a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
                             <tr>
-                                <th class="table-th text-[10px]">Client</th>
-                                <th class="table-th text-[10px]">Message</th>
+                                <th class="table-th text-[10px]">Klien</th>
+                                <th class="table-th text-[10px]">Pesan</th>
                                 <th class="table-th text-[10px] text-right">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-neutral-900/40">
                             @forelse($recentChats as $chat)
                             <tr class="group hover:bg-neutral-900/20 transition-all duration-300">
-                                <td class="table-td text-xs font-semibold text-neutral-300 transition-colors group-hover:text-white">{{ $chat->user->name ?? 'Deleted User' }}</td>
+                                <td class="table-td text-xs font-semibold text-neutral-300 transition-colors group-hover:text-white">{{ $chat->user->name ?? 'Pengguna Dihapus' }}</td>
                                 <td class="table-td text-xs text-neutral-400 truncate max-w-[150px]">{{ $chat->message }}</td>
                                 <td class="table-td text-right">
                                     <span class="px-2 py-0.5 inline-flex text-[9px] leading-5 font-bold uppercase rounded-md tracking-wider border
                                         {{ $chat->is_read ? 'bg-neutral-900/50 text-neutral-450 border-neutral-900' : 'bg-white text-black border-transparent' }}
                                     ">
-                                        {{ $chat->is_read ? 'Read' : 'New' }}
+                                        {{ $chat->is_read ? 'Dibaca' : 'Baru' }}
                                     </span>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="3" class="table-td text-center py-8 text-xs text-neutral-500 font-medium">No recent messages.</td>
+                                <td colspan="3" class="table-td text-center py-8 text-xs text-neutral-500 font-medium">Tidak ada pesan terbaru.</td>
                             </tr>
                             @endforelse
                         </tbody>

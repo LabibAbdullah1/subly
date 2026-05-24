@@ -5,21 +5,24 @@
                 <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                 </svg>
-                {{ __('Broadcast History') }}
+                {{ __('Riwayat Siaran') }}
             </h2>
-            <a href="{{ route('admin.notifications.create') }}" class="btn-primary flex items-center gap-2 active:scale-[0.98]">
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                Create Broadcast
-            </a>
         </div>
     </x-slot>
 
     <div class="py-6 sm:py-8 max-w-7xl mx-auto space-y-6 select-none px-4 sm:px-0">
-        
+
         <!-- Welcome Title -->
-        <div class="flex flex-col gap-1.5">
-            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Broadcast Log History</h1>
-            <p class="text-xs text-neutral-500 font-medium">Review and track system broadcast alerts sent to client channels.</p>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Riwayat Log Siaran</h1>
+            <p class="text-xs text-neutral-500 font-medium">Tinjau dan lacak peringatan siaran sistem yang dikirim ke saluran klien.</p>
+            </div>
+
+            <a href="{{ route('admin.notifications.create') }}" class="btn-primary flex items-center gap-2 active:scale-[0.98]">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                Buat Siaran
+            </a>
         </div>
 
         <div class="glass-panel overflow-hidden border-neutral-900">
@@ -27,9 +30,9 @@
                 <table class="w-full text-left">
                     <thead>
                         <tr>
-                            <th class="table-th text-[10px]">Time</th>
-                            <th class="table-th text-[10px]">Target User</th>
-                            <th class="table-th text-[10px]">Message Details</th>
+                            <th class="table-th text-[10px]">Waktu</th>
+                            <th class="table-th text-[10px]">Pengguna Target</th>
+                            <th class="table-th text-[10px]">Detail Pesan</th>
                             <th class="table-th text-[10px] text-right pr-8">Status</th>
                         </tr>
                     </thead>
@@ -49,7 +52,7 @@
                                         <div class="text-xs font-bold text-white">{{ $user->name }}</div>
                                         <div class="text-[10px] text-neutral-500 font-medium mt-0.5">{{ $user->email }}</div>
                                     @else
-                                        <div class="text-xs text-neutral-500 italic font-semibold">Deleted Account</div>
+                                        <div class="text-xs text-neutral-500 italic font-semibold">Akun Dihapus</div>
                                     @endif
                                 </td>
                                 <td class="table-td">
@@ -58,14 +61,14 @@
                                 <td class="table-td text-right pr-8">
                                     <span class="px-2 py-0.5 inline-flex text-[9px] leading-5 font-bold uppercase tracking-wider rounded-md border
                                         {{ $notification->read_at ? 'bg-neutral-900/40 text-neutral-450 border-neutral-900' : 'bg-white text-black border-transparent' }}">
-                                        {{ $notification->read_at ? 'Read' : 'Delivered' }}
+                                        {{ $notification->read_at ? 'Dibaca' : 'Terkirim' }}
                                     </span>
                                 </td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="4" class="table-td text-center py-12 text-xs text-neutral-500 font-semibold italic">
-                                    No broadcast logs recorded yet.
+                                    Belum ada log siaran terekam.
                                 </td>
                             </tr>
                         @endforelse

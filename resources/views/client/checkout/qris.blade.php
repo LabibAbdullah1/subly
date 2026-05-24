@@ -4,7 +4,7 @@
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-5.625-12h14.25c.621 0 1.125.504 1.125 1.125v13.5c0 .621-.504 1.125-1.125 1.125H3.375c-.621 0-1.125-.504-1.125-1.125V4.875c0-.621.504-1.125 1.125-1.125z" />
             </svg>
-            {{ __('Invoice Checkout') }}
+            Checkout Pembayaran
         </h2>
     </x-slot>
 
@@ -26,11 +26,11 @@
                 <!-- Invoice Details Box -->
                 <div class="w-full bg-black/60 rounded-2xl border border-neutral-900 p-6 mb-8 text-left relative z-10">
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-neutral-500 text-[10px] font-bold uppercase tracking-widest">Plan Item</span>
+                        <span class="text-neutral-500 text-[10px] font-bold uppercase tracking-widest">Item Paket</span>
                         <span class="text-white font-bold text-xs sm:text-sm">{{ $payment->plan->name }}</span>
                     </div>
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-neutral-500 text-[10px] font-bold uppercase tracking-widest">Transaction ID</span>
+                        <span class="text-neutral-500 text-[10px] font-bold uppercase tracking-widest">ID Transaksi</span>
                         <span class="text-neutral-300 font-mono text-xs">{{ $payment->transaction_id }}</span>
                     </div>
                     <div class="h-px bg-neutral-900/60 my-4"></div>

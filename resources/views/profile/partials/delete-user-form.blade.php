@@ -6,7 +6,7 @@
         </h2>
 
         <p class="mt-1.5 text-xs text-neutral-500 font-medium">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
+            {{ __('Setelah akun Anda dihapus, semua sumber daya dan datanya akan dihapus secara permanen. Sebelum menghapus akun, harap unduh data atau informasi yang ingin Anda simpan.') }}
         </p>
     </header>
 
@@ -24,11 +24,11 @@
             <div>
                 <h2 class="text-base font-bold text-white tracking-wide flex items-center gap-2">
                     <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    {{ __('Are you sure you want to delete your account?') }}
+                    {{ __('Apakah Anda yakin ingin menghapus akun Anda?') }}
                 </h2>
 
                 <p class="mt-2 text-xs text-neutral-450 font-medium leading-relaxed">
-                    {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+                    {{ __('Setelah akun Anda dihapus, semua sumber daya dan data akan dihapus secara permanen. Masukkan kata sandi Anda untuk mengonfirmasi bahwa Anda ingin menghapus akun secara permanen.') }}
                 </p>
             </div>
 
@@ -40,7 +40,7 @@
                     name="password"
                     type="password"
                     class="block w-full sm:w-3/4"
-                    placeholder="{{ __('Confirm Password') }}"
+                    placeholder="{{ __('Konfirmasi Kata Sandi') }}"
                 />
 
                 <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2 text-xs font-semibold" />

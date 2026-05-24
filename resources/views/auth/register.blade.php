@@ -4,7 +4,7 @@
 
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Full Name')" class="text-xs font-bold text-neutral-450 uppercase tracking-widest pl-0.5" />
+            <x-input-label for="name" :value="__('Nama Lengkap')" class="text-xs font-bold text-neutral-450 uppercase tracking-widest pl-0.5" />
             <x-text-input id="name" class="block mt-1.5 w-full font-semibold" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="John Doe" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
@@ -37,13 +37,13 @@
 
         <div class="pt-4">
             <x-primary-button class="h-12 uppercase font-extrabold text-xs tracking-wider">
-                {{ __('Create Account') }}
+                {{ __('Buat Akun') }}
             </x-primary-button>
         </div>
         
         <p class="text-center text-[10px] text-neutral-500 mt-6 select-none font-bold uppercase tracking-wider">
-            Already registered? 
-            <a href="{{ route('login') }}" class="text-white hover:text-neutral-350 transition-colors">Sign in here</a>
+            Sudah punya akun? 
+            <a href="{{ route('login') }}" class="text-white hover:text-neutral-350 transition-colors">Masuk di sini</a>
         </p>
     </form>
 </x-guest-layout>

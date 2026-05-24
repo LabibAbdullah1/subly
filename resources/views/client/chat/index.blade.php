@@ -20,14 +20,14 @@
                             <span class="text-white font-extrabold text-xs">CS</span>
                         </div>
                         <div>
-                            <h3 class="text-sm font-bold text-white tracking-tight uppercase tracking-wider">Customer Support</h3>
+                            <h3 class="text-sm font-bold text-white tracking-tight uppercase tracking-wider">Dukungan Pelanggan</h3>
                             <p class="text-[10px] text-neutral-450 flex items-center gap-1.5 mt-1 font-semibold">
                                 <span class="relative flex h-1.5 w-1.5" x-show="adminOnline">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                     <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
                                 </span>
                                 <span class="h-1.5 w-1.5 rounded-full bg-neutral-600" x-show="!adminOnline"></span>
-                                <span x-text="adminOnline ? 'Online. Reply instantly.' : 'Offline. We\'ll be back soon.'"></span>
+                                <span x-text="adminOnline ? 'Online. Membalas instan.' : 'Offline. Kami akan segera kembali.'"></span>
                             </p>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                         <div class="w-14 h-14 bg-neutral-950 border border-neutral-900 rounded-2xl flex items-center justify-center mb-4 shadow-xl">
                             <svg class="w-6 h-6 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025 10.321 10.321 0 01-2.164-3.623C2.26 14.153 2 13.09 2 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>
                         </div>
-                        <p class="text-neutral-500 text-xs font-bold uppercase tracking-widest">No messages yet</p>
+                        <p class="text-neutral-500 text-xs font-bold uppercase tracking-widest">Belum ada pesan</p>
                         <p class="text-[10px] text-neutral-500 mt-1 max-w-xs text-center leading-relaxed font-semibold">Tulis pesan atau lampirkan invoice pembayaran jika ingin melakukan verifikasi.</p>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                         <img :src="imagePreview" class="w-full h-full object-cover opacity-60">
                     </div>
                     <div class="flex-1 overflow-hidden">
-                        <p class="text-[10px] font-mono text-neutral-400 truncate" x-text="selectedFile ? selectedFile.name : 'Unknown file'"></p>
+                        <p class="text-[10px] font-mono text-neutral-400 truncate" x-text="selectedFile ? selectedFile.name : 'File tidak dikenal'"></p>
                     </div>
                     <button @click="clearFile" class="p-1 text-red-500 hover:text-red-400 active:scale-95 transition-transform cursor-pointer">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -145,7 +145,7 @@
                     const file = event.target.files[0];
                     if (!file) return;
                     if (!file.type.startsWith('image/')) {
-                        alert('Please select an image file.');
+                        alert('Silakan pilih file gambar.');
                         return;
                     }
                     this.selectedFile = file;

@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-sm text-neutral-450 tracking-wider uppercase">
-            {{ __('Global Settings') }}
+            {{ __('Pengaturan Global') }}
         </h2>
     </x-slot>
 
@@ -9,8 +9,8 @@
         
         <!-- Welcome Title -->
         <div class="flex flex-col gap-1.5">
-            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">App Configurations</h1>
-            <p class="text-xs text-neutral-500 font-medium">Update payment systems image assets and QRIS code parameters.</p>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Konfigurasi Aplikasi</h1>
+            <p class="text-xs text-neutral-500 font-medium">Perbarui aset gambar sistem pembayaran dan parameter kode QRIS.</p>
         </div>
 
         @if(session('success'))
@@ -30,8 +30,8 @@
 
         <div class="glass-panel overflow-hidden border-neutral-900">
             <div class="p-6 sm:p-8 border-b border-neutral-900 bg-neutral-950/40">
-                <h3 class="text-base font-bold text-white mb-1">QRIS Payment Invoice Image</h3>
-                <p class="text-xs text-neutral-500 font-medium">Upload a QR code deposit code image to be displayed globally on QRIS scanner billing pages for clients.</p>
+                <h3 class="text-base font-bold text-white mb-1">Gambar Invoice Pembayaran QRIS</h3>
+                <p class="text-xs text-neutral-500 font-medium">Unggah gambar kode QR untuk ditampilkan secara global di halaman tagihan scanner QRIS untuk klien.</p>
             </div>
             
             <div x-data="{ 
@@ -48,7 +48,7 @@
                 
                 <!-- Live QRIS Code Preview -->
                 <div class="space-y-4">
-                    <label class="block text-[11px] font-bold text-neutral-450 uppercase tracking-wider mb-2">Live QRIS Preview</label>
+                    <label class="block text-[11px] font-bold text-neutral-450 uppercase tracking-wider mb-2">Pratinjau QRIS Langsung</label>
                     <div class="relative group max-w-[280px] bg-white rounded-2xl overflow-hidden p-2.5 shadow-2xl border border-neutral-900 transition-all duration-300 hover:scale-[1.01]">
                         <div class="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none"></div>
                         <img :src="imageUrl" 
@@ -56,12 +56,12 @@
                              :class="{'scale-95 opacity-50': !imageUrl}">
                         
                         <div x-show="!imageUrl" class="absolute inset-0 flex items-center justify-center text-neutral-500">
-                           <p class="text-xs font-semibold">No image selected</p>
+                           <p class="text-xs font-semibold">Tidak ada gambar dipilih</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 text-[10px] text-neutral-500 font-bold uppercase tracking-wider">
                         <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        Global Billing Checkout View
+                        Tampilan Checkout Tagihan Global
                     </div>
                 </div>
 
@@ -69,7 +69,7 @@
                 <form action="{{ route('admin.settings.update_qris') }}" method="POST" enctype="multipart/form-data" class="space-y-6 w-full">
                     @csrf
                     <div class="space-y-3">
-                        <label class="block text-[11px] font-bold text-neutral-450 uppercase tracking-wider">Upload New Image File</label>
+                        <label class="block text-[11px] font-bold text-neutral-450 uppercase tracking-wider">Unggah File Gambar Baru</label>
                         <div class="relative group">
                             <input type="file" name="qris_image" id="qris_input" class="hidden" accept="image/*" @change="fileChosen">
                             <label for="qris_input" class="flex flex-col items-center justify-center w-full h-48 border border-dashed border-neutral-800 hover:border-neutral-700 rounded-2xl cursor-pointer bg-neutral-950/20 hover:bg-neutral-950/60 transition-all duration-200 overflow-hidden relative active:scale-[0.99]">
@@ -80,8 +80,8 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                     </div>
-                                    <p class="mb-1 text-xs text-neutral-300"><span class="font-bold text-white">Click to upload</span> or drag and drop</p>
-                                    <p class="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider">PNG, JPG or WebP (Max. 2MB)</p>
+                                    <p class="mb-1 text-xs text-neutral-300"><span class="font-bold text-white">Klik untuk mengunggah</span> atau seret dan lepas</p>
+                                    <p class="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider">PNG, JPG atau WebP (Maks. 2MB)</p>
                                 </div>
                             </label>
                         </div>
@@ -95,7 +95,7 @@
 
                     <div class="pt-2">
                         <button type="submit" class="w-full btn-primary py-3 active:scale-[0.98]">
-                            Confirm & Update
+                            Konfirmasi & Perbarui
                         </button>
                     </div>
                 </form>

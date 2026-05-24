@@ -4,7 +4,7 @@
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            {{ __('Deployments') }}
+            Deployment
         </h2>
     </x-slot>
 
@@ -23,7 +23,7 @@
                                 <th class="table-th">Subdomain</th>
                                 <th class="table-th">Tanggal & Waktu</th>
                                 <th class="table-th text-center">Status</th>
-                                <th class="table-th">Notes</th>
+                                <th class="table-th">Catatan</th>
                                 <th class="table-th text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -49,7 +49,7 @@
                                             {{ $deployment->status === 'queued' ? 'bg-neutral-900/40 border-neutral-900 text-neutral-450' : '' }}
                                             {{ $deployment->status === 'processing' ? 'bg-neutral-900/60 border-neutral-850 text-neutral-300' : '' }}
                                             {{ $deployment->status === 'error' ? 'bg-red-950/20 border-red-900/30 text-red-400' : '' }}">
-                                            {{ ucfirst($deployment->status) }}
+                                            {{ $deployment->status === 'success' ? 'Sukses' : ($deployment->status === 'queued' ? 'Antrean' : ($deployment->status === 'processing' ? 'Diproses' : ($deployment->status === 'error' ? 'Gagal' : $deployment->status))) }}
                                         </span>
                                     </td>
                                     <td class="table-td">

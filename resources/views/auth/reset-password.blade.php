@@ -30,7 +30,7 @@
 
         <div class="pt-4">
             <x-primary-button class="h-12 uppercase font-extrabold text-xs tracking-wider">
-                {{ __('Reset Password') }}
+                {{ __('Atur Ulang Kata Sandi') }}
             </x-primary-button>
         </div>
     </form>

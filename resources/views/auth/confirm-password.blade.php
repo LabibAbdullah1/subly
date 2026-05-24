@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="mb-6 text-xs font-semibold text-neutral-400 leading-relaxed bg-black/60 border border-neutral-900 rounded-xl p-4 select-none">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+        {{ __('Ini adalah area aman dari aplikasi. Harap konfirmasi kata sandi Anda sebelum melanjutkan.') }}
     </div>
 
     <form method="POST" action="{{ route('password.confirm') }}" class="space-y-5">
@@ -18,7 +18,7 @@
 
         <div class="pt-2">
             <x-primary-button class="h-12 uppercase font-extrabold text-xs tracking-wider">
-                {{ __('Confirm Password') }}
+                {{ __('Konfirmasi Kata Sandi') }}
             </x-primary-button>
         </div>
     </form>

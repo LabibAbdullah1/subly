@@ -1,24 +1,24 @@
 <x-admin-layout>
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
-            <h2 class="font-semibold text-sm text-neutral-450 tracking-wider uppercase flex items-center gap-2">
-                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                </svg>
-                {{ __('Subdomain Directory') }}
-            </h2>
-            <a href="{{ route('admin.subdomains.create') }}" class="btn-primary w-full sm:w-auto text-center active:scale-[0.98]">
-                Register New Subdomain
-            </a>
-        </div>
+        <h2 class="font-semibold text-sm text-neutral-450 tracking-wider uppercase flex items-center gap-2">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+            </svg>
+            {{ __('Direktori Subdomain') }}
+        </h2>
     </x-slot>
 
     <div class="py-6 sm:py-8 max-w-7xl mx-auto space-y-6 select-none px-4 sm:px-0">
         
         <!-- Welcome Title -->
-        <div class="flex flex-col gap-1.5">
-            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Subdomains Directory</h1>
-            <p class="text-xs text-neutral-500 font-medium">Manage and audit active client websites, check system expiration timelines, and moderate live paths.</p>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Direktori Subdomain</h1>
+                <p class="text-xs text-neutral-500 font-medium mt-1">Kelola dan audit situs web klien aktif, periksa jadwal kadaluarsa, dan moderasi jalur live.</p>
+            </div>
+            <a href="{{ route('admin.subdomains.create') }}" class="btn-primary w-full sm:w-auto text-center active:scale-[0.98]">
+                Daftarkan Subdomain Baru
+            </a>
         </div>
 
         @if (session('success'))
@@ -33,19 +33,19 @@
                 <table class="w-full text-left">
                     <thead>
                         <tr>
-                            <th class="table-th text-[10px]">Owner</th>
+                            <th class="table-th text-[10px]">Pemilik</th>
                             <th class="table-th text-[10px]">Subdomain</th>
-                            <th class="table-th text-[10px]">Full URL</th>
-                            <th class="table-th text-[10px]">Remaining Time</th>
+                            <th class="table-th text-[10px]">URL Lengkap</th>
+                            <th class="table-th text-[10px]">Sisa Waktu</th>
                             <th class="table-th text-[10px]">Status</th>
-                            <th class="table-th text-right text-[10px] pr-8">Actions</th>
+                            <th class="table-th text-right text-[10px] pr-8">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-neutral-900/40">
                         @forelse($subdomains as $sub)
                             <tr class="group hover:bg-neutral-900/20 transition-all duration-300">
                                 <td class="table-td">
-                                    <div class="text-xs font-bold text-neutral-200 group-hover:text-white transition-colors">{{ $sub->user->name ?? 'Unknown' }}</div>
+                                    <div class="text-xs font-bold text-neutral-200 group-hover:text-white transition-colors">{{ $sub->user->name ?? 'Tidak Diketahui' }}</div>
                                     <div class="text-[10px] text-neutral-500 font-semibold mt-0.5">{{ $sub->user->email ?? 'N/A' }}</div>
                                 </td>
                                 <td class="table-td font-mono text-xs text-neutral-350">{{ $sub->name }}</td>
@@ -62,13 +62,13 @@
                                         </div>
                                         <div class="text-[10px] text-neutral-500 font-semibold mt-0.5">{{ $sub->expired_at->format('d M Y') }}</div>
                                     @else
-                                        <span class="text-neutral-500 font-semibold italic text-xs">Lifetime/None</span>
+                                        <span class="text-neutral-500 font-semibold italic text-xs">Seumur Hidup/Tidak Ada</span>
                                     @endif
                                 </td>
                                 <td class="table-td">
                                     <span class="px-2 py-0.5 inline-flex text-[9px] leading-5 font-bold uppercase tracking-wider rounded-md border 
                                         {{ $sub->status === 'active' ? 'bg-neutral-900/40 text-neutral-300 border-neutral-850' : 'bg-red-950/20 text-red-400 border-red-900/10' }}">
-                                        {{ $sub->status }}
+                                        {{ $sub->status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
                                     </span>
                                 </td>
                                 <td class="table-td text-right pr-8">
@@ -78,9 +78,9 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </a>
-                                        <form action="{{ route('admin.subdomains.destroy', $sub) }}" method="POST" class="inline" onsubmit="confirm('Are you sure you want to delete this subdomain? This will remove all associated database environments and deployments permanently.');">
+                                        <form action="{{ route('admin.subdomains.destroy', $sub) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus subdomain ini? Ini akan menghapus semua lingkungan database dan deployment yang terkait secara permanen.');">
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="text-neutral-600 hover:text-red-400 transition-colors cursor-pointer" title="Delete">
+                                            <button type="submit" class="text-neutral-600 hover:text-red-400 transition-colors cursor-pointer" title="Hapus">
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
@@ -91,7 +91,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="table-td text-center py-12 text-xs text-neutral-500 font-semibold italic">No subdomains found.</td>
+                                <td colspan="6" class="table-td text-center py-12 text-xs text-neutral-500 font-semibold italic">Tidak ada subdomain ditemukan.</td>
                             </tr>
                         @endforelse
                     </tbody>

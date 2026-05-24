@@ -35,9 +35,9 @@
 
             <!-- Back to Dashboard Shortcut -->
             <div class="mb-1">
-               <a href="{{ route('client.index') }}" class="text-neutral-400 hover:text-white flex items-center gap-2 transition-colors text-xs font-bold uppercase tracking-wider w-fit active:scale-98">
+               <a href="{{ route('client.index') }}" class="text-neutral-450 hover:text-white flex items-center gap-2 transition-colors text-xs font-bold uppercase tracking-wider w-fit active:scale-98">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
-                    Back to Dashboard
+                    Kembali ke Dashboard
                </a>
             </div>
 
@@ -47,7 +47,7 @@
                     <div class="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>
                     </div>
-                    <h3 class="text-sm font-bold text-white tracking-tight">Deploy Code</h3>
+                    <h3 class="text-sm font-bold text-white tracking-tight">Deploy Kode</h3>
                 </div>
                 
                 <form action="{{ route('client.deployments.store') }}" method="POST" class="flex-1 flex flex-col gap-6" enctype="multipart/form-data">
@@ -55,7 +55,7 @@
                     <input type="hidden" name="subdomain_id" value="{{ $subdomain->id }}">
                     
                     <div class="flex-1">
-                        <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Project Files (.zip)</label>
+                        <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">File Proyek (.zip)</label>
                         <div class="flex justify-center h-48 border border-neutral-850 border-dashed rounded-xl transition-all relative overflow-hidden group bg-black/40 cursor-pointer hover:border-neutral-500 duration-200" id="upload-dropzone" onclick="document.getElementById('zip_file').click()">
                             <!-- Hidden File Input -->
                             <input id="zip_file" name="zip_file" type="file" class="hidden" accept=".zip" required onchange="handleFileSelect(this)">
@@ -68,7 +68,7 @@
                                     </svg>
                                 </div>
                                 <div class="text-center px-4">
-                                    <p class="text-xs font-bold text-neutral-350 group-hover:text-white transition-colors uppercase tracking-wider">Upload a file</p>
+                                    <p class="text-xs font-bold text-neutral-350 group-hover:text-white transition-colors uppercase tracking-wider">Unggah file</p>
                                     <p class="text-[10px] text-neutral-500 font-semibold mt-1">atau seret dan lepas file ZIP ke sini</p>
                                 </div>
                                 <p class="text-[9px] text-neutral-550 uppercase tracking-widest font-extrabold">ZIP Maks {{ $plan ? $plan->max_storage_mb : 50 }}MB</p>
@@ -76,7 +76,7 @@
 
                             <!-- File Selected State -->
                             <div class="hidden absolute inset-0 flex-col items-center justify-center bg-white/2 backdrop-blur-sm w-full h-full p-4 z-20" id="file-selected-state">
-                                <button type="button" onclick="event.stopPropagation(); cancelUpload()" class="absolute top-3 right-3 text-neutral-400 hover:text-white bg-neutral-905/80 p-2 rounded-lg border border-neutral-900 hover:border-neutral-700 transition-all shadow-lg active:scale-95 cursor-pointer" title="Cancel Upload">
+                                <button type="button" onclick="event.stopPropagation(); cancelUpload()" class="absolute top-3 right-3 text-neutral-400 hover:text-white bg-neutral-905/80 p-2 rounded-lg border border-neutral-900 hover:border-neutral-700 transition-all shadow-lg active:scale-95 cursor-pointer" title="Batalkan Unggahan">
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
                                 </button>
                                 <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white mb-2.5 border border-white/10 shadow-lg">
@@ -110,7 +110,7 @@
 
                     @php $hasActiveDeployment = $subdomain->deployments()->where('status', 'success')->exists(); @endphp
                     <button type="button" id="deploy-btn" onclick="submitDeployment(event, {{ $hasActiveDeployment ? 'true' : 'false' }})" class="w-full btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer {{ (!$plan) ? 'opacity-40 cursor-not-allowed grayscale pointer-events-none' : '' }}" {{ (!$plan) ? 'disabled' : '' }}>
-                        <span id="btn-text" class="font-extrabold uppercase text-xs tracking-wider">{{ !$plan ? 'Subscription Required' : 'Initiate Deployment' }}</span>
+                        <span id="btn-text" class="font-extrabold uppercase text-xs tracking-wider">{{ !$plan ? 'Perlu Berlangganan' : 'Mulai Deployment' }}</span>
                         <svg id="btn-spinner" class="hidden animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -124,7 +124,7 @@
                 <div class="px-6 py-5 border-b border-neutral-900/60 bg-neutral-950/20 flex justify-between items-center">
                     <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest flex items-center gap-2">
                         <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
-                        Hosted Environment
+                        Lingkungan Hosting
                     </h3>
                 </div>
 
@@ -141,7 +141,7 @@
                     @endphp
                     <div class="p-6 border-b border-neutral-900/60">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-semibold text-neutral-350">Disk Usage (ZIP Archive + Extracts)</span>
+                            <span class="text-xs font-semibold text-neutral-350">Penggunaan Disk (Arsip ZIP + Ekstrak)</span>
                             <span class="text-[9px] font-bold {{ $storageText }} px-2 py-0.5 rounded border tracking-wide select-none">
                                 {{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB
                                 <span class="ml-1.5 opacity-80">({{ $storagePercent }}%)</span>
@@ -155,7 +155,7 @@
                         
                         @if($liveSiteBytes > 0)
                             <div class="flex justify-between items-center pt-2.5 border-t border-neutral-900/50">
-                                <span class="text-[9px] uppercase tracking-widest text-neutral-500 font-bold">Uncompressed Document Root</span>
+                                <span class="text-[9px] uppercase tracking-widest text-neutral-500 font-bold">Root Dokumen Tidak Dikompresi</span>
                                 <span class="text-[10px] text-white font-mono font-bold">
                                     {{ $liveSiteBytes >= 1048576 ? round($liveSiteBytes / 1048576, 2) . ' MB' : round($liveSiteBytes / 1024, 2) . ' KB' }}
                                 </span>
@@ -170,9 +170,9 @@
                             <tr class="bg-neutral-950/80">
                                 <th class="table-th">Domain</th>
                                 <th class="table-th text-center">Status</th>
-                                <th class="table-th text-center">Expiry</th>
-                                <th class="table-th text-center">Latest Build</th>
-                                <th class="table-th text-right">Actions</th>
+                                <th class="table-th text-center">Kedaluwarsa</th>
+                                <th class="table-th text-center">Build Terbaru</th>
+                                <th class="table-th text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-neutral-900/50">
@@ -185,7 +185,7 @@
                                 </td>
                                 <td class="table-td text-center">
                                     <span class="px-2.5 py-0.5 inline-flex text-[9px] font-bold uppercase tracking-wider rounded-md border {{ $subdomain->status == 'active' ? 'bg-neutral-900 border-neutral-800 text-white' : 'bg-red-950/20 border-red-900/30 text-red-400' }}">
-                                        {{ ucfirst($subdomain->status) }}
+                                        {{ $subdomain->status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
                                     </span>
                                 </td>
                                 <td class="table-td text-center">
@@ -195,7 +195,7 @@
                                         </div>
                                         <div class="text-[10px] font-medium text-neutral-500 mt-0.5">{{ $subdomain->expired_at->format('d M Y') }}</div>
                                     @else
-                                        <span class="text-neutral-500 italic text-xs font-medium">Lifetime/None</span>
+                                        <span class="text-neutral-500 italic text-xs font-medium">Selamanya/Tidak Ada</span>
                                     @endif
                                 </td>
                                 <td class="table-td text-center">
@@ -204,11 +204,11 @@
                                         <div class="flex items-center justify-center gap-2 font-semibold">
                                             <span class="text-xs text-neutral-450">v{{ $latest->version }}</span>
                                             <span class="px-2 py-0.5 inline-flex text-[9px] uppercase tracking-wider rounded-full border {{ $latest->status === 'success' ? 'bg-neutral-900 border-neutral-850 text-white' : 'bg-neutral-900/40 border-neutral-900 text-neutral-550' }}">
-                                                {{ ucfirst($latest->status) }}
+                                                {{ $latest->status === 'success' ? 'Sukses' : ($latest->status === 'queued' ? 'Antrean' : ($latest->status === 'processing' ? 'Diproses' : ($latest->status === 'error' ? 'Gagal' : $latest->status))) }}
                                             </span>
                                         </div>
                                     @else
-                                        <span class="text-xs text-neutral-500 italic font-semibold">No deployments yet</span>
+                                        <span class="text-xs text-neutral-500 italic font-semibold">Belum ada deployment</span>
                                     @endif
                                 </td>
                                 <td class="table-td text-right">
@@ -295,8 +295,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-white tracking-tight">Deprovisioning Subdomain</h3>
-                <p class="text-neutral-450 text-xs mt-1.5 font-medium">Deallocating secure filesystems, drop schemes, and web hosts...</p>
+                <h3 class="text-xl font-bold text-white tracking-tight">Menghapus Subdomain (Deprovisioning)</h3>
+                <p class="text-neutral-450 text-xs mt-1.5 font-medium">Mencabut sistem file aman, menghapus skema basis data, dan web host...</p>
             </div>
 
             <!-- Stepper Container -->
@@ -601,6 +601,9 @@
 
                     if (i === totalChunks - 1) {
                         btnText.innerText = "Deploying...";
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('Deployment berhasil! Memuat ulang...');
+                        }
                         setTimeout(() => {
                             window.location.reload();
                         }, 1000);

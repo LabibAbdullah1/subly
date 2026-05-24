@@ -15,12 +15,12 @@
         <div class="px-4 py-6 space-y-6">
             <!-- Main Group -->
             <div>
-                <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Main Menu</h4>
+                <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Menu Utama</h4>
                 <ul class="space-y-1">
                     <li>
                         <a href="{{ route('client.index') }}" class="sidebar-link {{ request()->routeIs('client.index') ? 'active' : '' }}">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
-                            {{ __('Dashboard') }}
+                            {{ __('Beranda') }}
                         </a>
                     </li>
                 </ul>
@@ -29,18 +29,18 @@
             @if(Auth::user()->role === 'Client')
                 <!-- Services Group -->
                 <div>
-                    <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Services</h4>
+                    <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Layanan</h4>
                     <ul class="space-y-1">
                         <li>
                             <a href="{{ route('client.plans.index') }}" class="sidebar-link {{ request()->routeIs('client.plans.index') ? 'active' : '' }}">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3V7.5a3 3 0 013-3h13.5a3 3 0 013 3v3.75a3 3 0 01-3 3zm-13.5 0v3.75a3 3 0 003 3h13.5a3 3 0 003-3v-3.75m-16.5 0H18" /></svg>
-                                {{ __('Plan Hosting') }}
+                                {{ __('Paket Hosting') }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('client.deployments.index') }}" class="sidebar-link {{ request()->routeIs('client.deployments.*') ? 'active' : '' }}">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                {{ __('History Deployment') }}
+                                {{ __('Riwayat Deployment') }}
                             </a>
                         </li>
                     </ul>
@@ -48,7 +48,7 @@
 
                 <!-- Communication Group -->
                 <div>
-                    <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Communication</h4>
+                    <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Komunikasi</h4>
                     <ul class="space-y-1">
                         <li>
                             <a href="{{ route('client.chat.index') }}" class="sidebar-link {{ request()->routeIs('client.chat.index') ? 'active' : '' }}">
@@ -59,7 +59,7 @@
                         <li>
                             <a href="{{ route('client.notifications.index') }}" class="sidebar-link {{ request()->routeIs('client.notifications.index') ? 'active' : '' }}">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-                                {{ __('Notifications') }}
+                                {{ __('Notifikasi') }}
                             </a>
                         </li>
                         <li>
@@ -80,7 +80,7 @@
                         <li>
                             <a href="{{ route('admin.index') }}" class="sidebar-link">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>
-                                {{ __('Admin Dashboard') }}
+                                {{ __('Dashboard Admin') }}
                             </a>
                         </li>
                     </ul>
@@ -96,7 +96,7 @@
             <button type="submit" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-neutral-450 hover:text-red-400 hover:bg-red-500/5 border border-transparent hover:border-red-950/20 transition-all duration-200 active:scale-[0.98] group cursor-pointer">
                 <span class="flex items-center gap-2.5">
                     <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
-                    {{ __('Log Out') }}
+                    {{ __('Keluar') }}
                 </span>
             </button>
         </form>
@@ -110,7 +110,7 @@
         <svg class="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
         </svg>
-        <span class="text-[9px] font-bold mt-0.5 tracking-tight">Home</span>
+        <span class="text-[9px] font-bold mt-0.5 tracking-tight">Beranda</span>
     </a>
 
     @if(Auth::user()->role === 'Client')
@@ -119,15 +119,15 @@
             <svg class="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3V7.5a3 3 0 013-3h13.5a3 3 0 013 3v3.75a3 3 0 01-3 3zm-13.5 0v3.75a3 3 0 003 3h13.5a3 3 0 003-3v-3.75m-16.5 0H18" />
             </svg>
-            <span class="text-[9px] font-bold mt-0.5 tracking-tight">Plans</span>
+            <span class="text-[9px] font-bold mt-0.5 tracking-tight">Paket</span>
         </a>
 
         <!-- Deployments Link -->
-        <a href="{{ route('client.deployments.index') }}" class="flex flex-col items-center justify-center flex-1 h-full py-1 {{ request()->routeIs('client.deployments.*') ? 'text-white' : 'text-neutral-450' }} active:scale-[0.94] transition-all">
+        <a href="{{ route('client.deployments.index') }}" class="flex flex-col items-center justify-center flex-1 h-full py-1 {{ request()->routeIs('client.deployments.*') ? 'text-white' : 'text-neutral-455' }} active:scale-[0.94] transition-all">
             <svg class="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span class="text-[9px] font-bold mt-0.5 tracking-tight">Deploys</span>
+            <span class="text-[9px] font-bold mt-0.5 tracking-tight">Deployment</span>
         </a>
     @elseif(Auth::user()->role === 'Admin')
         <!-- Admin Link -->
@@ -176,12 +176,12 @@
         <!-- Drawer Links (Minimum Touch Target h-12) -->
         <div class="space-y-6">
             <div>
-                <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Main Menu</h4>
+                <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Menu Utama</h4>
                 <ul class="space-y-1">
                     <li>
                         <a @click="sidebarOpen = false" href="{{ route('client.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('client.index') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                             <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
-                            {{ __('Dashboard') }}
+                            {{ __('Beranda') }}
                         </a>
                     </li>
                 </ul>
@@ -189,25 +189,25 @@
 
             @if(Auth::user()->role === 'Client')
                 <div>
-                    <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Services</h4>
+                    <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Layanan</h4>
                     <ul class="space-y-1">
                         <li>
                             <a @click="sidebarOpen = false" href="{{ route('client.plans.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('client.plans.index') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                 <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3V7.5a3 3 0 013-3h13.5a3 3 0 013 3v3.75a3 3 0 01-3 3zm-13.5 0v3.75a3 3 0 003 3h13.5a3 3 0 003-3v-3.75m-16.5 0H18" /></svg>
-                                {{ __('Plan Hosting') }}
+                                {{ __('Paket Hosting') }}
                             </a>
                         </li>
                         <li>
                             <a @click="sidebarOpen = false" href="{{ route('client.deployments.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('client.deployments.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                 <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                {{ __('History Deployment') }}
+                                {{ __('Riwayat Deployment') }}
                             </a>
                         </li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Communication</h4>
+                    <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Komunikasi</h4>
                     <ul class="space-y-1">
                         <li>
                             <a @click="sidebarOpen = false" href="{{ route('client.chat.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('client.chat.index') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
@@ -218,7 +218,7 @@
                         <li>
                             <a @click="sidebarOpen = false" href="{{ route('client.notifications.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('client.notifications.index') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                 <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-                                {{ __('Notifications') }}
+                                {{ __('Notifikasi') }}
                             </a>
                         </li>
                         <li>
@@ -238,7 +238,7 @@
                         <li>
                             <a @click="sidebarOpen = false" href="{{ route('admin.index') }}" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold bg-neutral-900 text-white active:scale-[0.98] transition-all">
                                 <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>
-                                {{ __('Admin Dashboard') }}
+                                {{ __('Dashboard Admin') }}
                             </a>
                         </li>
                     </ul>
@@ -260,7 +260,7 @@
             @csrf
             <button type="submit" class="w-full flex items-center gap-3 px-4 h-12 rounded-xl text-xs font-semibold text-neutral-450 hover:text-red-400 hover:bg-red-500/5 transition-all duration-200 active:scale-[0.98] cursor-pointer">
                 <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
-                {{ __('Log Out') }}
+                {{ __('Keluar') }}
             </button>
         </form>
     </div>

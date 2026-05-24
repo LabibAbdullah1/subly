@@ -4,7 +4,7 @@
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
             </svg>
-            {{ __('Client Portal Dashboard') }}
+            {{ __('Dashboard Portal Klien') }}
         </h2>
     </x-slot>
 
@@ -40,9 +40,9 @@
                     <div class="relative z-10 w-full lg:w-auto text-center lg:text-left">
                         <h3 class="text-base sm:text-lg font-bold text-white mb-1.5 flex items-center justify-center lg:justify-start gap-2 tracking-tight">
                             <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                            Claim Your Next Subdomain
+                            Klaim Subdomain Berikutnya
                         </h3>
-                        <p class="text-neutral-400 text-xs font-medium">You have <span class="text-white font-bold">{{ $available_slots }}</span> unused subdomain slot(s) available.</p>
+                        <p class="text-neutral-400 text-xs font-medium">Anda memiliki <span class="text-white font-bold">{{ $available_slots }}</span> slot subdomain yang belum digunakan.</p>
                     </div>
                     <div class="relative z-10 w-full lg:w-auto">
                         <form action="{{ route('client.subdomains.store') }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -61,7 +61,7 @@
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn-primary px-6 py-2.5 h-11 shadow-[0_4px_12px_rgba(255,255,255,0.06)] active:scale-[0.98] transition-transform w-full sm:w-auto font-bold text-xs uppercase tracking-wider">Claim</button>
+                            <button type="submit" class="btn-primary px-6 py-2.5 h-11 shadow-[0_4px_12px_rgba(255,255,255,0.06)] active:scale-[0.98] transition-transform w-full sm:w-auto font-bold text-xs uppercase tracking-wider">Klaim</button>
                         </form>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                 <div class="mb-4">
                     <h3 class="text-xs font-bold text-neutral-450 uppercase tracking-widest flex items-center gap-2">
                         <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253" /></svg>
-                        Hosted Environments
+                        Lingkungan Hosting
                     </h3>
                 </div>
                 
@@ -96,22 +96,22 @@
                                 <div class="flex justify-between items-center bg-black/60 px-4 py-3 rounded-xl border border-neutral-900/60">
                                     <span class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest">Status</span>
                                     <span class="px-2 py-0.5 inline-flex text-[9px] font-bold uppercase tracking-wider rounded-md border {{ $sub->status == 'active' ? 'bg-neutral-900 border-neutral-800 text-white' : 'bg-red-950/20 border-red-900/30 text-red-400' }}">
-                                        {{ ucfirst($sub->status) }}
+                                        {{ $sub->status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
                                     </span>
                                 </div>
                                 <div class="flex justify-between items-center bg-black/60 px-4 py-3 rounded-xl border border-neutral-900/60">
-                                    <span class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest">Expiry</span>
-                                    <span class="text-xs font-semibold text-neutral-350">{{ $sub->expired_at ? $sub->expired_at->format('d M Y') : 'Lifetime' }}</span>
+                                    <span class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest">Kadaluarsa</span>
+                                    <span class="text-xs font-semibold text-neutral-350">{{ $sub->expired_at ? $sub->expired_at->format('d M Y') : 'Seumur Hidup' }}</span>
                                 </div>
                                 @php $latest = $sub->deployments->last(); @endphp
                                 <div class="flex justify-between items-center bg-black/60 px-4 py-3 rounded-xl border border-neutral-900/60">
-                                    <span class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest">Latest Build</span>
-                                    <span class="text-xs font-semibold text-neutral-350">{{ $latest ? 'v'.$latest->version : 'None' }}</span>
+                                    <span class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest">Build Terbaru</span>
+                                    <span class="text-xs font-semibold text-neutral-350">{{ $latest ? 'v'.$latest->version : 'Tidak Ada' }}</span>
                                 </div>
                             </div>
 
                             <a href="{{ route('client.portal', $sub->id) }}" class="btn-primary w-full py-2.5 h-11 text-xs uppercase tracking-wider font-extrabold flex justify-center items-center gap-1.5 relative z-10 active:scale-[0.98]">
-                                Manage Plan
+                                Kelola Paket
                                 <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </a>
                         </div>
@@ -127,9 +127,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253" />
                             </svg>
                         </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight">Welcome to Subly!</h3>
+                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight">Selamat Datang di Subly!</h3>
                         <p class="text-neutral-400 text-xs sm:text-sm mb-8 leading-relaxed max-w-sm mx-auto font-medium">
-                            Your hosting plan is active and ready to go. Choose a unique subdomain to claim your secure, fast space on the web.
+                            Paket hosting Anda sudah aktif dan siap digunakan. Pilih subdomain unik untuk mengklaim ruang hosting aman dan cepat Anda.
                         </p>
                         
                         <form action="{{ route('client.subdomains.store') }}" method="POST" class="max-w-md mx-auto space-y-4">
@@ -154,19 +154,19 @@
                                     @forelse($unusedPayments as $p)
                                         <option value="{{ $p->id }}">{{ $p->plan->name }} ({{ $p->plan->max_storage_mb }}MB SSD - {{ $p->plan->duration_months }} Bulan)</option>
                                     @empty
-                                        <option disabled>No purchased plans available</option>
+                                        <option disabled>Tidak ada paket yang dibeli</option>
                                     @endforelse
                                 </select>
                             </div>
 
                             <button type="submit" class="btn-primary py-3 px-8 h-12 shadow-[0_4px_20px_rgba(255,255,255,0.08)] flex items-center justify-center gap-2 font-extrabold text-xs uppercase tracking-wider group active:scale-[0.98] w-full">
-                                Claim This Subdomain
+                                Klaim Subdomain Ini
                                 <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                 </svg>
                             </button>
                             <p class="text-[9px] text-neutral-500 mt-3 font-semibold">
-                                *By claiming, you agree to our terms of service. One subdomain allocation per purchased plan.
+                                *Dengan mengklaim, Anda menyetujui persyaratan layanan kami. Satu alokasi subdomain per paket yang dibeli.
                             </p>
                         </form>
                     </div>
@@ -181,13 +181,13 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v14.25M9 6.5h12m-12 3h12m-12 3h12M9 15.75h12" />
                             </svg>
                         </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight">Welcome to Subly!</h3>
+                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight">Selamat Datang di Subly!</h3>
                         <p class="text-neutral-400 text-xs sm:text-sm mb-8 leading-relaxed max-w-sm mx-auto font-medium">
-                            You don't have any active hosting plans. Get started by purchasing an affordable, premium subdomain-based hosting plan.
+                            Anda belum memiliki paket hosting aktif. Mulailah dengan membeli paket hosting berbasis subdomain yang terjangkau dan premium.
                         </p>
                         
                         <a href="{{ route('client.plans.index') }}" class="btn-primary py-3 px-8 h-12 shadow-[0_4px_20px_rgba(255,255,255,0.08)] inline-flex items-center justify-center gap-2 font-extrabold text-xs uppercase tracking-wider group active:scale-[0.98]">
-                            View Hosting Plans
+                            Lihat Paket Hosting
                             <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                             </svg>
@@ -202,13 +202,13 @@
                     <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center p-6 border-b border-neutral-900/60 bg-neutral-950/20 gap-4">
                         <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest flex items-center gap-2">
                             <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
-                            Database Credentials
+                            Kredensial Database
                         </h3>
                         <a href="https://db.subly.my.id" target="_blank" class="btn-secondary h-11 text-xs py-2.5 px-4.5 flex items-center justify-center gap-2 font-bold uppercase tracking-wider active:scale-[0.98]">
                             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                             </svg>
-                            <span>Access phpMyAdmin</span>
+                            <span>Akses phpMyAdmin</span>
                         </a>
                     </div>
                     <div class="p-6">
@@ -307,8 +307,8 @@
                 </div>
             </div>
 
-            <h3 class="text-lg font-bold text-white mb-1.5 tracking-tight">Provisioning Environment</h3>
-            <p class="text-neutral-400 text-xs mb-8 max-w-xs font-medium">Please wait as we secure, allocate, and configure virtual hosts and MySQL databases for your subdomain.</p>
+            <h3 class="text-lg font-bold text-white mb-1.5 tracking-tight">Mempersiapkan Lingkungan</h3>
+            <p class="text-neutral-400 text-xs mb-8 max-w-xs font-medium">Harap tunggu saat kami mengamankan, mengalokasikan, dan mengonfigurasi host virtual dan database MySQL untuk subdomain Anda.</p>
 
             <!-- Stepper Container -->
             <div class="w-full space-y-5 relative mb-6">
@@ -330,8 +330,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h4 class="step-title text-xs font-bold text-neutral-500 transition-colors">Virtual Host Setup</h4>
-                        <p class="step-desc text-[10px] text-neutral-500 font-semibold mt-0.5">Creating subdomains and mapping root index directory.</p>
+                        <h4 class="step-title text-xs font-bold text-neutral-500 transition-colors">Penyiapan Virtual Host</h4>
+                        <p class="step-desc text-[10px] text-neutral-500 font-semibold mt-0.5">Membuat subdomain dan memetakan direktori root index.</p>
                     </div>
                 </div>
 
@@ -348,8 +348,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h4 class="step-title text-xs font-bold text-neutral-500 transition-colors">MySQL Schema Allocation</h4>
-                        <p class="step-desc text-[10px] text-neutral-500 font-semibold mt-0.5">Allocating secure tablespace and configuring constraints.</p>
+                        <h4 class="step-title text-xs font-bold text-neutral-500 transition-colors">Alokasi Skema MySQL</h4>
+                        <p class="step-desc text-[10px] text-neutral-500 font-semibold mt-0.5">Mengalokasikan tablespace aman dan mengonfigurasi batasan.</p>
                     </div>
                 </div>
 
@@ -366,8 +366,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h4 class="step-title text-xs font-bold text-neutral-500 transition-colors">Grant Privileges</h4>
-                        <p class="step-desc text-[10px] text-neutral-500 font-semibold mt-0.5">Authorizing local connections and securing keys.</p>
+                        <h4 class="step-title text-xs font-bold text-neutral-500 transition-colors">Atur Hak Akses</h4>
+                        <p class="step-desc text-[10px] text-neutral-500 font-semibold mt-0.5">Mengotorisasi koneksi lokal dan mengamankan kunci.</p>
                     </div>
                 </div>
             </div>
@@ -378,7 +378,7 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
                 </span>
-                <span id="provision-log-text" class="text-[10px] font-bold uppercase tracking-wider text-neutral-350 truncate">Initializing setup...</span>
+                <span id="provision-log-text" class="text-[10px] font-bold uppercase tracking-wider text-neutral-350 truncate">Menginisialisasi pengaturan...</span>
             </div>
         </div>
     </div>
@@ -415,7 +415,7 @@
                 const checkIcon = btn.querySelector('.check-icon');
                 
                 if (typeof window.showToast === 'function') {
-                    window.showToast('Copied to clipboard!');
+                    window.showToast('Berhasil disalin ke papan klip!');
                 }
                 
                 if (copyIcon && checkIcon) {
@@ -511,14 +511,14 @@
             // Step 1: 0s - 2.2s
             setTimeout(() => {
                 activateStep(step1);
-                logText.innerText = "Querying Web Server API...";
+                logText.innerText = "Meminta Akses ke API Web Server...";
                 
                 setTimeout(() => {
-                    logText.innerText = "Provisioning Apache/Nginx VHost...";
+                    logText.innerText = "Mempersiapkan Apache/Nginx VHost...";
                 }, 800);
 
                 setTimeout(() => {
-                    logText.innerText = "Binding doc_root directory...";
+                    logText.innerText = "Menghubungkan direktori doc_root...";
                 }, 1500);
             }, 100);
 
@@ -528,14 +528,14 @@
                 progressLine.style.height = '50%';
                 
                 activateStep(step2);
-                logText.innerText = "Connecting to MySQL cluster...";
+                logText.innerText = "Menghubungkan ke kluster MySQL...";
 
                 setTimeout(() => {
-                    logText.innerText = "Generating Database: subly_db_{{ Auth::user()->id }}...";
+                    logText.innerText = "Membuat Database: subly_db_{{ Auth::user()->id }}...";
                 }, 3000);
 
                 setTimeout(() => {
-                    logText.innerText = "Applying security schemas...";
+                    logText.innerText = "Menerapkan skema keamanan...";
                 }, 3700);
             }, 2200);
 
@@ -545,21 +545,21 @@
                 progressLine.style.height = '100%';
 
                 activateStep(step3);
-                logText.innerText = "Creating MySQL user connection...";
+                logText.innerText = "Membuat koneksi pengguna MySQL...";
 
                 setTimeout(() => {
-                    logText.innerText = "GRANT ALL PRIVILEGES ON tablespace...";
+                    logText.innerText = "MEMBERIKAN HAK AKSES PENUH pada tablespace...";
                 }, 5200);
 
                 setTimeout(() => {
-                    logText.innerText = "Encrypting database credentials...";
+                    logText.innerText = "Mengenkripsi kredensial database...";
                 }, 6000);
             }, 4400);
 
             // Complete: 6.6s+
             setTimeout(() => {
                 completeStep(step3);
-                logText.innerText = "Deployment success! Reloading dashboard...";
+                logText.innerText = "Penyediaan berhasil! Memuat ulang dashboard...";
                 logText.classList.remove('text-neutral-350');
                 logText.classList.add('text-white');
             }, 6600);
