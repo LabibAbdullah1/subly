@@ -1,3 +1,3 @@
-<button {{ $attributes->merge(['type' => 'submit', 'class' => 'w-full btn-primary py-2.5 inline-flex justify-center items-center shadow-[0_0_15px_rgba(94,106,210,0.25)] hover:shadow-[0_0_20px_rgba(94,106,210,0.4)] transition-all']) }}>
+<button {{ $attributes->merge(['type' => 'submit', 'class' => 'btn-primary w-full inline-flex justify-center items-center shadow-[0_4px_12px_rgba(255,255,255,0.08)] hover:shadow-[0_6px_16px_rgba(255,255,255,0.15)] font-semibold']) }}>
     {{ $slot }}
 </button>

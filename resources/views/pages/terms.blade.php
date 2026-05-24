@@ -13,34 +13,32 @@
         <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="antialiased bg-gray-950 text-gray-100 selection:bg-primary-500/30 selection:text-primary-200">
+    <body class="antialiased bg-black text-neutral-200 selection:bg-primary-500 selection:text-white font-sans">
         
         <!-- Background Effects -->
         <div class="fixed inset-0 z-0 pointer-events-none">
-            <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/20 rounded-full blur-[120px]"></div>
-            <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary-900/10 rounded-full blur-[120px]"></div>
+            <div class="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-primary-500/5 rounded-full blur-[140px]"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-primary-600/5 rounded-full blur-[140px]"></div>
         </div>
 
         <!-- Navigation -->
-        <nav class="fixed w-full z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800 transition-all duration-300">
+        <nav class="fixed w-full z-50 bg-black/40 backdrop-blur-md border-b border-neutral-900 transition-all duration-300">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-20">
-                    <div class="flex items-center">
-                        <a href="{{ url('/') }}" class="flex items-center gap-3 group">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center">
-                                <img type="image/png" src="{{ asset('favicon-v2.png') }}" alt="Subly">
-                            </div>
-                            <span class="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                                {{ config('app.name', 'Subly') }}
-                            </span>
-                        </a>
-                    </div>
+                <div class="flex justify-between h-20 items-center">
+                    <a href="{{ url('/') }}" class="flex items-center gap-2 group">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-neutral-950 border border-neutral-900 transition-all duration-300 group-hover:border-primary-500/40">
+                            <img type="image/png" src="{{ asset('favicon-v2.png') }}" alt="Subly" class="w-5.5 h-5.5">
+                        </div>
+                        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neutral-100 to-neutral-400">
+                            {{ config('app.name', 'Subly') }}
+                        </span>
+                    </a>
                     <div class="flex items-center space-x-6">
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/home') }}" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Dashboard</a>
+                                <a href="{{ url('/home') }}" class="text-xs font-bold uppercase tracking-wider text-neutral-400 hover:text-white transition-colors">Dashboard</a>
                             @else
-                                <a href="{{ route('login') }}" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Log in</a>
+                                <a href="{{ route('login') }}" class="text-xs font-bold uppercase tracking-wider text-neutral-400 hover:text-white transition-colors">Log in</a>
                             @endauth
                         @endif
                     </div>
@@ -53,20 +51,20 @@
                 
                 <!-- Language Toggle -->
                 <div class="flex justify-center mb-8">
-                    <div class="bg-gray-900/60 p-1 rounded-xl inline-flex border border-gray-800 backdrop-blur-md">
-                        <button @click="lang = 'id'" class="px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300" :class="lang === 'id' ? 'bg-primary-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'">Bahasa Indonesia</button>
-                        <button @click="lang = 'en'" class="px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300" :class="lang === 'en' ? 'bg-primary-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'">English</button>
+                    <div class="bg-neutral-950/60 p-1 rounded-xl inline-flex border border-neutral-900 backdrop-blur-md">
+                        <button @click="lang = 'id'" class="px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer active:scale-[0.98]" :class="lang === 'id' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">Indonesia</button>
+                        <button @click="lang = 'en'" class="px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer active:scale-[0.98]" :class="lang === 'en' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">English</button>
                     </div>
                 </div>
 
                 <!-- INDONESIAN CONTENT -->
                 <div x-show="lang === 'id'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" style="display: none;">
-                    <div class="mb-12 text-center text-balance">
+                    <div class="mb-12 text-center text-balance select-none">
                         <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">Ketentuan Layanan</h1>
-                        <p class="text-lg text-gray-400">Pembaruan Terakhir: {{ date('d F Y') }}</p>
+                        <p class="text-xs sm:text-sm text-neutral-500 font-medium">Pembaruan Terakhir: {{ date('d F Y') }}</p>
                     </div>
 
-                    <div class="glass-panel p-8 md:p-12 prose prose-invert prose-primary max-w-none prose-headings:font-outfit">
+                    <div class="glass-panel p-8 md:p-12 prose prose-invert prose-neutral max-w-none text-neutral-300 text-xs sm:text-sm font-medium leading-relaxed prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight prose-strong:text-white">
                         <p class="lead">Selamat datang di Subly. Dengan menggunakan situs dan layanan kami, Anda setuju untuk mematuhi dan terikat oleh syarat dan ketentuan penggunaan berikut, yang bersama dengan kebijakan privasi kami, mengatur hubungan Subly dengan Anda terkait situs ini.</p>
                         <br>
                         <h2>1. Penerimaan Syarat</h2>
@@ -88,12 +86,12 @@
 
                 <!-- ENGLISH CONTENT -->
                 <div x-show="lang === 'en'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" style="display: none;">
-                    <div class="mb-12 text-center text-balance">
+                    <div class="mb-12 text-center text-balance select-none">
                         <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">Terms of Service</h1>
-                        <p class="text-lg text-gray-400">Last updated: {{ date('F d, Y') }}</p>
+                        <p class="text-xs sm:text-sm text-neutral-500 font-medium">Last updated: {{ date('F d, Y') }}</p>
                     </div>
 
-                    <div class="glass-panel p-8 md:p-12 prose prose-invert prose-primary max-w-none prose-headings:font-outfit">
+                    <div class="glass-panel p-8 md:p-12 prose prose-invert prose-neutral max-w-none text-neutral-300 text-xs sm:text-sm font-medium leading-relaxed prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight prose-strong:text-white">
                         <p class="lead">Welcome to Subly. By using our website and services, you agree to comply with and be bound by the following terms and conditions of use, which together with our privacy policy, govern Subly's relationship with you in relation to this website.</p>
                         <br>
                         <h2>1. Acceptance of Terms</h2>

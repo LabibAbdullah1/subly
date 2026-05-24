@@ -2,7 +2,8 @@
 
 use App\Models\Plan;
 use App\Models\Feedback;
-
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\PasswordController;
 Route::get('/', function () {
     $plans = Plan::where('is_active', true)->orderBy('price')->get();
     $feedbacks = Feedback::with('user')->where('is_featured', true)->latest()->get();
@@ -29,7 +30,12 @@ Route::middleware('auth')->prefix('notifications')->name('notifications.')->grou
     Route::post('/{id}/read', [\App\Http\Controllers\Client\NotificationController::class, 'markAsRead'])->name('read');
     Route::delete('/{id}', [\App\Http\Controllers\Client\NotificationController::class, 'destroy'])->name('destroy');
 });
-
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+Route::put('/user/password', [PasswordController::class, 'update'])->name('password.update');
 // Temporary setup route for production (can be visited by admin to fix storage link)
 Route::get('/link-storage', function () {
     if (auth()->check() && auth()->user()->role === 'Admin') {

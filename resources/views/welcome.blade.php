@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -18,39 +18,42 @@
 
         <link rel="icon" type="image/png" href="{{ asset('favicon-v2.png') }}">
     </head>
-    <body class="font-sans antialiased bg-gray-950 text-gray-300 min-h-screen flex flex-col pt-8 sm:pt-0 relative overflow-x-hidden selection:bg-primary-500/30 selection:text-primary-100">
+    <body class="font-sans antialiased bg-black text-neutral-350 min-h-screen flex flex-col pt-8 sm:pt-0 relative overflow-x-hidden selection:bg-neutral-200 selection:text-black">
         
-        <!-- Ambient Background -->
-        <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-            <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary-900/20 blur-[120px]"></div>
-            <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-900/20 blur-[120px]"></div>
-            <div class="absolute top-[40%] left-[50%] translate-x-[-50%] w-[60%] h-[20%] rounded-full bg-primary-500/5 blur-[100px]"></div>
-            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiIvPjwvc3ZnPg==')] opacity-20"></div>
+        <!-- Ambient Background & Dot Grid -->
+        <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-black select-none">
+            <!-- Fine SVG Dot Matrix Pattern -->
+            <div class="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_80%,transparent_100%)] opacity-70"></div>
+            
+            <!-- Soft Ambient Radial Glows -->
+            <div class="absolute top-[-15%] left-[-15%] w-[60%] h-[60%] rounded-full bg-primary-500/7 blur-[140px]"></div>
+            <div class="absolute bottom-[-15%] right-[-15%] w-[60%] h-[60%] rounded-full bg-primary-600/5 blur-[140px]"></div>
+            <div class="absolute top-[35%] left-[50%] -translate-x-1/2 w-[80%] h-[30%] rounded-full bg-primary-500/4 blur-[130px]"></div>
         </div>
 
         <div class="relative z-10 w-full flex flex-col min-h-screen">
             <!-- Header -->
-            <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                    <div class="w-10 h-10 rounded-lg flex items-center justify-center">
-                        <img type="image/png" src="{{ asset('favicon-v2.png') }}" alt="Subly">
+            <header class="w-full max-w-7xl mx-auto px-6 py-8 flex justify-between items-center relative z-10 select-none">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-black border border-neutral-900 shadow-md">
+                        <img type="image/png" src="{{ asset('favicon-v2.png') }}" alt="Subly" class="w-5.5 h-5.5 object-contain">
                     </div>
-                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Subly</span>
+                    <span class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-neutral-100 to-neutral-500 font-heading">Subly</span>
                 </div>
                 
                 @if (Route::has('login'))
-                    <nav class="flex items-center gap-4">
+                    <nav class="flex items-center gap-6">
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                            <a href="{{ url('/dashboard') }}" class="text-xs font-bold uppercase tracking-wider text-neutral-450 hover:text-white transition-colors font-heading">
                                 Dashboard
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                            <a href="{{ route('login') }}" class="text-xs font-bold uppercase tracking-wider text-neutral-450 hover:text-white transition-colors font-heading">
                                 Log in
                             </a>
 
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="text-sm font-medium px-4 py-2 rounded-md bg-white/10 hover:bg-white/20 border border-white/5 transition-all hidden sm:inline-block">
+                                <a href="{{ route('register') }}" class="btn-secondary py-2 px-4.5 text-xs font-bold tracking-wider hidden sm:inline-flex">
                                     Register
                                 </a>
                             @endif
@@ -60,121 +63,133 @@
             </header>
 
             <!-- Hero Section -->
-            <main class="flex-1 flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto py-20 pb-32 w-full">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-xs font-medium mb-8">
+            <main class="flex-1 flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto py-20 pb-32 w-full relative z-10">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary-500/5 border border-primary-500/10 text-primary-400 text-[10px] font-bold uppercase tracking-wider mb-8 select-none font-heading shadow-[0_0_15px_rgba(94,106,210,0.05)]">
                     <span class="relative flex h-2 w-2">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
                     </span>
-                    Subly Hosting v2.1
+                    Subly Hosting v2.2
                 </div>
                 
-                <h1 class="text-5xl sm:text-7xl font-bold tracking-tight text-white mb-6 leading-tight">
+                <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight select-none font-heading">
                     Deploy projects <br class="hidden sm:block" />
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-indigo-400">without the hassle.</span>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary-400 to-primary-600">without the hassle.</span>
                 </h1>
                 
-                <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mb-10 leading-relaxed">
-                    A managed hosting platform designed for students. Upload your code, and we'll handle the infrastructure, database setup, and deployment automatically.
+                <p class="text-xs sm:text-sm text-neutral-450 max-w-lg mb-12 leading-relaxed font-semibold">
+                    A premium, managed hosting platform designed for students. Upload your code, and we'll handle infrastructure, secure databases, and subdomains instantly.
                 </p>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-primary-600 hover:bg-primary-500 text-white font-medium shadow-[0_0_20px_rgba(94,106,210,0.3)] transition-all flex items-center justify-center gap-2">
-                            Go to Dashboard
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        <a href="{{ url('/dashboard') }}" class="btn-primary w-full sm:w-auto px-8 gap-2.5">
+                            <span>Go to Dashboard</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     @else
                         @if (Route::has('register'))
-                            <a href="#pricing" class="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-primary-600 hover:bg-primary-500 text-white font-medium shadow-[0_0_20px_rgba(94,106,210,0.3)] transition-all flex items-center justify-center gap-2">
-                                View Hosting Plans
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7"></path></svg>
+                            <a href="#pricing" class="btn-primary w-full sm:w-auto px-8 gap-2.5">
+                                <span>View Hosting Plans</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 13l-7 7-7-7"></path></svg>
                             </a>
                         @endif
-                        <a href="{{ route('login') }}" class="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 text-white font-medium transition-all flex items-center justify-center">
+                        <a href="{{ route('login') }}" class="btn-secondary w-full sm:w-auto px-8">
                             Sign In
                         </a>
                     @endauth
                 </div>
                 
                 <!-- Feature Highlights -->
-                <div id="features" class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-24 text-left w-full border-t border-gray-800/50 pt-12">
-                    <div class="p-1">
-                        <div class="w-10 h-10 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center mb-4 text-primary-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <div id="features" class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-28 text-left w-full border-t border-neutral-900 pt-16 select-none">
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(94,106,210,0.08)] transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                         </div>
-                        <h3 class="text-white font-semibold mb-2">ZIP Uploads</h3>
-                        <p class="text-sm text-gray-400">Simply compress your project files into a ZIP and upload. We extract and structure it for you.</p>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">ZIP Uploads</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Simply compress your project files into a ZIP and upload. We extract and structure it for you.</p>
                     </div>
-                    <div class="p-1">
-                        <div class="w-10 h-10 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center mb-4 text-green-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(16,185,129,0.08)] transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-green-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                         </div>
-                        <h3 class="text-white font-semibold mb-2">Auto-Database</h3>
-                        <p class="text-sm text-gray-400">Credentials are automatically provisioned and securely presented in your dashboard when requested.</p>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Auto-Database</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Credentials are automatically provisioned and securely presented in your dashboard when requested.</p>
                     </div>
-                    <div class="p-1">
-                        <div class="w-10 h-10 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center mb-4 text-indigo-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(99,102,241,0.08)] transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-indigo-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         </div>
-                        <h3 class="text-white font-semibold mb-2">Secure Subdomains</h3>
-                        <p class="text-sm text-gray-400">Projects are isolated onto personalized subdomains so your applications run independently.</p>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Secure Subdomains</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Projects are isolated onto personalized subdomains so your applications run independently.</p>
                     </div>
                 </div>
 
                 <!-- Pricing Section -->
-                <div id="pricing" class="w-full mt-32 pt-20 border-t border-gray-800/50">
-                    <div class="text-center mb-16">
-                        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Choose Your Plan</h2>
-                        <p class="text-gray-400">Select the perfect hosting environment for your student project.</p>
+                <div id="pricing" class="w-full mt-32 pt-20 border-t border-neutral-900">
+                    <div class="text-center mb-16 select-none">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight font-heading">Choose Your Environment</h2>
+                        <p class="text-xs sm:text-sm text-neutral-500 font-semibold uppercase tracking-wider">Select the perfect hosting resources for your student deployment.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
                         @forelse($plans as $plan)
                             <div class="relative group">
-                                <div class="absolute -inset-0.5 bg-gradient-to-r from-primary-600 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                                <div class="relative bg-gray-900 border border-gray-800 rounded-2xl p-8 h-full flex flex-col">
+                                <!-- Glowing Border Accent on Hover -->
+                                <div class="absolute -inset-[1px] bg-gradient-to-r from-primary-500/30 to-purple-600/30 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none"></div>
+                                <div class="relative bg-neutral-950/60 backdrop-blur-xl border border-neutral-900 group-hover:border-neutral-800 rounded-2xl p-8 h-full flex flex-col transition-all duration-300 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
                                     <div class="flex items-center justify-between mb-2">
-                                        <h4 class="text-xl font-bold text-white">{{ $plan->name }}</h4>
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {{ $plan->type == 'PHP' ? 'bg-blue-500/20 text-blue-400' : ($plan->type == 'NodeJS' ? 'bg-green-500/20 text-green-400' : 'bg-purple-500/20 text-purple-400') }}">
+                                        <h4 class="text-base font-bold text-white tracking-tight font-heading uppercase">{{ $plan->name }}</h4>
+                                        <span class="px-2.5 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider font-heading {{ $plan->type == 'PHP' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : ($plan->type == 'NodeJS' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20') }}">
                                             {{ $plan->type }}
                                         </span>
                                     </div>
-                                    <div class="flex items-baseline gap-1 mb-6">
-                                        <span class="text-3xl font-bold text-primary-400">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
-                                        <span class="text-sm text-gray-500">/ {{ $plan->duration_months }} mo</span>
+                                    <div class="flex items-baseline gap-1.5 mb-6 border-b border-neutral-900/60 pb-5">
+                                        <span class="text-2xl font-black text-white tracking-tight font-heading">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
+                                        <span class="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">/ {{ $plan->duration_months }} mo</span>
                                     </div>
                                     
-                                    <p class="text-sm text-gray-400 mb-8 flex-1">
+                                    <p class="text-xs sm:text-xs text-neutral-450 font-semibold mb-6 flex-1 leading-relaxed">
                                         {{ $plan->description ?? 'Reliable hosting for your professional student projects.' }}
                                     </p>
 
-                                    <ul class="space-y-4 mb-8 text-sm text-gray-300">
+                                    <!-- Disk Storage Meter visual details (Stripe Invoice aesthetic) -->
+                                    <div class="mt-2 mb-6">
+                                        <div class="flex justify-between text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-1.5">
+                                            <span>SSD Storage Allocation</span>
+                                            <span>{{ $plan->max_storage_mb }}MB SSD</span>
+                                        </div>
+                                        <div class="w-full h-1.5 bg-neutral-900 rounded-full overflow-hidden border border-neutral-850">
+                                            <div class="h-full bg-gradient-to-r from-primary-500 to-indigo-500 rounded-full" style="width: {{ min(100, max(15, ($plan->max_storage_mb / 2048) * 100)) }}%"></div>
+                                        </div>
+                                    </div>
+
+                                    <ul class="space-y-3.5 mb-8 text-xs text-neutral-350 font-semibold border-t border-neutral-900/60 pt-6">
                                         <li class="flex items-center gap-3">
-                                            <svg class="w-5 h-5 text-primary-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                            {{ $plan->max_storage_mb }}MB SSD Storage
+                                            <svg class="w-4 h-4 text-primary-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                            <span>{{ $plan->max_storage_mb }}MB SSD Disk</span>
                                         </li>
                                         <li class="flex items-center gap-3">
-                                            <svg class="w-5 h-5 text-primary-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                            {{ $plan->max_databases }} Databases
+                                            <svg class="w-4 h-4 text-primary-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                            <span>{{ $plan->max_databases }} Production Databases</span>
                                         </li>
                                         <li class="flex items-center gap-3">
-                                            <svg class="w-5 h-5 text-primary-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                            Free Subdomain
+                                            <svg class="w-4 h-4 text-primary-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                            <span>Isolated Subdomain Slot</span>
                                         </li>
                                         <li class="flex items-center gap-3">
-                                            <svg class="w-5 h-5 text-primary-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                            Free SSL Certificate
+                                            <svg class="w-4 h-4 text-primary-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                            <span>Automatic SSL Protection</span>
                                         </li>
                                     </ul>
 
-                                    <a href="{{ auth()->check() ? route('client.plans.index') : route('register') }}" class="w-full py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium text-center transition-all">
+                                    <a href="{{ auth()->check() ? route('client.plans.index') : route('register') }}" class="btn-secondary w-full text-center py-3 text-xs font-bold uppercase tracking-wider">
                                         {{ auth()->check() ? 'Select Plan' : 'Get Started' }}
                                     </a>
                                 </div>
                             </div>
                         @empty
-                            <div class="col-span-full py-12 text-center text-gray-500 border border-dashed border-gray-800 rounded-2xl">
+                            <div class="col-span-full py-12 text-center text-neutral-500 border border-dashed border-neutral-900 rounded-2xl font-semibold text-xs uppercase tracking-wider">
                                 No plans available at the moment.
                             </div>
                         @endforelse
@@ -184,31 +199,31 @@
 
             <!-- Testimonials Section -->
             @if($feedbacks->count() > 0)
-            <section id="testimonials" class="py-24 relative overflow-hidden">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="text-center mb-16">
-                        <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Loved by Students</h2>
-                        <p class="text-gray-400 text-lg">See what your peers are saying about Subly.</p>
+            <section id="testimonials" class="py-28 relative overflow-hidden w-full border-t border-neutral-900">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="text-center mb-16 select-none">
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight font-heading">Loved by Students</h2>
+                        <p class="text-xs sm:text-sm text-neutral-500 font-semibold uppercase tracking-wider">See what your peers are saying about Subly.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         @foreach($feedbacks as $feedback)
-                            <div class="glass-panel p-8 relative group">
-                                <div class="flex text-yellow-500 mb-4">
+                            <div class="glass-panel glass-panel-glow p-6 sm:p-8 relative group flex flex-col hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,0,0,0.8)] transition-all duration-300">
+                                <div class="flex text-yellow-500 mb-4 select-none">
                                     @for($i = 0; $i < 5; $i++)
-                                        <svg class="w-4 h-4 {{ $i < $feedback->rating ? 'fill-current' : 'text-gray-600' }}" viewBox="0 0 20 20">
+                                        <svg class="w-3.5 h-3.5 {{ $i < $feedback->rating ? 'fill-current' : 'text-neutral-800' }}" viewBox="0 0 20 20">
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                     @endfor
                                 </div>
-                                <p class="text-gray-300 italic mb-6">"{{ $feedback->comment }}"</p>
-                                <div class="flex items-center gap-4 mt-auto">
-                                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-600 to-purple-600 flex items-center justify-center text-sm font-bold text-white uppercase">
+                                <p class="text-neutral-300 italic mb-8 text-xs sm:text-xs font-semibold leading-relaxed">"{{ $feedback->comment }}"</p>
+                                <div class="flex items-center gap-4 mt-auto select-none pt-4 border-t border-neutral-900/60">
+                                    <div class="w-9 h-9 rounded-full bg-gradient-to-r from-primary-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white uppercase shadow-md shadow-primary-500/10">
                                         {{ substr($feedback->user->name, 0, 1) }}
                                     </div>
                                     <div>
-                                        <p class="text-white font-semibold">{{ $feedback->user->name }}</p>
-                                        <p class="text-gray-500 text-xs text-primary-400">Verified Subly Client</p>
+                                        <p class="text-white font-bold text-xs tracking-wide font-heading">{{ $feedback->user->name }}</p>
+                                        <p class="text-neutral-500 text-[9px] font-bold uppercase tracking-wider font-heading">Verified Client</p>
                                     </div>
                                 </div>
                             </div>

@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-100 leading-tight flex items-center gap-2">
-            <svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        <h2 class="font-bold text-xs text-neutral-450 uppercase tracking-widest flex items-center gap-2">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
             </svg>
-            {{ __('All Notifications') }}
+            {{ __('Notifications') }}
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{ 
+    <div class="py-6 sm:py-10 select-none" x-data="{ 
         showModal: false, 
         modalMessage: '', 
         modalTime: '', 
@@ -19,21 +19,20 @@
             this.showModal = true;
         }
     }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="glass-panel overflow-hidden relative">
-                <div class="p-6 border-b border-gray-800 bg-gray-900/50 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-neutral-950/40 backdrop-blur-md border border-neutral-900 rounded-2xl overflow-hidden shadow-2xl relative">
+                <div class="p-6 border-b border-neutral-900 bg-neutral-950/20 flex justify-between items-center">
                     <div>
-                        <h3 class="text-lg font-medium text-gray-100 italic">Riwayat Notifikasi</h3>
-                        <p class="text-sm text-gray-400 mt-1">Daftar semua pemberitahuan yang dikirimkan kepada Anda.</p>
+                        <h3 class="text-sm font-bold text-white tracking-tight uppercase tracking-wider">Riwayat Notifikasi</h3>
+                        <p class="text-xs text-neutral-450 mt-1 font-medium">Daftar semua pemberitahuan yang dikirimkan kepada Anda secara berkala.</p>
                     </div>
-                    <div class="flex gap-3">
+                    <div class="flex gap-2.5">
                         @if(Auth::user()->unreadNotifications->count() > 0)
                             <form method="POST" action="{{ route('notifications.readAll') }}">
                                 @csrf
-                                <button type="submit" class="text-sm px-4 py-2 bg-primary-500/10 text-primary-400 hover:bg-primary-500/20 rounded-xl transition-all border border-primary-500/20">
-                                    <!-- ubah menjadi icon saja -->
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                <button type="submit" class="p-2.5 bg-neutral-950 hover:bg-neutral-900 text-neutral-400 hover:text-white rounded-xl border border-neutral-850 active:scale-[0.96] transition-all cursor-pointer" title="Mark all as read">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </button>
                             </form>
@@ -41,10 +40,9 @@
                         @if(Auth::user()->notifications->count() > 0)
                             <form method="POST" action="{{ route('notifications.clearAll') }}" onsubmit="return confirm('Hapus semua notifikasi?')">
                                 @csrf
-                                <button type="submit" class="text-sm px-4 py-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-xl transition-all border border-red-500/20">
-                                    <!-- ubah menjadi icon saja -->
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                <button type="submit" class="p-2.5 bg-red-950/20 text-red-400 hover:bg-red-900 hover:text-white rounded-xl border border-red-900/30 active:scale-[0.96] transition-all cursor-pointer" title="Clear all notifications">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                     </svg>
                                 </button>
                             </form>
@@ -52,62 +50,61 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
+                <div class="table-container">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-gray-950/50 text-gray-400 text-xs uppercase tracking-wider">
-                                <th class="px-6 py-4 font-semibold italic">Waktu</th>
-                                <th class="px-6 py-4 font-semibold italic">Isi Pesan</th>
-                                <th class="px-6 py-4 font-semibold italic text-center">Status</th>
-                                <th class="px-6 py-4 font-semibold italic text-right">Aksi</th>
+                            <tr class="bg-neutral-950/80">
+                                <th class="table-th">Waktu</th>
+                                <th class="table-th">Isi Pesan</th>
+                                <th class="table-th text-center">Status</th>
+                                <th class="table-th text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-800/50 font-inter">
+                        <tbody class="divide-y divide-neutral-900/50">
                             @forelse($notifications as $notification)
-                                <tr class="hover:bg-gray-800/10 transition-all group {{ is_null($notification->read_at) ? 'bg-primary-500/5' : '' }}">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-200 font-medium">{{ $notification->created_at->diffForHumans() }}</div>
-                                        <div class="text-[10px] text-gray-500 font-medium">{{ $notification->created_at->format('d M Y H:i') }}</div>
+                                <tr class="group hover:bg-neutral-900/10 transition-colors {{ is_null($notification->read_at) ? 'bg-white/2' : '' }}">
+                                    <td class="table-td">
+                                        <div class="text-xs font-semibold text-neutral-200">{{ $notification->created_at->diffForHumans() }}</div>
+                                        <div class="text-[10px] text-neutral-550 mt-0.5 font-medium">{{ $notification->created_at->format('d M Y H:i') }}</div>
                                     </td>
-                                    <td class="px-6 py-4 min-w-[250px]">
-                                        <div class="text-sm text-gray-300 leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all duration-300">
+                                    <td class="table-td min-w-[250px]">
+                                        <div class="text-xs text-neutral-350 leading-relaxed max-w-md truncate font-medium group-hover:whitespace-normal group-hover:overflow-visible transition-all duration-300">
                                             {{ $notification->data['message'] ?? 'Pesan tidak tersedia' }}
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <td class="table-td text-center">
                                         @if(is_null($notification->read_at))
-                                            <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-primary-500/10 text-primary-400 rounded-lg border border-primary-500/20">
+                                            <span class="px-2 py-0.5 inline-flex text-[9px] font-bold uppercase tracking-wider rounded-md border bg-neutral-900 border-neutral-850 text-white shadow-[0_0_10px_rgba(255,255,255,0.05)]">
                                                 New
                                             </span>
                                         @else
-                                            <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-gray-800 text-gray-500 rounded-lg border border-gray-700/50">
+                                            <span class="px-2 py-0.5 inline-flex text-[9px] font-bold uppercase tracking-wider rounded-md border bg-neutral-900/40 border-neutral-900 text-neutral-550">
                                                 Read
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                                        <div class="flex justify-end gap-2">
+                                    <td class="table-td text-right">
+                                        <div class="flex justify-end items-center gap-2">
                                             <button 
                                                 @click="openModal({{ Js::from($notification->data['message'] ?? '') }}, '{{ $notification->created_at->format('d M Y H:i') }}')"
-                                                class="px-3 py-1.5 text-xs font-semibold bg-primary-500/10 text-primary-400 hover:bg-primary-500/20 rounded-lg border border-primary-500/20 transition-all flex items-center gap-1.5"
+                                                class="btn-secondary h-8 px-3 text-[10px] uppercase font-extrabold tracking-wider inline-flex active:scale-95"
                                             >
-                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                                 Baca
                                             </button>
                                             
                                             @if(is_null($notification->read_at))
                                                 <form method="POST" action="{{ route('notifications.read', $notification->id) }}">
                                                     @csrf
-                                                    <button type="submit" class="p-2 text-gray-400 hover:text-primary-400 hover:bg-primary-500/10 rounded-xl transition-all" title="Mark as read">
-                                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                    <button type="submit" class="p-1.5 text-neutral-500 hover:text-white hover:bg-neutral-900 rounded-xl transition-all cursor-pointer" title="Mark as read">
+                                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                                                     </button>
                                                 </form>
                                             @endif
                                             <form method="POST" action="{{ route('notifications.destroy', $notification->id) }}" onsubmit="return confirm('Hapus notifikasi ini?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all" title="Delete">
-                                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                <button type="submit" class="p-1.5 text-neutral-500 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all cursor-pointer" title="Delete">
+                                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
                                                 </button>
                                             </form>
                                         </div>
@@ -115,12 +112,13 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="py-20 text-center">
-                                        <div class="bg-gray-800/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-600">
-                                            <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                                    <td colspan="4" class="px-6 py-12 text-center">
+                                        <div class="flex flex-col items-center">
+                                            <svg class="w-10 h-10 text-neutral-550 mb-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                            </svg>
+                                            <p class="text-neutral-500 text-xs font-bold uppercase tracking-widest">Belum ada notifikasi</p>
                                         </div>
-                                        <h4 class="text-gray-300 font-bold italic">Belum ada notifikasi</h4>
-                                        <p class="text-gray-500 text-sm mt-1">Anda akan melihat pemberitahuan di sini saat tersedia.</p>
                                     </td>
                                 </tr>
                             @endforelse
@@ -129,64 +127,64 @@
                 </div>
 
                 @if($notifications->hasPages())
-                    <div class="p-6 border-t border-gray-800 bg-gray-900/30">
+                    <div class="p-6 border-t border-neutral-900 bg-neutral-950/20">
                         {{ $notifications->links() }}
                     </div>
                 @endif
             </div>
         </div>
 
-        <!-- Notification Modal -->
+        <!-- Sleek Backdrop-Blurred Detail Modal -->
         <div 
             x-show="showModal" 
-            class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+            class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 select-none"
             x-cloak
         >
             <!-- Backdrop -->
             <div 
                 x-show="showModal"
-                x-transition:enter="ease-out duration-300"
+                x-transition:enter="ease-out duration-250"
                 x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100"
                 x-transition:leave="ease-in duration-200"
                 x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0"
-                class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                class="absolute inset-0 bg-black/75 backdrop-blur-sm"
                 @click="showModal = false"
             ></div>
 
-            <!-- Modal Content -->
+            <!-- Modal Content Card -->
             <div 
                 x-show="showModal"
-                x-transition:enter="ease-out duration-300"
+                x-transition:enter="ease-out duration-250"
                 x-transition:enter-start="opacity-0 scale-95 translate-y-4"
                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                 x-transition:leave="ease-in duration-200"
                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                 x-transition:leave-end="opacity-0 scale-95 translate-y-4"
-                class="relative w-full max-w-lg bg-gray-900 border border-gray-800 rounded-3xl shadow-2xl overflow-hidden"
+                class="relative w-full max-w-lg bg-neutral-950 border border-neutral-900 rounded-2xl shadow-2xl overflow-hidden"
             >
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-600 to-purple-600"></div>
+                <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent"></div>
                 
                 <div class="p-6 sm:p-8">
                     <div class="flex justify-between items-start mb-6">
                         <div>
-                            <h3 class="text-xl font-bold text-white italic" x-text="modalTitle"></h3>
-                            <p class="text-xs text-gray-500 mt-1 font-medium" x-text="modalTime"></p>
+                            <h3 class="text-sm font-bold text-white tracking-tight" x-text="modalTitle"></h3>
+                            <p class="text-[10px] text-neutral-500 font-bold uppercase tracking-wider mt-1.5" x-text="modalTime"></p>
                         </div>
-                        <button @click="showModal = false" class="p-2 text-gray-500 hover:text-white hover:bg-gray-800 rounded-xl transition-all">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        <button @click="showModal = false" class="p-1.5 text-neutral-500 hover:text-white hover:bg-neutral-900 rounded-lg transition-all active:scale-95 cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>
 
-                    <div class="bg-gray-950/50 rounded-2xl p-6 border border-gray-800/50 min-h-[120px]">
-                        <p class="text-gray-300 leading-relaxed whitespace-pre-line text-sm sm:text-base" x-text="modalMessage"></p>
+                    <div class="bg-black/60 rounded-xl p-5 border border-neutral-900 min-h-[120px]">
+                        <p class="text-neutral-300 leading-relaxed whitespace-pre-line text-xs sm:text-sm font-medium" x-text="modalMessage"></p>
                     </div>
 
-                    <div class="mt-8 flex justify-end">
+                    <div class="mt-6 flex justify-end">
                         <button 
                             @click="showModal = false"
-                            class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-xl border border-gray-700 transition-all"
+                            class="btn-secondary h-10 px-5 text-xs font-bold uppercase tracking-wider active:scale-95 cursor-pointer"
                         >
                             Tutup
                         </button>
@@ -195,8 +193,4 @@
             </div>
         </div>
     </div>
-
-    <style>
-        [x-cloak] { display: none !important; }
-    </style>
 </x-app-layout>

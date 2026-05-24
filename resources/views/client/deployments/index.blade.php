@@ -1,62 +1,64 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-100 leading-tight flex items-center gap-2">
-            <svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            {{ __('Riwayat Deployment') }}
+        <h2 class="font-bold text-xs text-neutral-450 uppercase tracking-widest flex items-center gap-2">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ __('Deployments') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="glass-panel overflow-hidden">
-                <div class="p-6 border-b border-gray-800 bg-gray-900/50">
-                    <h3 class="text-lg font-medium text-gray-100">Seluruh Riwayat Deployment</h3>
-                    <p class="text-sm text-gray-400 mt-1">Daftar rekaman seluruh aktivitas deployment pada semua subdomain Anda.</p>
+    <div class="py-6 sm:py-10 select-none">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-neutral-950/40 backdrop-blur-md border border-neutral-900 rounded-2xl overflow-hidden shadow-2xl">
+                <div class="p-6 border-b border-neutral-900 bg-neutral-950/20">
+                    <h3 class="text-sm font-bold text-white tracking-tight uppercase tracking-wider">Seluruh Riwayat Deployment</h3>
+                    <p class="text-xs text-neutral-450 mt-1 font-medium">Daftar rekaman seluruh aktivitas deployment pada semua subdomain Anda.</p>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <div class="table-container">
+                    <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-gray-900/80 border-b border-gray-800">
-                                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Subdomain</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal & Waktu</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Status</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Notes</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Aksi</th>
+                            <tr class="bg-neutral-950/80">
+                                <th class="table-th">Subdomain</th>
+                                <th class="table-th">Tanggal & Waktu</th>
+                                <th class="table-th text-center">Status</th>
+                                <th class="table-th">Notes</th>
+                                <th class="table-th text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-800/50">
+                        <tbody class="divide-y divide-neutral-900/50">
                             @forelse($deployments as $deployment)
-                                <tr class="hover:bg-gray-800/30 transition-colors">
-                                    <td class="px-6 py-4">
+                                <tr class="group hover:bg-neutral-900/10 transition-colors">
+                                    <td class="table-td">
                                         <div class="flex flex-col">
-                                            <a href="https://{{ $deployment->subdomain->full_domain }}" target="_blank" class="text-sm font-bold text-primary-400 hover:text-primary-300 hover:underline flex items-center gap-1">
+                                            <a href="https://{{ $deployment->subdomain->full_domain }}" target="_blank" class="font-bold text-white hover:text-neutral-350 flex items-center gap-1.5 transition-colors">
                                                 {{ $deployment->subdomain->full_domain }}
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                <svg class="w-3.5 h-3.5 text-neutral-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                                             </a>
-                                            <span class="text-[10px] text-gray-500 font-mono">ID: #{{ $deployment->id }}</span>
+                                            <span class="text-[9px] text-neutral-500 font-mono mt-0.5">ID: #{{ $deployment->id }}</span>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-200">{{ $deployment->created_at->format('d M Y') }}</div>
-                                        <div class="text-xs text-gray-500">{{ $deployment->created_at->format('H:i') }} WIB</div>
+                                    <td class="table-td">
+                                        <div class="text-xs font-semibold text-neutral-200">{{ $deployment->created_at->format('d M Y') }}</div>
+                                        <div class="text-[10px] text-neutral-550 mt-0.5 font-medium">{{ $deployment->created_at->format('H:i') }} WIB</div>
                                     </td>
-                                    <td class="px-6 py-4 text-center">
-                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full 
-                                            {{ $deployment->status === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : '' }}
-                                            {{ $deployment->status === 'queued' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : '' }}
-                                            {{ $deployment->status === 'processing' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : '' }}
-                                            {{ $deployment->status === 'error' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : '' }}">
+                                    <td class="table-td text-center">
+                                        <span class="px-2.5 py-0.5 inline-flex text-[9px] font-bold uppercase tracking-wider rounded-md border 
+                                            {{ $deployment->status === 'success' ? 'bg-neutral-900 border-neutral-850 text-white' : '' }}
+                                            {{ $deployment->status === 'queued' ? 'bg-neutral-900/40 border-neutral-900 text-neutral-450' : '' }}
+                                            {{ $deployment->status === 'processing' ? 'bg-neutral-900/60 border-neutral-850 text-neutral-300' : '' }}
+                                            {{ $deployment->status === 'error' ? 'bg-red-950/20 border-red-900/30 text-red-400' : '' }}">
                                             {{ ucfirst($deployment->status) }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <p class="text-sm text-gray-300 max-w-xs truncate" title="{{ $deployment->notes }}">
+                                    <td class="table-td">
+                                        <p class="text-xs text-neutral-350 max-w-xs truncate font-medium" title="{{ $deployment->notes }}">
                                             {{ $deployment->notes ?: '-' }}
                                         </p>
                                     </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <a href="{{ route('client.portal', $deployment->subdomain) }}" class="text-xs font-bold text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-lg border border-gray-700 transition-all">
+                                    <td class="table-td text-right">
+                                        <a href="{{ route('client.portal', $deployment->subdomain) }}" class="btn-secondary h-9 px-3.5 flex items-center justify-center text-xs font-bold uppercase tracking-wider active:scale-[0.98] inline-flex">
                                             Buka Portal
                                         </a>
                                     </td>
@@ -65,8 +67,10 @@
                                 <tr>
                                     <td colspan="5" class="px-6 py-12 text-center">
                                         <div class="flex flex-col items-center">
-                                            <svg class="w-12 h-12 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                            <p class="text-gray-400 font-medium">Belum ada riwayat deployment.</p>
+                                            <svg class="w-10 h-10 text-neutral-550 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376C1.83 15.002 2.067 13.785 3 13.125L9.932 8.5c1.24-.827 2.896-.827 4.136 0L21 13.125c.933.66 1.17 1.877.432 2.626L14.5 20.25c-1.24.827-2.896.827-4.136 0L3 15.75c-.933-.66-1.17-1.877-.432-2.626z" />
+                                            </svg>
+                                            <p class="text-neutral-500 text-xs font-bold uppercase tracking-widest">Belum ada riwayat deployment</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -76,7 +80,7 @@
                 </div>
                 
                 @if($deployments->hasPages())
-                    <div class="p-6 border-t border-gray-800 bg-gray-900/30">
+                    <div class="p-6 border-t border-neutral-900 bg-neutral-950/20">
                         {{ $deployments->links() }}
                     </div>
                 @endif

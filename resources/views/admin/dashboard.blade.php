@@ -1,156 +1,182 @@
 <x-admin-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-100 leading-tight flex items-center gap-2">
-            <svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        <h2 class="font-semibold text-sm text-neutral-450 tracking-wider uppercase flex items-center gap-2">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
             {{ __('Master Control') }}
         </h2>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Total Users -->
-                <div class="glass-panel p-6 relative overflow-hidden group hover-lift">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary-500/10 rounded-full blur-xl group-hover:bg-primary-500/20 transition-all duration-500"></div>
-                    <div class="flex items-center">
-                        <div class="p-3 rounded-lg bg-gray-800/80 border border-gray-700/50 text-primary-400 mr-4">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-400">Total Clients</p>
-                            <p class="text-2xl font-bold text-gray-100">{{ $totalUsers }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Queued Deployments -->
-                <div class="glass-panel p-6 relative overflow-hidden group hover-lift">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-xl group-hover:bg-yellow-500/20 transition-all duration-500"></div>
-                    <div class="flex items-center">
-                        <div class="p-3 rounded-lg bg-gray-800/80 border border-gray-700/50 text-yellow-400 mr-4">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-400">Deployments</p>
-                            <p class="text-2xl font-bold text-gray-100">{{ $queuedDeployments }} <span class="text-xs text-gray-500">Queued</span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Unread Chats -->
-                <div class="glass-panel p-6 relative overflow-hidden group hover-lift">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-500/10 rounded-full blur-xl group-hover:bg-red-500/20 transition-all duration-500"></div>
-                    <div class="flex items-center border-b-0">
-                        <div class="p-3 rounded-lg bg-gray-800/80 border border-gray-700/50 text-red-400 mr-4">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-400">Unread Chats</p>
-                            <p class="text-2xl font-bold text-gray-100">{{ $unreadChats }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Total Revenue -->
-                <div class="glass-panel p-6 relative overflow-hidden group hover-lift">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-500/10 rounded-full blur-xl group-hover:bg-green-500/20 transition-all duration-500"></div>
-                    <div class="flex items-center">
-                        <div class="p-3 rounded-lg bg-gray-800/80 border border-gray-700/50 text-green-400 mr-4">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-400">Revenue</p>
-                            <p class="text-2xl font-bold text-gray-100">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Recent Deployments -->
-                <div class="glass-panel overflow-hidden">
-                    <div class="p-6 border-b border-gray-800/60 bg-gray-900/50 flex justify-between items-center">
-                        <h3 class="text-lg font-medium text-gray-100">Recent Deployments</h3>
-                        <a href="{{ route('admin.deployments.index') }}" class="text-sm text-primary-400 hover:text-primary-300">View Queue →</a>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th class="table-th">Client</th>
-                                    <th class="table-th">Subdomain</th>
-                                    <th class="table-th text-right">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-800/50">
-                                @forelse($recentDeployments as $deployment)
-                                <tr class="group">
-                                    <td class="table-td">{{ $deployment->subdomain?->user?->name ?? 'Unknown' }}</td>
-                                    <td class="table-td text-primary-400 font-mono text-sm">{{ $deployment->subdomain?->full_domain ?? 'N/A' }}</td>
-                                    <td class="table-td text-right">
-                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full 
-                                            {{ $deployment->status === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : '' }}
-                                            {{ $deployment->status === 'queued' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : '' }}
-                                            {{ $deployment->status === 'processing' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : '' }}
-                                            {{ $deployment->status === 'error' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : '' }}
-                                        ">
-                                            {{ ucfirst($deployment->status) }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="3" class="table-td text-center py-8">No recent deployments.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Recent Chats -->
-                <div class="glass-panel overflow-hidden">
-                    <div class="p-6 border-b border-gray-800/60 bg-gray-900/50 flex justify-between items-center">
-                        <h3 class="text-lg font-medium text-gray-100">Recent Chats</h3>
-                        <a href="{{ route('admin.chat.index') }}" class="text-sm text-primary-400 hover:text-primary-300">Live Chat →</a>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th class="table-th">Client</th>
-                                    <th class="table-th">Message</th>
-                                    <th class="table-th text-right">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-800/50">
-                                @forelse($recentChats as $chat)
-                                <tr class="group hover:bg-primary-500/5 transition-all duration-300">
-                                    <td class="table-td text-gray-200 transition-colors group-hover:text-white">{{ $chat->user->name ?? 'Deleted User' }}</td>
-                                    <td class="table-td truncate max-w-[150px]">{{ $chat->message }}</td>
-                                    <td class="table-td text-right">
-                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full 
-                                            {{ $chat->is_read ? 'bg-gray-500/10 text-gray-400 border border-gray-500/20' : 'bg-green-500/10 text-green-400 border border-green-500/20' }}
-                                        ">
-                                            {{ $chat->is_read ? 'Read' : 'New' }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="3" class="table-td text-center py-8">No recent messages.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
+    <div class="py-6 sm:py-8 max-w-7xl mx-auto space-y-8 select-none">
+        
+        <!-- Welcome Title -->
+        <div class="flex flex-col gap-1.5 px-4 sm:px-0">
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">System Console Overview</h1>
+            <p class="text-xs text-neutral-500 font-medium">Global platform analytics, provisioning logs, and live support requests.</p>
         </div>
+
+        <!-- Quick Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-4 sm:px-0">
+            <!-- Total Users -->
+            <div class="glass-panel p-6 relative overflow-hidden group hover-lift border-neutral-900 hover:border-neutral-800">
+                <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/2 rounded-full blur-xl group-hover:bg-white/5 transition-all duration-500"></div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Total Clients</p>
+                        <p class="text-2xl font-bold text-white tracking-tight mt-1.5">{{ $totalUsers }}</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-neutral-900 border border-neutral-850 text-neutral-400 group-hover:text-white group-hover:border-neutral-700 transition-all duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Queued Deployments -->
+            <div class="glass-panel p-6 relative overflow-hidden group hover-lift border-neutral-900 hover:border-neutral-800">
+                <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/2 rounded-full blur-xl group-hover:bg-white/5 transition-all duration-500"></div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Deployments</p>
+                        <p class="text-2xl font-bold text-white tracking-tight mt-1.5 flex items-baseline gap-1.5">
+                            {{ $queuedDeployments }}
+                            <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-wide">Queued</span>
+                        </p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-neutral-900 border border-neutral-850 text-neutral-400 group-hover:text-white group-hover:border-neutral-700 transition-all duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unread Chats -->
+            <div class="glass-panel p-6 relative overflow-hidden group hover-lift border-neutral-900 hover:border-neutral-800">
+                <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/2 rounded-full blur-xl group-hover:bg-white/5 transition-all duration-500"></div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Unread Chats</p>
+                        <p class="text-2xl font-bold text-white tracking-tight mt-1.5 flex items-baseline gap-1.5">
+                            {{ $unreadChats }}
+                            @if($unreadChats > 0)
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                </span>
+                            @endif
+                        </p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-neutral-900 border border-neutral-850 text-neutral-400 group-hover:text-white group-hover:border-neutral-700 transition-all duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Revenue -->
+            <div class="glass-panel p-6 relative overflow-hidden group hover-lift border-neutral-900 hover:border-neutral-800">
+                <div class="absolute -right-4 -top-4 w-20 h-20 bg-white/2 rounded-full blur-xl group-hover:bg-white/5 transition-all duration-500"></div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Monthly Revenue</p>
+                        <p class="text-xl sm:text-2xl font-bold text-white tracking-tight mt-1.5">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-neutral-900 border border-neutral-850 text-neutral-400 group-hover:text-white group-hover:border-neutral-700 transition-all duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Logs Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 px-4 sm:px-0">
+            <!-- Recent Deployments -->
+            <div class="glass-panel overflow-hidden border-neutral-900">
+                <div class="p-5 border-b border-neutral-900/60 bg-neutral-950/40 flex justify-between items-center">
+                    <div class="flex flex-col gap-0.5">
+                        <h3 class="text-sm font-semibold text-white">Recent Deployments</h3>
+                        <p class="text-[10px] text-neutral-500 font-medium">Latest background build queues.</p>
+                    </div>
+                    <a href="{{ route('admin.deployments.index') }}" class="text-xs font-semibold text-neutral-400 hover:text-white transition-colors active:scale-[0.98]">
+                        View Queue →
+                    </a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <th class="table-th text-[10px]">Client</th>
+                                <th class="table-th text-[10px]">Subdomain</th>
+                                <th class="table-th text-[10px] text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-neutral-900/40">
+                            @forelse($recentDeployments as $deployment)
+                            <tr class="group hover:bg-neutral-900/20 transition-all duration-300">
+                                <td class="table-td text-xs font-semibold text-neutral-300">{{ $deployment->subdomain?->user?->name ?? 'Unknown' }}</td>
+                                <td class="table-td text-xs font-mono text-neutral-450">{{ $deployment->subdomain?->full_domain ?? 'N/A' }}</td>
+                                <td class="table-td text-right">
+                                    <span class="px-2 py-0.5 inline-flex text-[9px] leading-5 font-bold uppercase rounded-md tracking-wider border
+                                        {{ $deployment->status === 'success' ? 'bg-neutral-900/50 text-neutral-300 border-neutral-800' : '' }}
+                                        {{ $deployment->status === 'queued' ? 'bg-neutral-900/50 text-neutral-500 border-neutral-900' : '' }}
+                                        {{ $deployment->status === 'processing' ? 'bg-neutral-900/50 text-white border-neutral-750' : '' }}
+                                        {{ $deployment->status === 'error' ? 'bg-red-950/20 text-red-400 border-red-900/20' : '' }}
+                                    ">
+                                        {{ $deployment->status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="3" class="table-td text-center py-8 text-xs text-neutral-500 font-medium">No recent deployments.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Chats -->
+            <div class="glass-panel overflow-hidden border-neutral-900">
+                <div class="p-5 border-b border-neutral-900/60 bg-neutral-950/40 flex justify-between items-center">
+                    <div class="flex flex-col gap-0.5">
+                        <h3 class="text-sm font-semibold text-white">Recent Support Chats</h3>
+                        <p class="text-[10px] text-neutral-500 font-medium">Latest active client chat channels.</p>
+                    </div>
+                    <a href="{{ route('admin.chat.index') }}" class="text-xs font-semibold text-neutral-400 hover:text-white transition-colors active:scale-[0.98]">
+                        Live Chat →
+                    </a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <th class="table-th text-[10px]">Client</th>
+                                <th class="table-th text-[10px]">Message</th>
+                                <th class="table-th text-[10px] text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-neutral-900/40">
+                            @forelse($recentChats as $chat)
+                            <tr class="group hover:bg-neutral-900/20 transition-all duration-300">
+                                <td class="table-td text-xs font-semibold text-neutral-300 transition-colors group-hover:text-white">{{ $chat->user->name ?? 'Deleted User' }}</td>
+                                <td class="table-td text-xs text-neutral-400 truncate max-w-[150px]">{{ $chat->message }}</td>
+                                <td class="table-td text-right">
+                                    <span class="px-2 py-0.5 inline-flex text-[9px] leading-5 font-bold uppercase rounded-md tracking-wider border
+                                        {{ $chat->is_read ? 'bg-neutral-900/50 text-neutral-450 border-neutral-900' : 'bg-white text-black border-transparent' }}
+                                    ">
+                                        {{ $chat->is_read ? 'Read' : 'New' }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="3" class="table-td text-center py-8 text-xs text-neutral-500 font-medium">No recent messages.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 </x-admin-layout>

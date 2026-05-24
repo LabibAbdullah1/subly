@@ -1,23 +1,31 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-100 leading-tight flex items-center gap-2">
-            <svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-            {{ __('Hosting Portal - ') }} {{ $subdomain->full_domain }}
+        <h2 class="font-bold text-xs text-neutral-455 uppercase tracking-widest flex items-center gap-2">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253" />
+            </svg>
+            {{ __('Hosting Portal') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 flex flex-col gap-6">
+    <div class="py-6 sm:py-10">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6">
+            
+            <!-- Success / Error Status Alerts -->
             @if (session('success'))
-                <div class="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-lg flex items-center gap-3 animate-fade-in" role="alert">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <p>{{ session('success') }}</p>
+                <div class="bg-neutral-950 border border-neutral-900 text-white px-4 py-3 rounded-xl flex items-center gap-3 animate-fade-in shadow-xl" role="alert">
+                    <div class="p-1 rounded-lg bg-white/5 border border-white/10 text-white flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    </div>
+                    <p class="text-xs font-semibold tracking-wide">{{ session('success') }}</p>
                 </div>
             @endif
             @if ($errors->any())
-                <div class="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg flex items-start gap-3 shadow-lg" role="alert">
-                    <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    <ul class="list-disc list-inside">
+                <div class="bg-neutral-950 border border-red-900/30 text-red-400 px-4 py-3.5 rounded-xl flex items-start gap-3 shadow-xl" role="alert">
+                    <div class="p-1 rounded-lg bg-red-950/20 border border-red-900/30 text-red-400 flex-shrink-0 mt-0.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                    </div>
+                    <ul class="list-disc list-inside text-xs font-semibold tracking-wide space-y-0.5">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -25,83 +33,85 @@
                 </div>
             @endif
 
-            <div class="mb-2">
-               <a href="{{ route('client.index') }}" class="text-gray-400 hover:text-white flex items-center gap-2 transition-colors text-sm w-fit">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            <!-- Back to Dashboard Shortcut -->
+            <div class="mb-1">
+               <a href="{{ route('client.index') }}" class="text-neutral-400 hover:text-white flex items-center gap-2 transition-colors text-xs font-bold uppercase tracking-wider w-fit active:scale-98">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
                     Back to Dashboard
                </a>
             </div>
 
-            <!-- Upload Form -->
-            <div class="glass-panel p-6 flex flex-col w-full">
+            <!-- Upload File Deployment Card -->
+            <div class="glass-panel glass-panel-glow p-6 flex flex-col w-full shadow-2xl">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="p-2 rounded-lg bg-gray-800 border border-gray-700 text-primary-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    <div class="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-100">Deploy Code</h3>
+                    <h3 class="text-sm font-bold text-white tracking-tight">Deploy Code</h3>
                 </div>
+                
                 <form action="{{ route('client.deployments.store') }}" method="POST" class="flex-1 flex flex-col gap-6" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="subdomain_id" value="{{ $subdomain->id }}">
                     
                     <div class="flex-1">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Project Files (.zip)</label>
-                        <div class="flex justify-center h-48 border-2 border-gray-700 border-dashed rounded-xl transition-all relative overflow-hidden group bg-gray-900/20 cursor-pointer hover:border-primary-500/50" id="upload-dropzone" onclick="document.getElementById('zip_file').click()">
-                            <!-- Hidden Input -->
+                        <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Project Files (.zip)</label>
+                        <div class="flex justify-center h-48 border border-neutral-850 border-dashed rounded-xl transition-all relative overflow-hidden group bg-black/40 cursor-pointer hover:border-neutral-500 duration-200" id="upload-dropzone" onclick="document.getElementById('zip_file').click()">
+                            <!-- Hidden File Input -->
                             <input id="zip_file" name="zip_file" type="file" class="hidden" accept=".zip" required onchange="handleFileSelect(this)">
                             
                             <!-- Default State -->
-                            <div class="flex flex-col items-center justify-center space-y-2 w-full relative z-10 transition-opacity duration-300" id="default-upload-state">
-                                <div id="upload-icon-container" class="transform group-hover:scale-110 transition-transform">
-                                    <svg class="mx-auto h-12 w-12 text-gray-500 group-hover:text-primary-400 transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <div class="flex flex-col items-center justify-center space-y-2.5 w-full relative z-10 transition-opacity duration-300" id="default-upload-state">
+                                <div id="upload-icon-container" class="transform group-hover:scale-102 transition-transform duration-200 text-neutral-500 group-hover:text-white">
+                                    <svg class="mx-auto h-10 w-10" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true" stroke-width="2">
+                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
                                 </div>
-                                <div class="text-center">
-                                    <p class="text-sm font-bold text-primary-400 group-hover:text-primary-300 transition-colors uppercase tracking-wider">Upload a file</p>
-                                    <p class="text-xs text-gray-400 mt-1">atau seret dan lepas file ZIP ke sini</p>
+                                <div class="text-center px-4">
+                                    <p class="text-xs font-bold text-neutral-350 group-hover:text-white transition-colors uppercase tracking-wider">Upload a file</p>
+                                    <p class="text-[10px] text-neutral-500 font-semibold mt-1">atau seret dan lepas file ZIP ke sini</p>
                                 </div>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">ZIP Maks {{ $plan ? $plan->max_storage_mb : 50 }}MB</p>
+                                <p class="text-[9px] text-neutral-550 uppercase tracking-widest font-extrabold">ZIP Maks {{ $plan ? $plan->max_storage_mb : 50 }}MB</p>
                             </div>
 
                             <!-- File Selected State -->
-                            <div class="hidden absolute inset-0 flex-col items-center justify-center bg-green-500/5 backdrop-blur-sm w-full h-full p-4 z-20" id="file-selected-state">
-                                <button type="button" onclick="event.stopPropagation(); cancelUpload()" class="absolute top-3 right-3 text-gray-400 hover:text-white bg-gray-800/80 p-2 rounded-lg border border-gray-700 hover:border-gray-500 transition-all shadow-lg" title="Cancel Upload">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            <div class="hidden absolute inset-0 flex-col items-center justify-center bg-white/2 backdrop-blur-sm w-full h-full p-4 z-20" id="file-selected-state">
+                                <button type="button" onclick="event.stopPropagation(); cancelUpload()" class="absolute top-3 right-3 text-neutral-400 hover:text-white bg-neutral-905/80 p-2 rounded-lg border border-neutral-900 hover:border-neutral-700 transition-all shadow-lg active:scale-95 cursor-pointer" title="Cancel Upload">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
                                 </button>
-                                <div class="w-14 h-14 rounded-2xl bg-green-500/20 flex items-center justify-center text-green-400 mb-3 border border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.2)]">
-                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white mb-2.5 border border-white/10 shadow-lg">
+                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                 </div>
-                                <p class="text-sm font-bold text-white truncate max-w-[85%] text-center px-4" id="file-chosen-text">filename.zip</p>
-                                <p class="text-xs text-green-400 font-bold mt-1.5" id="file-info-text">0.00 MB</p>
+                                <p class="text-xs font-bold text-white truncate max-w-[85%] text-center px-4" id="file-chosen-text">filename.zip</p>
+                                <p class="text-[10px] text-neutral-400 font-bold mt-1" id="file-info-text">0.00 MB</p>
                             </div>
                         </div>
-                        <p class="text-[11px] text-gray-500 mt-3 flex items-center gap-1.5 font-medium">
-                            <svg class="w-3.5 h-3.5 text-yellow-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        <p class="text-[10px] text-neutral-500 mt-3 flex items-center gap-1.5 font-semibold">
+                            <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" /></svg>
                             Batas 3x upload per hari. Versi baru akan ditambahkan ke riwayat.
                         </p>
                     </div>
 
                     <div class="flex-1">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Catatan Deployment (Opsional)</label>
-                        <textarea id="notes" name="notes" rows="2" class="w-full bg-gray-900/50 border border-gray-800 rounded-lg py-2.5 px-4 text-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all text-gray-100 placeholder-gray-600 resize-none" placeholder="Contoh: Perbaikan UI, Update Fitur Login, dll."></textarea>
+                        <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Catatan Deployment (Opsional)</label>
+                        <textarea id="notes" name="notes" rows="2" class="input-field placeholder-neutral-600 resize-none font-medium text-xs sm:text-sm mt-1" placeholder="Contoh: Perbaikan UI, Update Fitur Login, dll."></textarea>
                     </div>
 
-                    <!-- Progress Bar -->
+                    <!-- Chunk Upload Progress Bar -->
                     <div id="progress-container" class="hidden mb-2">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest" id="progress-label">Uploading...</span>
-                            <span class="text-xs font-bold text-primary-400" id="progress-percent">0%</span>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest" id="progress-label">Uploading...</span>
+                            <span class="text-xs font-bold text-white" id="progress-percent">0%</span>
                         </div>
-                        <div class="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden shadow-inner">
-                            <div id="progress-bar" class="bg-primary-500 h-1.5 rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(94,106,210,0.5)]" style="width: 0%"></div>
+                        <div class="w-full bg-neutral-900 rounded-full h-1 overflow-hidden shadow-inner">
+                            <div id="progress-bar" class="bg-white h-1 rounded-full transition-all duration-300" style="width: 0%"></div>
                         </div>
                     </div>
 
                     @php $hasActiveDeployment = $subdomain->deployments()->where('status', 'success')->exists(); @endphp
-                    <button type="button" id="deploy-btn" onclick="submitDeployment(event, {{ $hasActiveDeployment ? 'true' : 'false' }})" class="w-full btn-primary py-3 transition-all rounded-xl {{ (!$plan) ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-[0_0_25px_rgba(94,106,210,0.5)] active:scale-[0.98]' }} flex items-center justify-center gap-2" {{ (!$plan) ? 'disabled' : '' }}>
-                        <span id="btn-text" class="font-bold tracking-wide uppercase text-sm">{{ !$plan ? 'Subscription Required' : 'Initiate Deployment' }}</span>
-                        <svg id="btn-spinner" class="hidden animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                    <button type="button" id="deploy-btn" onclick="submitDeployment(event, {{ $hasActiveDeployment ? 'true' : 'false' }})" class="w-full btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer {{ (!$plan) ? 'opacity-40 cursor-not-allowed grayscale pointer-events-none' : '' }}" {{ (!$plan) ? 'disabled' : '' }}>
+                        <span id="btn-text" class="font-extrabold uppercase text-xs tracking-wider">{{ !$plan ? 'Subscription Required' : 'Initiate Deployment' }}</span>
+                        <svg id="btn-spinner" class="hidden animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -109,47 +119,44 @@
                 </form>
             </div>
 
-            <!-- Subdomains List & Storage -->
-            <div class="glass-panel overflow-hidden flex flex-col w-full mb-6">
-                <!-- Hosted Environment Top Section (Same as before) -->
-                <div class="p-6 border-b border-gray-800/50 bg-gray-900/30 flex justify-between items-center">
-                    <h3 class="text-lg font-medium text-gray-100 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+            <!-- Storage details & Hosting Details list -->
+            <div class="glass-panel p-0 overflow-hidden flex flex-col w-full shadow-2xl">
+                <div class="px-6 py-5 border-b border-neutral-900/60 bg-neutral-950/20 flex justify-between items-center">
+                    <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest flex items-center gap-2">
+                        <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                         Hosted Environment
                     </h3>
                 </div>
 
-                <!-- Plan Storage Info -->
+                <!-- Sleek progress details for disk usage -->
                 @if($plan)
                     @php
                         $maxMB = $plan->max_storage_mb;
                         $storagePercent = $maxMB > 0 ? min(100, round(($usedStorageMB / $maxMB) * 100, 2)) : 0;
-                        $storageColor = 'bg-green-500';
-                        $storageText = 'text-green-400 bg-green-500/10 border-green-500/20';
                         
+                        $storageText = 'text-white border-neutral-900 bg-neutral-950';
                         if ($storagePercent > 80) {
-                            $storageColor = 'bg-red-500';
-                            $storageText = 'text-red-400 bg-red-500/10 border-red-500/20';
-                        } elseif ($storagePercent > 60) {
-                            $storageColor = 'bg-yellow-500';
-                            $storageText = 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
+                            $storageText = 'text-red-400 bg-red-950/20 border-red-900/30';
                         }
                     @endphp
-                    <div class="p-6 border-b border-gray-800/50">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-medium text-gray-300">Disk Usage (Zips + Extracts)</span>
-                            <span class="text-xs font-bold {{ $storageText }} px-2 py-0.5 rounded border">
-                                {{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB Used
+                    <div class="p-6 border-b border-neutral-900/60">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-semibold text-neutral-350">Disk Usage (ZIP Archive + Extracts)</span>
+                            <span class="text-[9px] font-bold {{ $storageText }} px-2 py-0.5 rounded border tracking-wide select-none">
+                                {{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB
                                 <span class="ml-1.5 opacity-80">({{ $storagePercent }}%)</span>
                             </span>
                         </div>
-                        <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden mb-3">
-                            <div class="{{ $storageColor }} h-2.5 rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,197,94,0.3)]" style="width: {{ $storagePercent }}%"></div>
+                        
+                        <!-- Sleek 3px loader -->
+                        <div class="w-full bg-neutral-900 rounded-full h-1 overflow-hidden mb-2.5">
+                            <div class="bg-white h-1 rounded-full transition-all duration-700 ease-out" style="width: {{ $storagePercent }}%"></div>
                         </div>
+                        
                         @if($liveSiteBytes > 0)
-                            <div class="flex justify-between items-center pt-2 border-t border-gray-800/30">
-                                <span class="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Live Site Size (Uncompressed)</span>
-                                <span class="text-[11px] text-primary-400 font-bold">
+                            <div class="flex justify-between items-center pt-2.5 border-t border-neutral-900/50">
+                                <span class="text-[9px] uppercase tracking-widest text-neutral-500 font-bold">Uncompressed Document Root</span>
+                                <span class="text-[10px] text-white font-mono font-bold">
                                     {{ $liveSiteBytes >= 1048576 ? round($liveSiteBytes / 1048576, 2) . ' MB' : round($liveSiteBytes / 1024, 2) . ' KB' }}
                                 </span>
                             </div>
@@ -157,10 +164,10 @@
                     </div>
                 @endif
 
-                <div class="overflow-x-auto relative w-full border-b border-gray-800/50">
+                <div class="table-container">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-gray-900/70">
+                            <tr class="bg-neutral-950/80">
                                 <th class="table-th">Domain</th>
                                 <th class="table-th text-center">Status</th>
                                 <th class="table-th text-center">Expiry</th>
@@ -168,53 +175,48 @@
                                 <th class="table-th text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-800/50">
-                            <tr class="group hover:bg-gray-800/30 transition-colors">
+                        <tbody class="divide-y divide-neutral-900/50">
+                            <tr class="group hover:bg-neutral-900/10 transition-colors">
                                 <td class="table-td">
-                                    <a href="https://{{ $subdomain->full_domain }}" target="_blank" class="font-medium text-primary-400 hover:text-primary-300 hover:underline flex items-center gap-1.5 transition-colors">
+                                    <a href="https://{{ $subdomain->full_domain }}" target="_blank" class="font-bold text-white hover:text-neutral-350 flex items-center gap-1.5 transition-colors">
                                         {{ $subdomain->full_domain }}
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                        <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                                     </a>
                                 </td>
                                 <td class="table-td text-center">
-                                    <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-medium rounded-md border 
-                                        {{ $subdomain->status == 'active' ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]' : 'bg-red-500/10 text-red-400 border-red-500/20' }}">
+                                    <span class="px-2.5 py-0.5 inline-flex text-[9px] font-bold uppercase tracking-wider rounded-md border {{ $subdomain->status == 'active' ? 'bg-neutral-900 border-neutral-800 text-white' : 'bg-red-950/20 border-red-900/30 text-red-400' }}">
                                         {{ ucfirst($subdomain->status) }}
                                     </span>
                                 </td>
                                 <td class="table-td text-center">
                                     @if($subdomain->expired_at)
-                                        <div class="text-sm {{ $subdomain->expired_at->isPast() ? 'text-red-400 font-semibold' : 'text-gray-200' }}">
+                                        <div class="text-xs font-semibold {{ $subdomain->expired_at->isPast() ? 'text-red-400' : 'text-neutral-200' }}">
                                             {{ $subdomain->expired_at->diffForHumans() }}
                                         </div>
-                                        <div class="text-xs text-gray-500">{{ $subdomain->expired_at->format('d M Y') }}</div>
+                                        <div class="text-[10px] font-medium text-neutral-500 mt-0.5">{{ $subdomain->expired_at->format('d M Y') }}</div>
                                     @else
-                                        <span class="text-gray-500 italic text-sm">Lifetime/None</span>
+                                        <span class="text-neutral-500 italic text-xs font-medium">Lifetime/None</span>
                                     @endif
                                 </td>
-                                <td class="table-td text-center border-none">
+                                <td class="table-td text-center">
                                     @php $latest = $subdomain->deployments->last(); @endphp
                                     @if($latest)
-                                        <div class="flex items-center justify-center gap-2">
-                                            <span class="text-xs text-gray-400">v{{ $latest->version }}</span>
-                                            <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-medium rounded-full 
-                                                {{ $latest->status === 'success' ? 'bg-green-500/10 text-green-400' : '' }}
-                                                {{ $latest->status === 'queued' ? 'bg-yellow-500/10 text-yellow-400' : '' }}
-                                                {{ $latest->status === 'processing' ? 'bg-blue-500/10 text-blue-400' : '' }}
-                                                {{ $latest->status === 'error' ? 'bg-red-500/10 text-red-400' : '' }}">
+                                        <div class="flex items-center justify-center gap-2 font-semibold">
+                                            <span class="text-xs text-neutral-450">v{{ $latest->version }}</span>
+                                            <span class="px-2 py-0.5 inline-flex text-[9px] uppercase tracking-wider rounded-full border {{ $latest->status === 'success' ? 'bg-neutral-900 border-neutral-850 text-white' : 'bg-neutral-900/40 border-neutral-900 text-neutral-550' }}">
                                                 {{ ucfirst($latest->status) }}
                                             </span>
                                         </div>
                                     @else
-                                        <span class="text-sm text-gray-500 italic">No deployments yet</span>
+                                        <span class="text-xs text-neutral-500 italic font-semibold">No deployments yet</span>
                                     @endif
                                 </td>
                                 <td class="table-td text-right">
-                                    <div class="flex items-center justify-end gap-3">
-                                        <a href="{{ route('client.subdomains.renew', $subdomain) }}" class="text-sm font-medium text-primary-400 hover:text-primary-300 transition-colors">Perpanjang</a>
+                                    <div class="flex items-center justify-end gap-3.5">
+                                        <a href="{{ route('client.subdomains.renew', $subdomain) }}" class="text-xs font-bold uppercase tracking-wider text-white hover:underline transition-colors">Perpanjang</a>
                                         <form action="{{ route('client.subdomains.destroy', $subdomain) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin berhenti berlangganan? Subdomain dan seluruh filenya akan dihapus permanen.');" class="deprovision-form inline">
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="text-sm font-medium text-red-500 hover:text-red-400 transition-colors">Berhenti</button>
+                                            <button type="submit" class="text-xs font-bold uppercase tracking-wider text-red-500 hover:text-red-400 transition-colors cursor-pointer">Berhenti</button>
                                         </form>
                                     </div>
                                 </td>
@@ -222,58 +224,54 @@
                         </tbody>
                     </table>
                 </div>
-
             </div>
 
-            <!-- Feedback -->
+            <!-- Platform Feedback Card -->
             @php $planFeedback = $plan ? $feedbacks->get($plan->id) : null; @endphp
             @if($plan && !$planFeedback)
-                <div class="glass-panel p-6 flex flex-col relative overflow-hidden w-full mb-6">
-                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                    <h3 class="text-lg font-medium text-gray-100 mb-6 flex items-center gap-2 relative z-10">
-                        <div class="p-1.5 rounded bg-yellow-500/20 text-yellow-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                <div class="glass-panel glass-panel-glow p-6 flex flex-col relative overflow-hidden w-full shadow-2xl">
+                    <div class="absolute -right-16 -top-16 w-36 h-36 bg-white/2 rounded-full blur-3xl pointer-events-none"></div>
+                    <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
+                        <div class="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499c.151-.403.521-.667.97-.667s.82.264.97.667l1.643 4.374a.801.801 0 00.61.545l4.636.564c.447.054.627.608.283.918l-3.53 3.178a.803.803 0 00-.236.726l.997 4.542c.096.44-.356.769-.749.53l-4.072-2.473a.802 8.02 0 00-.83 0l-4.072 2.473c-.393.238-.845-.09-.749-.53l.997-4.542a.803.803 0 00-.236-.726l-3.53-3.178c-.344-.31-.164-.864.283-.918l4.636-.564a.801.801 0 00.61-.545L11.48 3.5z" />
                             </svg>
                         </div>
                         Platform Feedback
                     </h3>
                     
-                    <form action="{{ route('client.feedback.store') }}" method="POST" class="flex flex-col relative" x-data="{ comment: '' }">
+                    <form action="{{ route('client.feedback.store') }}" method="POST" class="flex flex-col relative z-10" x-data="{ comment: '' }">
                         @csrf
                         <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                        
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-400 mb-1">Rating Anda</label>
-                            <div class="relative">
-                                <select name="rating" class="input-field appearance-none pr-10">
-                                    <option value="5" class="bg-gray-900">⭐⭐⭐⭐⭐ Sangat Memuaskan</option>
-                                    <option value="4" class="bg-gray-900">⭐⭐⭐⭐ Bagus</option>
-                                    <option value="3" class="bg-gray-900">⭐⭐⭐ Cukup Baik</option>
-                                    <option value="2" class="bg-gray-900">⭐⭐ Kurang Memuaskan</option>
-                                    <option value="1" class="bg-gray-900">⭐ Mengecewakan</option>
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </div>
-                            </div>
+                            <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2 pl-0.5">Rating Anda</label>
+                            <select name="rating" class="input-field font-semibold cursor-pointer">
+                                <option value="5" class="bg-neutral-950 text-white">⭐⭐⭐⭐⭐ Sangat Memuaskan</option>
+                                <option value="4" class="bg-neutral-950 text-white">⭐⭐⭐⭐ Bagus</option>
+                                <option value="3" class="bg-neutral-950 text-white">⭐⭐⭐ Cukup Baik</option>
+                                <option value="2" class="bg-neutral-950 text-white">⭐⭐ Kurang Memuaskan</option>
+                                <option value="1" class="bg-neutral-950 text-white">⭐ Mengecewakan</option>
+                            </select>
                         </div>
                         
-                        <!-- Quick Feedback Chips -->
+                        <!-- Premium Preset Feedback Chips -->
                         <div class="mb-5">
-                            <label class="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">Pilih Cepat</label>
+                            <label class="block text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-2.5 pl-0.5">Pilih Cepat</label>
                             <div class="flex flex-wrap gap-2">
-                                <button type="button" @click="comment = 'Sangat memuaskan dan mudah digunakan!'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Sangat Memuaskan</button>
-                                <button type="button" @click="comment = 'Harganya sepadan dengan fitur yang didapat.'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Harga Sepadan</button>
-                                <button type="button" @click="comment = 'Servernya cepat dan stabil, tanpa kendala.'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Cepat & Stabil</button>
-                                <button type="button" @click="comment = 'Proses deploy sangat gampang untuk pemula.'" class="text-xs bg-gray-800 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 border border-gray-700 hover:border-primary-500/50 rounded-full px-3 py-1.5 transition-all">Mudah untuk Pemula</button>
+                                <button type="button" @click="comment = 'Sangat memuaskan dan mudah digunakan!'" class="text-[10px] font-bold uppercase tracking-wider bg-neutral-950 border border-neutral-900 hover:border-neutral-700 text-neutral-300 rounded-full px-4 py-2 transition-all active:scale-[0.96] cursor-pointer">Sangat Memuaskan</button>
+                                <button type="button" @click="comment = 'Harganya sepadan dengan fitur yang didapat.'" class="text-[10px] font-bold uppercase tracking-wider bg-neutral-950 border border-neutral-900 hover:border-neutral-700 text-neutral-300 rounded-full px-4 py-2 transition-all active:scale-[0.96] cursor-pointer">Harga Sepadan</button>
+                                <button type="button" @click="comment = 'Servernya cepat dan stabil, tanpa kendala.'" class="text-[10px] font-bold uppercase tracking-wider bg-neutral-950 border border-neutral-900 hover:border-neutral-700 text-neutral-300 rounded-full px-4 py-2 transition-all active:scale-[0.96] cursor-pointer">Cepat & Stabil</button>
+                                <button type="button" @click="comment = 'Proses deploy sangat gampang untuk pemula.'" class="text-[10px] font-bold uppercase tracking-wider bg-neutral-950 border border-neutral-900 hover:border-neutral-700 text-neutral-300 rounded-full px-4 py-2 transition-all active:scale-[0.96] cursor-pointer">Mudah untuk Pemula</button>
                             </div>
                         </div>
 
                         <div class="mb-5 flex-1">
-                            <label class="block text-sm font-medium text-gray-400 mb-1">Catatan Tambahan</label>
-                            <textarea name="comment" x-model="comment" rows="3" class="input-field w-full resize-none text-sm" placeholder="Tulis masukan Anda di sini..."></textarea>
+                            <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2 pl-0.5">Catatan Tambahan</label>
+                            <textarea name="comment" x-model="comment" rows="3" class="input-field w-full resize-none placeholder-neutral-600 text-xs sm:text-sm font-semibold" placeholder="Tulis masukan Anda di sini..."></textarea>
                         </div>
-                        <button type="submit" class="w-full btn-secondary py-2.5 border-gray-700 bg-gray-800 hover:bg-primary-600 hover:text-white hover:border-primary-500 mt-auto transition-all text-sm font-medium">
+                        
+                        <button type="submit" class="w-full btn-primary h-12 uppercase tracking-wider font-extrabold text-xs active:scale-[0.98] cursor-pointer">
                             Kirim Feedback
                         </button>
                     </form>
@@ -283,9 +281,92 @@
         </div>
     </div>
 
+    <!-- Fullscreen Backdrop-Blurred Stepper Overlay for Deprovisioning -->
+    <div id="deprovision-overlay" class="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/95 backdrop-blur-xl opacity-0 pointer-events-none transition-opacity duration-300 select-none">
+        <!-- Accent Glow Ring -->
+        <div class="absolute w-[500px] h-[500px] rounded-full bg-red-950/20 blur-[130px] -top-30 -left-30 pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-md w-full px-6 flex flex-col items-center">
+            
+            <!-- Icon Status -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-red-950/30 border border-red-900/30 rounded-2xl flex items-center justify-center mb-4 mx-auto animate-pulse">
+                    <svg class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-white tracking-tight">Deprovisioning Subdomain</h3>
+                <p class="text-neutral-450 text-xs mt-1.5 font-medium">Deallocating secure filesystems, drop schemes, and web hosts...</p>
+            </div>
+
+            <!-- Stepper Container -->
+            <div class="w-full bg-neutral-950 border border-neutral-900 rounded-2xl p-6 mb-6 space-y-6 relative overflow-hidden">
+                <!-- Connect Progress Line -->
+                <div class="absolute left-7 top-[38px] bottom-[38px] w-0.5 bg-neutral-900 pointer-events-none">
+                    <div id="deprovision-progress-line" class="w-full h-0 bg-red-650 transition-all duration-[600ms]"></div>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="flex items-start gap-4 relative z-10" id="deprovision-step-1">
+                    <div class="step-icon w-8 h-8 rounded-full bg-neutral-950 border-2 border-neutral-900 flex items-center justify-center text-xs font-extrabold text-neutral-500 transition-all shrink-0">
+                        1
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-neutral-500 transition-colors step-title uppercase tracking-wider">Hapus Virtual Host</h4>
+                        <p class="text-[10px] text-neutral-500 font-semibold mt-0.5 step-desc">Menghapus vhost server dan DNS bindings.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex items-start gap-4 relative z-10" id="deprovision-step-2">
+                    <div class="step-icon w-8 h-8 rounded-full bg-neutral-950 border-2 border-neutral-900 flex items-center justify-center text-xs font-extrabold text-neutral-500 transition-all shrink-0">
+                        2
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-neutral-500 transition-colors step-title uppercase tracking-wider">Drop Database Schema</h4>
+                        <p class="text-[10px] text-neutral-500 font-semibold mt-0.5 step-desc">Menghapus schema dan tablespace basis data.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex items-start gap-4 relative z-10" id="deprovision-step-3">
+                    <div class="step-icon w-8 h-8 rounded-full bg-neutral-950 border-2 border-neutral-900 flex items-center justify-center text-xs font-extrabold text-neutral-500 transition-all shrink-0">
+                        3
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-neutral-500 transition-colors step-title uppercase tracking-wider">Revoke Credentials</h4>
+                        <p class="text-[10px] text-neutral-500 font-semibold mt-0.5 step-desc">Mencabut MySQL connection grants dan privileges.</p>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flex items-start gap-4 relative z-10" id="deprovision-step-4">
+                    <div class="step-icon w-8 h-8 rounded-full bg-neutral-950 border-2 border-neutral-900 flex items-center justify-center text-xs font-extrabold text-neutral-500 transition-all shrink-0">
+                        4
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-neutral-500 transition-colors step-title uppercase tracking-wider">Wipe Storage Files</h4>
+                        <p class="text-[10px] text-neutral-500 font-semibold mt-0.5 step-desc">Menghapus file deploy ZIP dan doc_root.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sleek terminal logger -->
+            <div class="w-full bg-[#050507] border border-neutral-900 rounded-xl p-4 font-mono text-[10px] text-red-500/80 shadow-inner h-28 overflow-y-auto space-y-1 scrollbar-thin">
+                <div class="flex items-center gap-1.5 text-neutral-600">
+                    <span>$</span>
+                    <span class="text-neutral-400">deprovision --target="{{ $subdomain->full_domain }}"</span>
+                </div>
+                <div id="deprovision-logs" class="space-y-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Layer -->
     <script>
         let isFileValid = false;
 
+        // Custom responsive file selector display
         function handleFileSelect(input) {
             const fileNameDisplay = document.getElementById('file-chosen-text');
             const fileInfoText = document.getElementById('file-info-text');
@@ -300,28 +381,24 @@
                 const file = input.files[0];
                 fileNameDisplay.innerText = file.name;
                 
-                // Show file size vs limit
                 const sizeMB = (file.size / 1024 / 1024).toFixed(2);
                 const sizeKB = (file.size / 1024).toFixed(2);
                 const maxMB = {{ $plan ? $plan->max_storage_mb : 50 }};
-                
-                // Display text
                 const displaySize = file.size >= 1048576 ? sizeMB + ' MB' : sizeKB + ' KB';
                 
-                // Toggle UI state
                 defaultState.classList.add('hidden', 'opacity-0');
                 fileSelectedState.classList.remove('hidden');
                 fileSelectedState.classList.add('flex');
                 
-                if(sizeMB > maxMB) {
+                if (sizeMB > maxMB) {
                     fileInfoText.innerHTML = `<span class="text-red-400 font-bold">Terlalu besar: ${displaySize} / ${maxMB} MB Limit</span>`;
-                    dropzone.classList.add('border-red-500', 'bg-red-500/5', 'ring-2', 'ring-red-500/20');
-                    dropzone.classList.remove('border-gray-700', 'border-primary-500', 'border-green-500', 'ring-green-500/20');
+                    dropzone.classList.add('border-red-500', 'bg-red-500/5');
+                    dropzone.classList.remove('border-neutral-850', 'border-neutral-500');
                     if (btn) btn.disabled = true;
                 } else {
                     fileInfoText.innerText = displaySize;
-                    dropzone.classList.add('border-green-500', 'bg-green-500/5', 'ring-2', 'ring-green-500/20');
-                    dropzone.classList.remove('border-gray-700', 'border-red-500', 'bg-red-500/5', 'ring-red-500/20');
+                    dropzone.classList.add('border-white', 'bg-white/2');
+                    dropzone.classList.remove('border-neutral-850', 'border-red-500');
                     if (btn) btn.disabled = false;
                     isFileValid = true;
                 }
@@ -333,7 +410,7 @@
 
         function cancelUpload() {
             const input = document.getElementById('zip_file');
-            input.value = ''; // clear input
+            input.value = '';
             
             const dropzone = document.getElementById('upload-dropzone');
             const defaultState = document.getElementById('default-upload-state');
@@ -344,12 +421,110 @@
             fileSelectedState.classList.add('hidden');
             fileSelectedState.classList.remove('flex');
             
-            dropzone.classList.remove('border-primary-500', 'bg-primary-500/5', 'border-red-500', 'bg-red-500/5');
-            dropzone.classList.add('border-gray-700');
+            dropzone.classList.remove('border-white', 'bg-white/2', 'border-red-500', 'bg-red-500/5');
+            dropzone.classList.add('border-neutral-850');
             
             if (btn) btn.disabled = true;
         }
 
+        // Stepper animation overlays for deprovisioning
+        window.startDeprovisioningSteps = function(formElement) {
+            const overlay = document.getElementById('deprovision-overlay');
+            if (overlay && overlay.parentNode !== document.body) {
+                document.body.appendChild(overlay);
+            }
+
+            const logsContainer = document.getElementById('deprovision-logs');
+            const progressLine = document.getElementById('deprovision-progress-line');
+
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100');
+
+            const addLog = (text, type = 'info') => {
+                const log = document.createElement('div');
+                log.className = 'flex items-start gap-1.5';
+                const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+                
+                let textColor = 'text-red-500/80';
+                if (type === 'success') textColor = 'text-white font-semibold';
+                if (type === 'accent') textColor = 'text-neutral-350';
+
+                log.innerHTML = `<span class="text-neutral-700">[${time}]</span> <span class="${textColor}">${text}</span>`;
+                logsContainer.appendChild(log);
+                logsContainer.scrollTop = logsContainer.scrollHeight;
+            };
+
+            const setStepState = (stepNumber, state) => {
+                const stepEl = document.getElementById(`deprovision-step-${stepNumber}`);
+                if (!stepEl) return;
+
+                const icon = stepEl.querySelector('.step-icon');
+                const title = stepEl.querySelector('.step-title');
+                const desc = stepEl.querySelector('.step-desc');
+
+                if (state === 'active') {
+                    icon.className = 'step-icon w-8 h-8 rounded-full bg-red-950 border-2 border-red-500 flex items-center justify-center text-xs font-bold text-red-400 transition-all shrink-0 shadow-[0_0_15px_rgba(239,68,68,0.4)]';
+                    icon.innerHTML = `<svg class="animate-spin w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+                    title.className = 'text-xs font-bold text-white transition-colors step-title uppercase tracking-wider';
+                } else if (state === 'success') {
+                    icon.className = 'step-icon w-8 h-8 rounded-full bg-red-600 border-2 border-red-500 flex items-center justify-center text-xs font-bold text-white transition-all shrink-0 scale-105';
+                    icon.innerHTML = `<svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>`;
+                    title.className = 'text-xs font-bold text-red-500 transition-colors step-title uppercase tracking-wider';
+                    desc.className = 'text-[10px] text-neutral-450 transition-colors step-desc font-semibold';
+                }
+            };
+
+            // Simulate deprovision steps
+            setTimeout(() => {
+                setStepState(1, 'active');
+                addLog('Menginisialisasi deprovisioning paket...');
+                addLog('Menghubungi Virtual Host API server...');
+            }, 500);
+
+            setTimeout(() => {
+                setStepState(1, 'success');
+                progressLine.style.height = '33%';
+                addLog('Konfigurasi Virtual Host berhasil dihapus.', 'success');
+                addLog('Subdomain dinonaktifkan di DNS zone file.', 'success');
+                
+                setStepState(2, 'active');
+                addLog('Memulai deprovisioning database...');
+                addLog('Mencari database schema: "subly_db_{{ $subdomain->name }}"...');
+            }, 2300);
+
+            setTimeout(() => {
+                setStepState(2, 'success');
+                progressLine.style.height = '66%';
+                addLog('MySQL Database berhasil di-drop/dihapus.', 'success');
+                addLog('Semua tabel & data terhapus permanen.', 'success');
+                
+                setStepState(3, 'active');
+                addLog('Mengidentifikasi MySQL User: "subly_u_{{ $subdomain->name }}"...');
+                addLog('Mencabut (REVOKE) seluruh hak akses database...');
+            }, 4100);
+
+            setTimeout(() => {
+                setStepState(3, 'success');
+                progressLine.style.height = '100%';
+                addLog('Database user berhasil dihapus dari server.', 'success');
+                
+                setStepState(4, 'active');
+                addLog('Membersihkan folder deployment: "{{ $subdomain->doc_root }}"...');
+                addLog('Menghapus ZIP file arsip dari cloud storage...');
+            }, 5900);
+
+            setTimeout(() => {
+                setStepState(4, 'success');
+                addLog('Semua folder & file deployment berhasil dibersihkan.', 'success');
+                addLog('Deprovisioning sukses! Mengalihkan halaman...', 'success');
+                
+                setTimeout(() => {
+                    formElement.submit();
+                }, 800);
+            }, 7700);
+        };
+
+        // Chunked zip upload mechanism
         async function submitDeployment(event, hasWarning) {
             const fileInput = document.getElementById('zip_file');
             const notesInput = document.getElementById('notes');
@@ -377,7 +552,6 @@
             const subdomainId = {{ $subdomain->id }};
             const notes = notesInput ? notesInput.value : '';
 
-            // UI State
             const btn = document.getElementById('deploy-btn');
             const btnText = document.getElementById('btn-text');
             const spinner = document.getElementById('btn-spinner');
@@ -387,7 +561,7 @@
             const progressLabel = document.getElementById('progress-label');
 
             btn.disabled = true;
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            btn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
             spinner.classList.remove('hidden');
             btnText.innerText = "Processing...";
             progressContainer.classList.remove('hidden');
@@ -421,7 +595,6 @@
                         throw new Error(result.error || 'Upload failed');
                     }
 
-                    // Update UI Progress
                     const percent = Math.round(((i + 1) / totalChunks) * 100);
                     progressBar.style.width = percent + '%';
                     progressPercent.innerText = percent + '%';
@@ -436,199 +609,12 @@
                     console.error('Upload Error:', error);
                     alert('Error during upload: ' + error.message);
                     btn.disabled = false;
-                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
                     spinner.classList.add('hidden');
                     btnText.innerText = "Retry Deployment";
                     return;
                 }
             }
-    </script>
-
-    <!-- Fullscreen Deprovisioning Glassmorphic Stepper Overlay -->
-    <div id="deprovision-overlay" class="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#09090b]/90 backdrop-blur-xl opacity-0 pointer-events-none transition-opacity duration-500">
-        <!-- Ambient Glows -->
-        <div class="absolute w-[600px] h-[600px] rounded-full bg-red-500/10 blur-[150px] -top-40 -left-40 pointer-events-none"></div>
-        <div class="absolute w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[120px] -bottom-20 -right-20 pointer-events-none"></div>
-
-        <div class="relative z-10 max-w-lg w-full px-6 flex flex-col items-center">
-            <!-- Header / Status -->
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-red-500/10 rounded-2xl border border-red-500/20 flex items-center justify-center mb-4 mx-auto animate-pulse">
-                    <svg class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-100 tracking-tight">Deprovisioning Subdomain</h3>
-                <p class="text-gray-400 text-sm mt-1">Sedang menghapus seluruh resource dari server panel secara aman...</p>
-            </div>
-
-            <!-- Stepper Container -->
-            <div class="w-full bg-gray-900/40 border border-gray-800/80 rounded-2xl p-6 mb-6 space-y-6 relative overflow-hidden backdrop-blur-md">
-                <!-- Connecting Progress Line -->
-                <div class="absolute left-[37px] top-[40px] bottom-[40px] w-0.5 bg-gray-800/60 pointer-events-none">
-                    <div id="deprovision-progress-line" class="w-full h-0 bg-gradient-to-b from-red-500 to-purple-600 transition-all duration-500"></div>
-                </div>
-
-                <!-- Step 1: Subdomain -->
-                <div class="flex items-start gap-4 relative z-10" id="deprovision-step-1">
-                    <div class="step-icon w-8 h-8 rounded-full bg-gray-900 border-2 border-gray-800 flex items-center justify-center text-xs font-bold text-gray-500 transition-all shrink-0">
-                        1
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-gray-400 transition-colors step-title">Hapus Konfigurasi Virtual Host</h4>
-                        <p class="text-[11px] text-gray-500 mt-0.5 step-desc">Menonaktifkan subdomain dan menghapus vhost server...</p>
-                    </div>
-                </div>
-
-                <!-- Step 2: Database -->
-                <div class="flex items-start gap-4 relative z-10" id="deprovision-step-2">
-                    <div class="step-icon w-8 h-8 rounded-full bg-gray-900 border-2 border-gray-800 flex items-center justify-center text-xs font-bold text-gray-500 transition-all shrink-0">
-                        2
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-gray-400 transition-colors step-title">Hapus MySQL Database</h4>
-                        <p class="text-[11px] text-gray-500 mt-0.5 step-desc">Menghapus seluruh tabel, skema, dan data basis data...</p>
-                    </div>
-                </div>
-
-                <!-- Step 3: Database User -->
-                <div class="flex items-start gap-4 relative z-10" id="deprovision-step-3">
-                    <div class="step-icon w-8 h-8 rounded-full bg-gray-900 border-2 border-gray-800 flex items-center justify-center text-xs font-bold text-gray-500 transition-all shrink-0">
-                        3
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-gray-400 transition-colors step-title">Hapus Akses & Kredensial User</h4>
-                        <p class="text-[11px] text-gray-500 mt-0.5 step-desc">Mencabut izin MySQL dan menghapus user credentials...</p>
-                    </div>
-                </div>
-
-                <!-- Step 4: Files Deployment -->
-                <div class="flex items-start gap-4 relative z-10" id="deprovision-step-4">
-                    <div class="step-icon w-8 h-8 rounded-full bg-gray-900 border-2 border-gray-800 flex items-center justify-center text-xs font-bold text-gray-500 transition-all shrink-0">
-                        4
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-gray-400 transition-colors step-title">Membersihkan Deployment Files</h4>
-                        <p class="text-[11px] text-gray-500 mt-0.5 step-desc">Menghapus file ZIP arsip dan folder public website...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Terminal Log Screen -->
-            <div class="w-full bg-[#050507] border border-gray-800 rounded-xl p-4 font-mono text-[11px] text-red-400/80 shadow-inner h-28 overflow-y-auto space-y-1 scrollbar-thin">
-                <div class="flex items-center gap-1.5 text-gray-500">
-                    <span>$</span>
-                    <span class="text-gray-400">deprovision --target="{{ $subdomain->full_domain }}"</span>
-                </div>
-                <div id="deprovision-logs" class="space-y-1"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Deprovision script logic -->
-    <script>
-        window.startDeprovisioningSteps = function(formElement) {
-            const overlay = document.getElementById('deprovision-overlay');
-            
-            // Move overlay to document body to bypass parent container transform/filter limitations
-            if (overlay && overlay.parentNode !== document.body) {
-                document.body.appendChild(overlay);
-            }
-
-            const logsContainer = document.getElementById('deprovision-logs');
-            const progressLine = document.getElementById('deprovision-progress-line');
-
-            // Show overlay
-            overlay.classList.remove('opacity-0', 'pointer-events-none');
-            overlay.classList.add('opacity-100');
-
-            const addLog = (text, type = 'info') => {
-                const log = document.createElement('div');
-                log.className = 'flex items-start gap-1.5';
-                const time = new Date().toLocaleTimeString('en-US', { hour12: false });
-                
-                let textColor = 'text-red-400/80';
-                if (type === 'success') textColor = 'text-green-400';
-                if (type === 'accent') textColor = 'text-purple-400';
-
-                log.innerHTML = `<span class="text-gray-600">[${time}]</span> <span class="${textColor}">${text}</span>`;
-                logsContainer.appendChild(log);
-                logsContainer.scrollTop = logsContainer.scrollHeight;
-            };
-
-            const setStepState = (stepNumber, state) => {
-                const stepEl = document.getElementById(`deprovision-step-${stepNumber}`);
-                if (!stepEl) return;
-
-                const icon = stepEl.querySelector('.step-icon');
-                const title = stepEl.querySelector('.step-title');
-                const desc = stepEl.querySelector('.step-desc');
-
-                if (state === 'active') {
-                    icon.className = 'step-icon w-8 h-8 rounded-full bg-red-950 border-2 border-red-500 flex items-center justify-center text-xs font-bold text-red-400 transition-all shrink-0 shadow-[0_0_15px_rgba(239,68,68,0.4)]';
-                    icon.innerHTML = `<svg class="animate-spin w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-                    title.className = 'text-sm font-semibold text-gray-200 transition-colors step-title';
-                } else if (state === 'success') {
-                    icon.className = 'step-icon w-8 h-8 rounded-full bg-red-600 border-2 border-red-400 flex items-center justify-center text-xs font-bold text-white transition-all shrink-0 shadow-[0_0_15px_rgba(220,38,38,0.3)] scale-110';
-                    icon.innerHTML = `<svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`;
-                    title.className = 'text-sm font-semibold text-red-500 transition-colors step-title';
-                    desc.className = 'text-[11px] text-gray-400 transition-colors step-desc';
-                }
-            };
-
-            // Start timeline simulation
-            // 0.5s: Start Step 1
-            setTimeout(() => {
-                setStepState(1, 'active');
-                addLog('Menginisialisasi deprovisioning paket...');
-                addLog('Menghubungi Virtual Host API server...');
-            }, 500);
-
-            // 2.3s: Complete Step 1, Start Step 2
-            setTimeout(() => {
-                setStepState(1, 'success');
-                progressLine.style.height = '33%';
-                addLog('Konfigurasi Virtual Host berhasil dihapus.', 'success');
-                addLog('Subdomain dinonaktifkan di DNS zone file.', 'success');
-                
-                setStepState(2, 'active');
-                addLog('Memulai deprovisioning database...');
-                addLog('Mencari database schema: "subly_db_{{ $subdomain->name }}"...');
-            }, 2300);
-
-            // 4.1s: Complete Step 2, Start Step 3
-            setTimeout(() => {
-                setStepState(2, 'success');
-                progressLine.style.height = '66%';
-                addLog('MySQL Database berhasil di-drop/dihapus.', 'success');
-                addLog('Semua tabel & data terhapus permanen.', 'success');
-                
-                setStepState(3, 'active');
-                addLog('Mengidentifikasi MySQL User: "subly_u_{{ $subdomain->name }}"...');
-                addLog('Mencabut (REVOKE) seluruh hak akses database...');
-            }, 4100);
-
-            // 5.9s: Complete Step 3, Start Step 4
-            setTimeout(() => {
-                setStepState(3, 'success');
-                progressLine.style.height = '100%';
-                addLog('Database user berhasil dihapus dari server.', 'success');
-                
-                setStepState(4, 'active');
-                addLog('Membersihkan folder deployment: "{{ $subdomain->doc_root }}"...');
-                addLog('Menghapus ZIP file arsip dari cloud storage...');
-            }, 5900);
-
-            // 7.7s: Complete Step 4, Submit Form to Backend
-            setTimeout(() => {
-                setStepState(4, 'success');
-                addLog('Semua folder & file deployment berhasil dibersihkan.', 'success');
-                addLog('Deprovisioning sukses! Mengalihkan halaman...', 'success');
-                
-                setTimeout(() => {
-                    formElement.submit();
-                }, 800);
-            }, 7700);
-        };
+        }
     </script>
 </x-app-layout>
