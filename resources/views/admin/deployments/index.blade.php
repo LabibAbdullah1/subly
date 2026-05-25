@@ -62,7 +62,7 @@
                                             </div>
                                         </td>
                                         <td class="table-td text-right pr-6">
-                                            <div class="flex items-center justify-end gap-2">
+                                            <div class="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
                                                 <form action="{{ route('admin.deployments.setup_db', $deployment) }}" method="POST" class="inline-block">
                                                     @csrf
                                                     <button type="submit" class="text-[10px] rounded-lg bg-neutral-900 border border-neutral-850 hover:border-neutral-700 text-neutral-300 hover:text-white px-2.5 py-1.5 transition-all font-bold active:scale-[0.96] cursor-pointer" title="Setup Virtual Host & Database">
@@ -78,7 +78,7 @@
                                                 </form>
                                                 <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">
                                                     @csrf @method('PUT')
-                                                    <select name="status" class="text-[10px] rounded-lg bg-neutral-950 border border-neutral-900 text-neutral-300 hover:bg-neutral-900 focus:ring-neutral-700 py-1 pl-1 pr-4 sm:pl-2 sm:pr-6 shadow-inner cursor-pointer font-bold" onchange="this.form.submit()">
+                                                    <select name="status" class="text-[10px] rounded-lg bg-neutral-950 border border-neutral-900 text-neutral-300 hover:bg-neutral-900 focus:ring-neutral-700 py-1.5 px-2 pr-6 shadow-inner cursor-pointer font-bold w-24" onchange="this.form.submit()">
                                                         <option value="queued" {{ $deployment->status == 'queued' ? 'selected' : '' }}>Antri</option>
                                                         <option value="processing" {{ $deployment->status == 'processing' ? 'selected' : '' }}>Diproses</option>
                                                         <option value="success" {{ $deployment->status == 'success' ? 'selected' : '' }}>Sukses</option>
@@ -137,7 +137,7 @@
                                             <div class="flex items-center gap-2">
                                                 <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">
                                                     @csrf @method('PUT')
-                                                    <select name="status" class="text-[10px] uppercase tracking-wider font-bold rounded-lg border-none px-1.5 py-1 cursor-pointer
+                                                    <select name="status" class="text-[10px] uppercase tracking-wider font-bold rounded-lg border-none px-1.5 py-1 cursor-pointer w-24 text-center
                                                         {{ $deployment->status == 'success' ? 'bg-neutral-900 text-neutral-350' : 'bg-red-950/30 text-red-400 border border-red-900/10' }}" onchange="this.form.submit()">
                                                         <option value="success" {{ $deployment->status == 'success' ? 'selected' : '' }}>Sukses</option>
                                                         <option value="error" {{ $deployment->status == 'error' ? 'selected' : '' }}>Gagal</option>
