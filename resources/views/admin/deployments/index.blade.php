@@ -39,7 +39,7 @@
                 </div>
                 
                 <div class="glass-panel border-neutral-900 relative z-20">
-                    <div class="overflow-visible">
+                    <div class="overflow-x-auto md:overflow-visible">
                         <table class="w-full">
                             <thead>
                                 <tr>
@@ -78,7 +78,7 @@
                                                 </form>
                                                 <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">
                                                     @csrf @method('PUT')
-                                                    <select name="status" class="text-[10px] rounded-lg bg-neutral-950 border border-neutral-900 text-neutral-300 hover:bg-neutral-900 focus:ring-neutral-700 py-1.5 px-2.5 pr-6 shadow-inner cursor-pointer font-bold w-28 text-center" onchange="this.form.submit()">
+                                                    <select name="status" class="text-[10px] rounded-lg bg-neutral-950 border border-neutral-900 text-neutral-300 hover:bg-neutral-900 focus:ring-neutral-700 py-1.5 px-2.5 pr-6 shadow-inner cursor-pointer font-bold w-28 text-center" style="font-size: 11px !important;" onchange="this.form.submit()">
                                                         <option value="queued" {{ $deployment->status == 'queued' ? 'selected' : '' }}>Antri</option>
                                                         <option value="processing" {{ $deployment->status == 'processing' ? 'selected' : '' }}>Diproses</option>
                                                         <option value="success" {{ $deployment->status == 'success' ? 'selected' : '' }}>Sukses</option>
@@ -109,7 +109,7 @@
                 </h3>
 
                 <div class="glass-panel border-neutral-900 relative z-10">
-                    <div class="overflow-visible">
+                    <div class="overflow-x-auto md:overflow-visible">
                         <table class="w-full">
                             <thead>
                                 <tr>
@@ -137,8 +137,7 @@
                                             <div class="flex items-center gap-2">
                                                 <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">
                                                     @csrf @method('PUT')
-                                                    <select name="status" class="text-[10px] uppercase tracking-wider font-bold rounded-lg border-none px-1.5 py-1 cursor-pointer w-28 text-center
-                                                        {{ $deployment->status == 'success' ? 'bg-neutral-900 text-neutral-350' : 'bg-red-950/30 text-red-400 border border-red-900/10' }}" onchange="this.form.submit()">
+                                                    <select name="status" class="text-[10px] uppercase tracking-wider font-bold rounded-lg border-none px-1.5 py-1 cursor-pointer w-28 text-center {{ $deployment->status == 'success' ? 'bg-neutral-900 text-neutral-350' : 'bg-red-950/30 text-red-400 border border-red-900/10' }}" style="font-size: 11px !important;" onchange="this.form.submit()">
                                                         <option value="success" {{ $deployment->status == 'success' ? 'selected' : '' }}>Sukses</option>
                                                         <option value="error" {{ $deployment->status == 'error' ? 'selected' : '' }}>Gagal</option>
                                                         <option value="queued">Kembalikan ke Antrian</option>
