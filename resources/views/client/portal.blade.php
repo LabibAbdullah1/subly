@@ -442,6 +442,7 @@
                     return;
                 }
             }
+        }
     </script>
 
     <!-- Fullscreen Deprovisioning Glassmorphic Stepper Overlay -->
