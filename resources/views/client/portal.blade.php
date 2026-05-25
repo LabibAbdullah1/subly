@@ -13,23 +13,34 @@
             
             <!-- Success / Error Status Alerts -->
             @if (session('success'))
-                <div class="bg-neutral-950 border border-neutral-900 text-white px-4 py-3 rounded-xl flex items-center gap-3 animate-fade-in shadow-xl" role="alert">
-                    <div class="p-1 rounded-lg bg-white/5 border border-white/10 text-white flex-shrink-0">
+                <div class="bg-neutral-950/60 backdrop-blur-xl border border-neutral-900 border-l-2 border-l-emerald-500 text-white px-4 py-3.5 rounded-2xl flex items-center gap-3.5 animate-fade-in shadow-[0_24px_50px_-12px_rgba(0,0,0,0.85),inset_0_1px_0_0_rgba(255,255,255,0.045)] relative overflow-hidden" role="alert">
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/2 to-transparent pointer-events-none"></div>
+                    <div class="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex-shrink-0 relative z-10">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                     </div>
-                    <p class="text-xs font-semibold tracking-wide">{{ session('success') }}</p>
+                    <div class="flex-1 flex flex-col gap-0.5 relative z-10">
+                        <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest font-heading">Success</p>
+                        <p class="text-xs text-neutral-300 font-semibold tracking-wide">{{ session('success') }}</p>
+                    </div>
                 </div>
             @endif
             @if ($errors->any())
-                <div class="bg-neutral-950 border border-red-900/30 text-red-400 px-4 py-3.5 rounded-xl flex items-start gap-3 shadow-xl" role="alert">
-                    <div class="p-1 rounded-lg bg-red-950/20 border border-red-900/30 text-red-400 flex-shrink-0 mt-0.5">
+                <div class="bg-neutral-950/60 backdrop-blur-xl border border-neutral-900 border-l-2 border-l-red-500 text-white px-4 py-3.5 rounded-2xl flex items-start gap-3.5 animate-fade-in shadow-[0_24px_50px_-12px_rgba(0,0,0,0.85),inset_0_1px_0_0_rgba(255,255,255,0.045)] relative overflow-hidden" role="alert">
+                    <div class="absolute inset-0 bg-gradient-to-r from-red-500/2 to-transparent pointer-events-none"></div>
+                    <div class="p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 flex-shrink-0 mt-0.5 relative z-10">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
                     </div>
-                    <ul class="list-disc list-inside text-xs font-semibold tracking-wide space-y-0.5">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                    <div class="flex-1 flex flex-col gap-1 relative z-10">
+                        <p class="text-[10px] font-bold text-red-400 uppercase tracking-widest font-heading">Action Failed</p>
+                        <ul class="text-xs text-neutral-350 font-semibold tracking-wide space-y-1 list-none">
+                            @foreach ($errors->all() as $error)
+                                <li class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>
+                                    <span>{{ $error }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             @endif
 
