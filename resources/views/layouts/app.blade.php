@@ -24,13 +24,16 @@
         
         <!-- Background Ambient Glow & Dot Matrix Grid -->
         <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-black">
-            <!-- Fine SVG Dot Matrix Pattern -->
-            <div class="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_80%,transparent_100%)] opacity-70"></div>
+            <!-- Fine SVG Dot Matrix Pattern with Eased Masking to prevent banding -->
+            <div class="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_0%,rgba(0,0,0,0.95)_40%,rgba(0,0,0,0.6)_70%,rgba(0,0,0,0.15)_90%,transparent_100%)] opacity-70"></div>
             
             <!-- Soft Ambient Radial Glows -->
             <div class="absolute top-[-15%] left-[10%] w-[50%] h-[45%] rounded-full bg-primary-500/7 blur-[140px]"></div>
             <div class="absolute top-[25%] right-[-10%] w-[40%] h-[45%] rounded-full bg-purple-500/5 blur-[130px]"></div>
             <div class="absolute bottom-[-15%] left-[20%] w-[45%] h-[40%] rounded-full bg-primary-600/4 blur-[140px]"></div>
+
+            <!-- High-Fidelity Dithering Noise Overlay -->
+            <div class="absolute inset-0 bg-noise opacity-[0.015] mix-blend-overlay"></div>
         </div>
 
         <div class="min-h-screen flex h-screen overflow-hidden">
