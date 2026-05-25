@@ -1,4 +1,19 @@
 <x-admin-layout>
+    <style>
+        /* Force extremely compact select status badges on mobile to override global browser rules */
+        @media (max-width: 640px) {
+            select[name="status"] {
+                font-size: 10px !important;
+                height: 24px !important;
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+                line-height: 24px !important;
+                width: 90px !important;
+                text-align: center !important;
+                text-align-last: center !important;
+            }
+        }
+    </style>
     <x-slot name="header">
         <h2 class="font-semibold text-sm text-neutral-450 tracking-wider uppercase">
             {{ __('Antrian Deployment') }}
