@@ -23,12 +23,12 @@
         <!-- Ambient Background & Dot Grid -->
         <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-black select-none">
             <!-- Fine SVG Dot Matrix Pattern with Eased Masking to prevent banding -->
-            <div class="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_0%,rgba(0,0,0,0.95)_40%,rgba(0,0,0,0.6)_70%,rgba(0,0,0,0.15)_90%,transparent_100%)] opacity-70"></div>
+            <div class="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_120%_120%_at_50%_0%,#000_0%,rgba(0,0,0,0.95)_40%,rgba(0,0,0,0.6)_70%,rgba(0,0,0,0.15)_90%,transparent_100%)] opacity-90"></div>
             
             <!-- Soft Ambient Radial Glows -->
-            <div class="absolute top-[-15%] left-[-15%] w-[60%] h-[60%] rounded-full bg-primary-500/7 blur-[140px]"></div>
-            <div class="absolute bottom-[-15%] right-[-15%] w-[60%] h-[60%] rounded-full bg-primary-600/5 blur-[140px]"></div>
-            <div class="absolute top-[35%] left-[50%] -translate-x-1/2 w-[80%] h-[30%] rounded-full bg-primary-500/4 blur-[130px]"></div>
+            <div class="absolute top-[-15%] left-[-15%] w-[60%] h-[60%] rounded-full bg-primary-500/18 blur-[140px]"></div>
+            <div class="absolute bottom-[-15%] right-[-15%] w-[60%] h-[60%] rounded-full bg-primary-600/12 blur-[140px]"></div>
+            <div class="absolute top-[35%] left-[50%] -translate-x-1/2 w-[80%] h-[30%] rounded-full bg-primary-500/9 blur-[130px]"></div>
 
             <!-- High-Fidelity Dithering Noise Overlay -->
             <div class="absolute inset-0 bg-noise opacity-[0.015] mix-blend-overlay"></div>

@@ -25,11 +25,11 @@
         <!-- Ambient Grid & Glow Canvas Background -->
         <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none bg-black">
             <!-- Fine SVG Dot Matrix Pattern -->
-            <div class="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] opacity-70"></div>
+            <div class="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_100%_80%_at_50%_50%,#000_80%,transparent_100%)] opacity-90"></div>
             
             <!-- Soft Violet & Purple Glows -->
-            <div class="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-500/7 blur-[140px]"></div>
-            <div class="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/5 blur-[140px]"></div>
+            <div class="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-500/18 blur-[140px]"></div>
+            <div class="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/14 blur-[140px]"></div>
         </div>
 
         <!-- Authentication Card Container -->
