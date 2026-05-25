@@ -150,7 +150,7 @@
         </div>
 
         <!-- Global Toast Container -->
-        <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+        <div id="toast-container" class="fixed top-20 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
         <style>
             @keyframes fade-in {
@@ -163,11 +163,36 @@
             
             /* Premium Linear/Vercel Toast Notifications */
             .toast {
-                @apply bg-black border border-neutral-900 text-neutral-200 pr-6 pl-9 py-4 rounded-xl shadow-[0_24px_50px_-12px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-row items-center gap-4 pointer-events-auto relative overflow-hidden transition-all duration-300 font-heading font-semibold text-xs tracking-wider uppercase;
+                background-color: #000000;
+                border: 1px solid #121212;
+                color: #e5e5e5;
+                padding-right: 1.5rem;
+                padding-left: 2.25rem;
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+                border-radius: 0.75rem;
+                box-shadow: 0 24px 50px -12px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.05);
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 1rem;
+                pointer-events: auto;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                font-family: 'Outfit', 'Inter', sans-serif;
+                font-weight: 600;
+                font-size: 0.75rem;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
                 animation: toast-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
             .toast-progress {
-                @apply absolute bottom-0 left-0 h-0.5 bg-white/20;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 2px;
+                background-color: rgba(255, 255, 255, 0.2);
                 animation: toast-progress 3s linear forwards;
             }
             @keyframes toast-in {

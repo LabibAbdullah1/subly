@@ -498,11 +498,34 @@
                 animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
             .toast {
-                @apply bg-neutral-950/90 backdrop-blur-xl border border-neutral-900 text-neutral-200 pr-6 pl-9 py-4 rounded-xl shadow-2xl flex flex-row items-center gap-5 whitespace-nowrap pointer-events-auto relative overflow-hidden transition-all duration-300;
+                background-color: rgba(8, 8, 8, 0.9);
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+                border: 1px solid #121212;
+                color: #e5e5e5;
+                padding-right: 1.5rem;
+                padding-left: 2.25rem;
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+                border-radius: 0.75rem;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 1.25rem;
+                white-space: nowrap;
+                pointer-events: auto;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
                 animation: toast-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
             .toast-progress {
-                @apply absolute bottom-0 left-0 h-0.5;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 2px;
+                background-color: rgba(255, 255, 255, 0.2);
                 animation: toast-progress 3s linear forwards;
             }
             @keyframes toast-in {
