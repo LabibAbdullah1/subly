@@ -69,22 +69,13 @@
         @apply bg-neutral-950/60 backdrop-blur-xl border border-neutral-900 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.85),inset_0_1px_0_0_rgba(255,255,255,0.045)] rounded-2xl transition-all duration-300;
     }
     
-    /* Glowing card border masking effect */
+    /* Glowing card border masking effect - robust background border-gradient to avoid Blink/WebKit mask composite hover bugs */
     .glass-panel-glow {
-        position: relative;
-    }
-    .glass-panel-glow::before {
-        content: '';
-        position: absolute;
-        inset: -1px;
-        border-radius: inherit;
-        padding: 1px;
-        background: linear-gradient(to bottom right, rgba(94,106,210,0.15), transparent 45%, transparent 55%, rgba(94,106,210,0.05));
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
+        border: 1px solid transparent !important;
+        background-image: linear-gradient(rgba(8, 8, 8, 0.6), rgba(8, 8, 8, 0.6)), 
+                          linear-gradient(to bottom right, rgba(94,106,210,0.15), rgba(94,106,210,0.02) 45%, rgba(94,106,210,0.02) 55%, rgba(94,106,210,0.05)) !important;
+        background-origin: border-box !important;
+        background-clip: padding-box, border-box !important;
     }
     
     /* Elegant button system with click scaling */
