@@ -87,9 +87,9 @@
                     }
                 @endphp
                 
-                <div class="relative group mb-8 w-64 h-64 sm:w-72 sm:h-72 bg-black p-3.5 rounded-2xl border border-neutral-900 shadow-2xl overflow-hidden flex items-center justify-center">
+                <div class="relative group mb-8 w-full max-w-[280px] sm:max-w-[320px] bg-neutral-950 p-2.5 rounded-2xl border border-neutral-900 shadow-2xl overflow-hidden flex items-center justify-center">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/2 to-transparent opacity-40"></div>
-                    <img src="{{ $qrisUrl }}" alt="QRIS Payment" class="w-full h-full object-contain relative z-10 transition-all duration-300 mx-auto select-none rounded-xl">
+                    <img src="{{ $qrisUrl }}" alt="QRIS Payment" class="w-full h-auto object-contain relative z-10 transition-all duration-300 mx-auto select-none rounded-xl shadow-md">
                 </div>
 
                 <!-- Instructions Alert Box -->
