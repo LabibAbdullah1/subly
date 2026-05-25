@@ -149,7 +149,7 @@
 </nav>
 
 <!-- Mobile Navigation Drawer Overlay (Slides from Left or Right) -->
-<div x-show="sidebarOpen" 
+<div x-show="sidebarOpen"
      x-transition:enter="transition ease-out duration-250"
      x-transition:enter-start="-translate-x-full"
      x-transition:enter-end="translate-x-0"
@@ -158,7 +158,7 @@
      x-transition:leave-end="-translate-x-full"
      class="fixed inset-y-0 left-0 w-[280px] max-w-[85vw] bg-black/95 backdrop-blur-xl border-r border-neutral-900 z-50 flex flex-col justify-between p-6 shadow-[24px_0_50px_rgba(0,0,0,0.9)] xl:hidden select-none"
      style="display: none;">
-    
+
     <div>
         <!-- Drawer Header -->
         <div class="flex items-center justify-between mb-8 pb-4 border-b border-neutral-900">
@@ -182,6 +182,12 @@
                         <a @click="sidebarOpen = false" href="{{ route('client.index') }}" wire:navigate class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('client.index') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                             <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zm-10 10a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                             {{ __('Beranda') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a @click="sidebarOpen = false" href="https://arenhost.id" target="_blank" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold text-neutral-400 hover:text-white hover:bg-neutral-900/40 active:scale-[0.98] transition-all">
+                            <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                            {{ __('Arenhost ID') }}
                         </a>
                     </li>
                 </ul>
