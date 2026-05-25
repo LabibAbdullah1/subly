@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" style="background-color: #000000;">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,8 +15,12 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
+        <style>
+            [x-cloak] { display: none !important; }
+        </style>
     </head>
-    <body class="font-sans text-neutral-200 antialiased bg-black min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative overflow-hidden selection:bg-white/20 selection:text-white">
+    <body class="font-sans text-neutral-200 antialiased bg-black min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative overflow-hidden selection:bg-white/20 selection:text-white" style="background-color: #000000;">
         
         <!-- Ambient Grid & Glow Canvas Background -->
         <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none bg-black">
@@ -43,5 +47,6 @@
             <!-- Page Slots -->
             {{ $slot }}
         </div>
+        @livewireScripts
     </body>
 </html>

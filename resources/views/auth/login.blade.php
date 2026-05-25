@@ -17,7 +17,7 @@
             <div class="flex justify-between items-center">
                 <x-input-label for="password" :value="__('Password')" class="text-xs font-bold text-neutral-450 uppercase tracking-widest pl-0.5" />
                 @if (Route::has('password.request'))
-                    <a class="text-[10px] text-neutral-450 hover:text-white font-extrabold uppercase tracking-wider transition-colors" href="{{ route('password.request') }}">
+                    <a class="text-[10px] text-neutral-450 hover:text-white font-extrabold uppercase tracking-wider transition-colors" href="{{ route('password.request') }}" wire:navigate>
                         {{ __('Lupa kata sandi?') }}
                     </a>
                 @endif
@@ -47,7 +47,7 @@
         @if (Route::has('register'))
             <p class="text-center text-[10px] text-neutral-500 mt-6 select-none font-bold uppercase tracking-wider">
                 Belum punya akun? 
-                <a href="{{ route('register') }}" class="text-white hover:text-neutral-350 transition-colors">Daftar sekarang</a>
+                <a href="{{ route('register') }}" wire:navigate class="text-white hover:text-neutral-350 transition-colors">Daftar sekarang</a>
             </p>
         @endif
     </form>
