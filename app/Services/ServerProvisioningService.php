@@ -501,7 +501,8 @@ class ServerProvisioningService
             'Authorization' => "cpanel {$cpanelUser}:{$this->apiKey}"
         ];
 
-        $isApi2 = ($module === 'SubDomain' && $function === 'delsubdomain');
+        $isApi2 = ($module === 'SubDomain' && $function === 'delsubdomain')
+               || ($module === 'Fileman' && $function === 'fileop');
 
         // 1. Try HTTP API first
         try {
@@ -927,13 +928,17 @@ class ServerProvisioningService
         $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
         $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-        $this->callCpanelApi('Fileman', 'extract', [
-            'dir' => $cleanDir,
-            'file' => $fileName,
-            'to_dir' => $cleanDir,
+        // Path to the zip archive relative to cPanel user home directory
+        $zipRelativePath = $cleanDir . '/' . $fileName;
+
+        $this->callCpanelApi('Fileman', 'fileop', [
+            'op' => 'extract',
+            'sourcefiles' => $zipRelativePath,
+            'destfiles' => $cleanDir,
+            'doubledecode' => 1,
         ]);
 
-        Log::info("Successfully triggered cPanel UAPI extract for {$fileName} in {$cleanDir}");
+        Log::info("Successfully triggered cPanel API 2 extract for {$fileName} in {$cleanDir}");
     }
 
     /**
