@@ -17,7 +17,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased bg-[#09090b] text-gray-200 selection:bg-primary-500 selection:text-white" x-data="{ sidebarOpen: false }">
-        
+
         <!-- Background Ambient Glow -->
         <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
             <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-500/10 blur-[120px]"></div>
@@ -28,7 +28,7 @@
             <!-- Sidebar Navigation -->
             <aside class="w-64 flex-shrink-0 bg-gray-900/50 backdrop-blur-md border-r border-gray-800 flex flex-col z-40 fixed sm:relative h-full transition-transform duration-300 ease-in-out sm:translate-x-0"
                    :class="{'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen}">
-                
+
                 <!-- Logo -->
                 <div class="h-16 flex items-center px-6 border-b border-gray-800 shrink-0">
                     <a href="{{ route('admin.index') }}" class="flex items-center gap-2 group">
@@ -41,7 +41,7 @@
 
                 <!-- Navigation Links Categorized -->
                 <div class="flex-1 overflow-y-auto px-4 py-6 space-y-8 scrollbar-hide">
-                    
+
                     <!-- Main Group -->
                     <div>
                         <ul class="space-y-1">
@@ -178,10 +178,10 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 flex flex-col h-screen overflow-hidden relative z-10 w-full backdrop-blur-[2px]">
-                
+
                 <!-- Top Navbar (Mobile Hamburger & User Profile) -->
                 <header class="h-16 border-b border-gray-800 bg-gray-900/30 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 shrink-0 relative z-20">
-                    
+
                     <div class="flex items-center">
                         <button @click="sidebarOpen = !sidebarOpen" class="sm:hidden text-gray-400 hover:text-white focus:outline-none p-2 mr-2">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -190,7 +190,7 @@
 
                     <div class="flex items-center gap-4">
                         <!-- ArenHost Login Quick Button -->
-                        <a href="https://arenhost.id/clientarea.php" target="_blank" class="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)] active:scale-[0.96]" title="Buka Panel ArenHost">
+                        <a href="https://arenhost.id/client/clientarea.php" target="_blank" class="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)] active:scale-[0.96]" title="Buka Panel ArenHost">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"></path></svg>
                             <span>ArenHost Panel</span>
                             <svg class="w-3 h-3 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
@@ -208,7 +208,7 @@
                                     @endif
                                 </button>
                             </x-slot>
-                        
+
                             <x-slot name="content">
                                 <div class="px-4 py-3 border-b border-gray-800 flex justify-between items-center bg-gray-950/30">
                                     <a href="{{ route('admin.notifications.index') }}" class="text-sm font-medium text-gray-200 hover:text-primary-400 transition-colors flex items-center gap-1">
@@ -269,9 +269,9 @@
                                 <x-dropdown-link :href="route('client.index')" class="hover:bg-gray-800 text-gray-300 hover:text-white">
                                     {{ __('Client View') }}
                                 </x-dropdown-link>
-                                
+
                                 <div class="border-t border-gray-800 my-1"></div>
-                                
+
                                 <!-- Authentication -->
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
@@ -367,7 +367,7 @@
             .custom-dropdown-item {
                 transition: background-color 0.12s ease, color 0.12s ease;
             }
-            
+
             /* Responsive Font & Styling Details Adjustments */
             body {
                 font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -376,7 +376,7 @@
             h1, h2, h3, h4, h5, h6 {
                 letter-spacing: -0.022em;
             }
-            
+
             /* Fluid Typography Scale */
             html {
                 font-size: 14px;
@@ -399,7 +399,7 @@
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
             }
-            
+
             .overflow-x-auto::-webkit-scrollbar,
             .scrollbar-thin::-webkit-scrollbar,
             .custom-dropdown-menu::-webkit-scrollbar {
@@ -422,7 +422,7 @@
             .custom-dropdown-menu::-webkit-scrollbar-thumb:hover {
                 background: rgba(94, 106, 210, 0.6);
             }
-            
+
             /* Prevent iOS Zooming on Focus */
             @media (max-width: 640px) {
                 input, select, textarea, .custom-dropdown-toggle {
@@ -435,17 +435,17 @@
             window.showToast = function(message, type = 'success') {
                 const container = document.getElementById('toast-container');
                 if(!container) return;
-                
+
                 const toast = document.createElement('div');
                 toast.className = `toast border-l-4 ${type === 'success' ? 'border-l-primary-500' : 'border-l-red-500'}`;
-                
-                const icon = type === 'success' 
+
+                const icon = type === 'success'
                     ? '<svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
                     : '<svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>';
 
                 toast.innerHTML = `
                     <div class="absolute inset-0 bg-gradient-to-r ${type === 'success' ? 'from-primary-500/5' : 'from-red-500/5'} to-transparent opacity-50 pointer-events-none"></div>
-                    ${icon} 
+                    ${icon}
                     <span class="text-sm font-semibold tracking-wide relative z-10">${message}</span>
                     <div class="toast-progress ${type === 'success' ? 'bg-primary-500' : 'bg-red-500'}"></div>
                 `;
@@ -472,24 +472,24 @@
                     const overlay = document.createElement('div');
                     overlay.id = 'custom-confirm-modal';
                     overlay.className = 'fixed inset-0 z-[99999] flex items-center justify-center transition-all duration-300 opacity-0 pointer-events-auto';
-                    
+
                     // Create separate backdrop to avoid CSS backdrop-filter blurring the children elements
                     const backdrop = document.createElement('div');
                     backdrop.className = 'absolute inset-0 bg-black/85 backdrop-blur-sm';
                     overlay.appendChild(backdrop);
-                    
+
                     // Create container card
                     const container = document.createElement('div');
                     container.className = 'relative bg-[#09090b]/98 border border-gray-800 rounded-2xl max-w-md w-full p-6 mx-4 shadow-[0_25px_60px_rgba(0,0,0,0.95),_0_0_50px_rgba(239,68,68,0.08)] transform scale-95 transition-all duration-300 flex flex-col overflow-hidden z-10';
-                    
+
                     // Ambient glows
-                    const accentGlow = isDelete 
+                    const accentGlow = isDelete
                         ? '<div class="absolute -right-16 -top-16 w-36 h-36 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>'
                         : '<div class="absolute -right-16 -top-16 w-36 h-36 bg-primary-600/10 rounded-full blur-3xl pointer-events-none"></div>';
 
                     // Select styles based on theme/action
-                    const iconContainerClass = isDelete 
-                        ? 'text-red-500 bg-red-500/10 border-red-500/20' 
+                    const iconContainerClass = isDelete
+                        ? 'text-red-500 bg-red-500/10 border-red-500/20'
                         : 'text-primary-400 bg-primary-500/10 border-primary-500/20';
 
                     const confirmButtonClass = isDelete
@@ -568,9 +568,9 @@
                         }
 
                         // Decide title and style
-                        let isDeleteAction = onsubmitAttr.toLowerCase().includes('delete') || 
-                                             onsubmitAttr.toLowerCase().includes('destroy') || 
-                                             onsubmitAttr.toLowerCase().includes('hapus') || 
+                        let isDeleteAction = onsubmitAttr.toLowerCase().includes('delete') ||
+                                             onsubmitAttr.toLowerCase().includes('destroy') ||
+                                             onsubmitAttr.toLowerCase().includes('hapus') ||
                                              onsubmitAttr.toLowerCase().includes('cancel') ||
                                              onsubmitAttr.toLowerCase().includes('berhenti');
 
@@ -637,31 +637,31 @@
                         // Create wrapper
                         const wrapper = document.createElement('div');
                         wrapper.className = 'custom-dropdown relative';
-                        
+
                         // Copy only safe layout, width, and margin classes to the wrapper
                         const safeClasses = [];
                         select.className.split(/\s+/).forEach(cls => {
                             if (!cls || cls === 'custom-dropdown-hidden') return;
-                            
+
                             const isMargin = cls.startsWith('m-') || cls.startsWith('mt-') || cls.startsWith('mb-') || cls.startsWith('ml-') || cls.startsWith('mr-') || cls.startsWith('mx-') || cls.startsWith('my-') ||
                                              cls.startsWith('sm:m-') || cls.startsWith('sm:mt-') || cls.startsWith('sm:mb-') || cls.startsWith('sm:ml-') || cls.startsWith('sm:mr-') || cls.startsWith('sm:mx-') || cls.startsWith('sm:my-') ||
                                              cls.startsWith('md:m-') || cls.startsWith('md:mt-') || cls.startsWith('md:mb-') || cls.startsWith('md:ml-') || cls.startsWith('md:mr-') || cls.startsWith('md:mx-') || cls.startsWith('md:my-');
-                            
+
                             const isLayout = cls === 'block' || cls === 'inline-block' || cls === 'inline' || cls === 'flex' || cls === 'inline-flex' || cls === 'grid' || cls === 'hidden' ||
                                              cls.startsWith('sm:block') || cls.startsWith('sm:inline-block') || cls.startsWith('sm:flex') || cls.startsWith('sm:hidden') ||
                                              cls.startsWith('md:block') || cls.startsWith('md:inline-block') || cls.startsWith('md:flex') || cls.startsWith('md:hidden');
-                            
+
                             const isWidth = cls.startsWith('w-') || cls.startsWith('sm:w-') || cls.startsWith('md:w-');
-                            
+
                             if (isMargin || isLayout || isWidth) {
                                 safeClasses.push(cls);
                             }
                         });
-                        
+
                         if (safeClasses.length > 0) {
                             wrapper.className += ' ' + safeClasses.join(' ');
                         }
-                        
+
                         // Ensure we have a width container class if not already added
                         if (!wrapper.className.includes('w-')) {
                             if (select.classList.contains('w-full')) {
@@ -674,9 +674,9 @@
                         // Create toggle button
                         const toggleBtn = document.createElement('button');
                         toggleBtn.type = 'button';
-                        
+
                         let btnClasses = 'custom-dropdown-toggle w-full flex items-center justify-between bg-gray-950/80 border border-gray-800/80 rounded-xl text-gray-200 hover:border-primary-500/50 hover:bg-gray-900 focus:outline-none transition-all font-semibold select-none cursor-pointer ';
-                        
+
                         if (select.className.includes('py-1') || select.className.includes('py-0.5') || select.className.includes('text-[10px]') || select.className.includes('text-xs')) {
                             btnClasses += 'px-3 py-1.5 text-xs';
                         } else if (select.className.includes('py-2') || select.className.includes('py-2.5')) {
@@ -688,7 +688,7 @@
 
                         const labelSpan = document.createElement('span');
                         labelSpan.className = 'custom-dropdown-label truncate mr-2';
-                        
+
                         const initialOption = select.options[select.selectedIndex] || select.options[0];
                         labelSpan.textContent = initialOption ? initialOption.textContent : 'Select...';
 
@@ -702,7 +702,7 @@
                         // Create menu
                         const menu = document.createElement('div');
                         menu.className = 'custom-dropdown-menu absolute left-0 right-0 mt-1.5 bg-[#09090b]/98 backdrop-blur-xl border border-gray-800/80 rounded-xl shadow-2xl py-1.5 z-[99999] opacity-0 scale-95 pointer-events-none transition-all duration-200 origin-top max-h-60 overflow-y-auto scrollbar-thin';
-                        
+
                         Array.from(select.options).forEach((opt, idx) => {
                             const item = document.createElement('div');
                             item.className = 'custom-dropdown-item px-4 py-2.5 text-xs sm:text-sm text-gray-300 hover:bg-primary-500/10 hover:text-primary-400 cursor-pointer transition-colors font-medium select-none truncate';
@@ -720,10 +720,10 @@
                                 if (opt.disabled) return;
 
                                 select.selectedIndex = idx;
-                                
+
                                 menu.querySelectorAll('.custom-dropdown-item').forEach(el => el.classList.remove('bg-primary-500/15', 'text-primary-400', 'font-semibold'));
                                 item.classList.add('bg-primary-500/15', 'text-primary-400', 'font-semibold');
-                                
+
                                 labelSpan.textContent = opt.textContent;
                                 closeMenu();
 
