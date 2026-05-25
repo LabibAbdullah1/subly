@@ -113,7 +113,7 @@
 
     <!-- Live chat logic -->
     <script>
-        document.addEventListener('alpine:init', () => {
+        const initClientChatComponent = () => {
             Alpine.data('clientChat', () => ({
                 messages: [],
                 deletingIds: new Set(),
@@ -247,6 +247,12 @@
                     if (box) box.scrollTop = box.scrollHeight;
                 }
             }));
-        });
+        };
+
+        if (window.Alpine) {
+            initClientChatComponent();
+        } else {
+            document.addEventListener('alpine:init', initClientChatComponent);
+        }
     </script>
 </x-app-layout>

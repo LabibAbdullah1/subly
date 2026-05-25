@@ -138,7 +138,7 @@
 
     @push('scripts')
     <script>
-        document.addEventListener('alpine:init', () => {
+        const initAdminChatComponent = () => {
             Alpine.data('adminChat', () => ({
                 messages: [],
                 deletingIds: new Set(),
@@ -275,7 +275,13 @@
                     if(box) box.scrollTop = box.scrollHeight;
                 }
             }));
-        });
+        };
+
+        if (window.Alpine) {
+            initAdminChatComponent();
+        } else {
+            document.addEventListener('alpine:init', initAdminChatComponent);
+        }
     </script>
     @endpush
 </x-admin-layout>
