@@ -48,9 +48,43 @@
                 <!-- Static QRIS Scanner Module -->
                 @php
                     $qrisImage = \App\Models\Setting::get('qris_image_path', 'images/qris_static.png');
-                    $qrisUrl = ($qrisImage && (strpos($qrisImage, 'images/') === 0 || strpos($qrisImage, 'uploads/') === 0)) 
-                        ? asset($qrisImage) 
-                        : asset('storage/' . $qrisImage);
+                    
+                    // Normalize backslashes to forward slashes and trim slashes/spaces
+                    $normalizedPath = trim(str_replace('\\', '/', $qrisImage), '/ ');
+                    
+                    // Handle cases where 'storage/' is already prepended in database setting
+                    if (strpos($normalizedPath, 'storage/') === 0) {
+                        $normalizedPath = substr($normalizedPath, 8);
+                    }
+                    
+                    // Self-healing path checker
+                    if (file_exists(public_path($normalizedPath))) {
+                        $qrisUrl = asset($normalizedPath);
+                    } elseif (file_exists(public_path('storage/' . $normalizedPath))) {
+                        $qrisUrl = asset('storage/' . $normalizedPath);
+                    } elseif (strpos($normalizedPath, 'images/') === 0 || strpos($normalizedPath, 'uploads/') === 0) {
+                        $qrisUrl = asset($normalizedPath);
+                    } else {
+                        $qrisUrl = asset('storage/' . $normalizedPath);
+                    }
+
+                    // Debug logging to help identify why the image is not loading
+                    try {
+                        $debugInfo = [
+                            'timestamp' => date('Y-m-d H:i:s'),
+                            'raw_setting' => $qrisImage,
+                            'normalized_path' => $normalizedPath,
+                            'resolved_url' => $qrisUrl,
+                            'public_path' => public_path(),
+                            'request_host' => request()->getSchemeAndHttpHost(),
+                            'request_url' => request()->fullUrl(),
+                            'file_exists_in_public' => file_exists(public_path($normalizedPath)) ? 'YES' : 'NO',
+                            'file_exists_in_storage' => file_exists(public_path('storage/' . $normalizedPath)) ? 'YES' : 'NO',
+                        ];
+                        file_put_contents(public_path('debug_qris.txt'), print_r($debugInfo, true));
+                    } catch (\Exception $e) {
+                        // ignore failures
+                    }
                 @endphp
                 
                 <div class="relative group mb-8 w-64 h-64 sm:w-72 sm:h-72 bg-black p-3.5 rounded-2xl border border-neutral-900 shadow-2xl overflow-hidden flex items-center justify-center">

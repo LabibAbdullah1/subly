@@ -34,8 +34,25 @@
                 <p class="text-xs text-neutral-500 font-medium">Unggah gambar kode QR untuk ditampilkan secara global di halaman tagihan scanner QRIS untuk klien.</p>
             </div>
             
+            @php
+                $normalizedPath = trim(str_replace('\\', '/', $qrisImage), '/ ');
+                if (strpos($normalizedPath, 'storage/') === 0) {
+                    $normalizedPath = substr($normalizedPath, 8);
+                }
+                
+                if (file_exists(public_path($normalizedPath))) {
+                    $resolvedQrisUrl = asset($normalizedPath);
+                } elseif (file_exists(public_path('storage/' . $normalizedPath))) {
+                    $resolvedQrisUrl = asset('storage/' . $normalizedPath);
+                } elseif (strpos($normalizedPath, 'images/') === 0 || strpos($normalizedPath, 'uploads/') === 0) {
+                    $resolvedQrisUrl = asset($normalizedPath);
+                } else {
+                    $resolvedQrisUrl = asset('storage/' . $normalizedPath);
+                }
+            @endphp
+            
             <div x-data="{ 
-                imageUrl: '{{ $qrisImage && (strpos($qrisImage, 'images/') === 0 || strpos($qrisImage, 'uploads/') === 0) ? asset($qrisImage) : asset('storage/' . $qrisImage) }}',
+                imageUrl: '{{ $resolvedQrisUrl }}',
                 fileChosen(event) {
                     const file = event.target.files[0];
                     if (file) {
