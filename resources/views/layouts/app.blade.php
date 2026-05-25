@@ -15,6 +15,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
     </head>
     <body class="font-sans antialiased bg-black text-neutral-200 selection:bg-neutral-200 selection:text-black overflow-x-hidden" x-data="{ sidebarOpen: false }">
         
@@ -224,7 +225,7 @@
             };
 
             // Capture confirm dialogues and turn into stunning custom confirmation modal
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('livewire:navigated', function() {
                 window.showCustomConfirmModal = function(options) {
                     const { title, message, isDelete, onConfirm } = options;
 
@@ -487,6 +488,7 @@
                 setInterval(window.initCustomDropdowns, 800);
             });
         </script>
+        @livewireScripts
         @stack('scripts')
     </body>
 </html>

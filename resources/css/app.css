@@ -165,3 +165,51 @@ html {
         font-size: 16px !important;
     }
 }
+
+/* 🚀 Premium Native View Transitions API for smooth page navigation */
+@view-transition {
+    navigation: auto;
+}
+
+/* Assign view transition name to main content area to keep sidebar & navbar static! */
+main {
+    view-transition-name: main-content;
+}
+
+/* Pure, clean cross-fade for the root layout (auth pages, welcome pages, etc.) */
+::view-transition-old(root) {
+    animation: 250ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out;
+}
+::view-transition-new(root) {
+    animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in;
+}
+
+/* Highly premium, smooth fade + subtle scale depth for the main dashboard content */
+::view-transition-old(main-content) {
+    animation: 240ms cubic-bezier(0.16, 1, 0.3, 1) both main-fade-out;
+}
+::view-transition-new(main-content) {
+    animation: 340ms cubic-bezier(0.16, 1, 0.3, 1) both main-fade-in;
+}
+
+@keyframes fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes main-fade-out {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.99); }
+}
+
+@keyframes main-fade-in {
+    from { opacity: 0; transform: scale(0.99); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+
