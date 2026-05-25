@@ -238,35 +238,48 @@
                 },
 
                 async removeChatMessage(id) {
-                    if(!confirm('Hapus pesan ini secara permanen?')) return;
-                    
-                    this.deletingIds.add(id);
-                    this.messages = this.messages.filter(m => m.id !== id);
-                    this.isProcessing = true;
-                    
-                    try {
-                        const formData = new FormData();
-                        formData.append('_method', 'DELETE');
-                        formData.append('_token', document.head.querySelector('meta[name="csrf-token"]')?.content || '');
-
-                        const res = await fetch(`{{ url('admin/chat') }}/${id}`, {
-                            method: 'POST',
-                            headers: { 'Accept': 'application/json' },
-                            body: formData
-                        });
+                    const deleteAction = async () => {
+                        this.deletingIds.add(id);
+                        this.messages = this.messages.filter(m => m.id !== id);
+                        this.isProcessing = true;
                         
-                        if(!res.ok) {
-                            const data = await res.json();
-                            alert('Gagal menghapus: ' + (data.error || 'Kesalahan tidak diketahui'));
+                        try {
+                            const formData = new FormData();
+                            formData.append('_method', 'DELETE');
+                            formData.append('_token', document.head.querySelector('meta[name="csrf-token"]')?.content || '');
+
+                            const res = await fetch(`{{ url('admin/chat') }}/${id}`, {
+                                method: 'POST',
+                                headers: { 'Accept': 'application/json' },
+                                body: formData
+                            });
+                            
+                            if(!res.ok) {
+                                const data = await res.json();
+                                alert('Gagal menghapus: ' + (data.error || 'Kesalahan tidak diketahui'));
+                                this.deletingIds.delete(id);
+                                await this.fetchMessages();
+                            }
+                        } catch(e) { 
+                            console.error('Delete error:', e); 
+                            alert('Kesalahan koneksi: ' + e.message);
                             this.deletingIds.delete(id);
-                            await this.fetchMessages();
+                        } finally {
+                            this.isProcessing = false;
                         }
-                    } catch(e) { 
-                        console.error('Delete error:', e); 
-                        alert('Kesalahan koneksi: ' + e.message);
-                        this.deletingIds.delete(id);
-                    } finally {
-                        this.isProcessing = false;
+                    };
+
+                    if (typeof window.showCustomConfirmModal === 'function') {
+                        window.showCustomConfirmModal({
+                            title: 'Hapus Pesan',
+                            message: 'Apakah Anda yakin ingin menghapus pesan ini secara permanen?',
+                            isDelete: true,
+                            onConfirm: deleteAction
+                        });
+                    } else {
+                        if (confirm('Hapus pesan ini secara permanen?')) {
+                            await deleteAction();
+                        }
                     }
                 },
 
