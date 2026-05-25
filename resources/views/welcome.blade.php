@@ -94,7 +94,7 @@
                         @if (Route::has('register'))
                             <a href="#pricing" class="btn-primary w-full sm:w-auto px-8 gap-2.5">
                                 <span>Lihat Paket Hosting</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 13l-7 7-7-7"></path></svg>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                             </a>
                         @endif
                         <a href="{{ route('login') }}" class="btn-secondary w-full sm:w-auto px-8">
