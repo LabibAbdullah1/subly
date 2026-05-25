@@ -38,8 +38,8 @@
                     <span class="text-[10px] font-bold text-neutral-450 bg-neutral-900 border border-neutral-850 px-2 py-0.5 rounded-md tracking-wider uppercase">{{ $pendingDeployments->count() }} Tertunda</span>
                 </div>
                 
-                <div class="glass-panel overflow-hidden border-neutral-900">
-                    <div class="overflow-x-auto min-h-[200px]">
+                <div class="glass-panel border-neutral-900 relative z-20">
+                    <div class="overflow-visible">
                         <table class="w-full">
                             <thead>
                                 <tr>
@@ -108,8 +108,8 @@
                     Riwayat Deployment
                 </h3>
 
-                <div class="glass-panel overflow-hidden border-neutral-900">
-                    <div class="overflow-x-auto min-h-[200px]">
+                <div class="glass-panel border-neutral-900 relative z-10">
+                    <div class="overflow-visible">
                         <table class="w-full">
                             <thead>
                                 <tr>
