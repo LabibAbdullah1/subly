@@ -69,11 +69,11 @@
                                                         Provisioning Server
                                                     </button>
                                                 </form>
-                                                <form action="{{ route('admin.deployments.extract', $deployment) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin mengekstrak dan mempublikasikan template build ini ke server?')">
+                                                <form action="{{ route('admin.deployments.extract', $deployment) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui deployment ini? File ZIP sudah ter-upload di cPanel. Dengan menyetujuinya, status akan diubah menjadi Sukses sehingga Anda tinggal mengekstrak file ZIP tersebut secara manual di cPanel.')">
                                                     @csrf
-                                                    <button type="submit" class="text-[10px] rounded-lg bg-white text-black px-2.5 py-1.5 hover:bg-neutral-200 transition-all font-bold flex items-center gap-1 active:scale-[0.96] cursor-pointer" title="Ekstrak ZIP di Server dan Deploy Live">
-                                                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                                        Deploy Live
+                                                    <button type="submit" class="text-[10px] sm:text-[11px] rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 hover:bg-emerald-500/20 transition-all font-medium flex items-center gap-1" title="Setujui deployment dan simpan file ZIP di server cPanel untuk diekstrak manual">
+                                                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                        Setujui & Deploy
                                                     </button>
                                                 </form>
                                                 <form action="{{ route('admin.deployments.update_status', $deployment) }}" method="POST" class="inline-block">

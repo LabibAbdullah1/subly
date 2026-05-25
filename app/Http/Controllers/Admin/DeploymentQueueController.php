@@ -44,37 +44,23 @@ class DeploymentQueueController extends Controller
         return redirect()->back()->with('success', 'Deployment status updated successfully.');
     }
 
-    public function extractAndDeploy(Deployment $deployment, \App\Services\ServerProvisioningService $provisioningService)
+    public function extractAndDeploy(Deployment $deployment)
     {
         if (!$deployment->subdomain) {
             return redirect()->back()->withErrors(['error' => 'Subdomain associated with this deployment no longer exists.']);
         }
 
         try {
-            $cpanelFileName = "deployment_v" . $deployment->version . ".zip";
-            
-            // 1. Extract the ZIP archive inside the subdomain's document root
-            $provisioningService->extractZipInSubdomain($deployment->subdomain, $cpanelFileName);
-            
-            // 2. Clean up the temporary ZIP archive from the server to free up space
-            $provisioningService->deleteFileInSubdomain($deployment->subdomain, $cpanelFileName);
-
-            // 3. Mark deployment as successful
+            // Mark deployment as successful
             $deployment->update([
                 'status' => 'success',
                 'deployed_at' => now(),
+                'admin_note' => 'Disetujui admin untuk diekstrak secara manual di cPanel.',
             ]);
 
-            return redirect()->back()->with('success', "Deployment v{$deployment->version} berhasil diekstrak dan dipublikasikan di server!");
+            return redirect()->back()->with('success', "Deployment v{$deployment->version} berhasil disetujui! Status diubah menjadi Sukses. File ZIP aman berada di cPanel untuk Anda ekstrak secara manual.");
         } catch (\Exception $e) {
-            \Log::error("Deployment extraction failed for v{$deployment->version}: " . $e->getMessage());
-            
-            $deployment->update([
-                'status' => 'error',
-                'admin_note' => 'Extraction error: ' . $e->getMessage()
-            ]);
-
-            return redirect()->back()->withErrors(['error' => "Gagal mengekstrak deployment: " . $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => "Gagal menyetujui deployment: " . $e->getMessage()]);
         }
     }
 

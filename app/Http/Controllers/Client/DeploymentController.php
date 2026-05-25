@@ -134,17 +134,6 @@ class DeploymentController extends Controller
     {
         $user = Auth::user();
         
-        // Rate Limiting
-        $deploymentsToday = Deployment::whereHas('subdomain', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->whereDate('created_at', now()->toDateString())
-            ->count();
-
-        if ($deploymentsToday >= 3) {
-            throw new \Exception('Daily deployment limit reached! (Max 3 deployments per day)');
-        }
-
         // Plan Validation
         $payment = $subdomain->payments()->where('status', 'success')->latest()->first() 
                    ?? $user->payments()->with('plan')->where('status', 'success')->latest()->first();

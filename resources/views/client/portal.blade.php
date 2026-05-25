@@ -87,8 +87,8 @@
                             </div>
                         </div>
                         <p class="text-[10px] text-neutral-500 mt-3 flex items-center gap-1.5 font-semibold">
-                            <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" /></svg>
-                            Batas 3x upload per hari. Versi baru akan ditambahkan ke riwayat.
+                            <svg class="w-3.5 h-3.5 text-primary-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            Versi baru akan otomatis ditambahkan ke riwayat deployment Anda.
                         </p>
                     </div>
 
