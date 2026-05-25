@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ config('app.name', 'Subly') }} - Managed Hosting</title>
+        <title>{{ config('app.name', 'Subly') }} - Managed Hosting Premium</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,12 +49,12 @@
                             </a>
                         @else
                             <a href="{{ route('login') }}" class="text-xs font-bold uppercase tracking-wider text-neutral-450 hover:text-white transition-colors font-heading">
-                                Log in
+                                Masuk
                             </a>
 
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}" class="btn-secondary py-2 px-4.5 text-xs font-bold tracking-wider hidden sm:inline-flex">
-                                    Register
+                                    Daftar
                                 </a>
                             @endif
                         @endauth
@@ -73,29 +73,29 @@
                 </div>
                 
                 <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight select-none font-heading">
-                    Deploy projects <br class="hidden sm:block" />
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary-400 to-primary-600">without the hassle.</span>
+                    Deploy proyek Anda <br class="hidden sm:block" />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary-400 to-primary-600">tanpa ribet.</span>
                 </h1>
                 
                 <p class="text-xs sm:text-sm text-neutral-450 max-w-lg mb-12 leading-relaxed font-semibold">
-                    A premium, managed hosting platform designed for students. Upload your code, and we'll handle infrastructure, secure databases, and subdomains instantly.
+                    Platform managed hosting premium yang dirancang khusus untuk mahasiswa dan pelajar. Unggah kode Anda, dan kami akan mengurus infrastruktur, keamanan database, serta subdomain secara instan.
                 </p>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                     @auth
                         <a href="{{ url('/dashboard') }}" class="btn-primary w-full sm:w-auto px-8 gap-2.5">
-                            <span>Go to Dashboard</span>
+                            <span>Buka Dashboard</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     @else
                         @if (Route::has('register'))
                             <a href="#pricing" class="btn-primary w-full sm:w-auto px-8 gap-2.5">
-                                <span>View Hosting Plans</span>
+                                <span>Lihat Paket Hosting</span>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 13l-7 7-7-7"></path></svg>
                             </a>
                         @endif
                         <a href="{{ route('login') }}" class="btn-secondary w-full sm:w-auto px-8">
-                            Sign In
+                            Masuk
                         </a>
                     @endauth
                 </div>
@@ -106,30 +106,30 @@
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                         </div>
-                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">ZIP Uploads</h3>
-                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Simply compress your project files into a ZIP and upload. We extract and structure it for you.</p>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Unggah ZIP</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Cukup kompres file proyek Anda ke format .zip dan unggah. Kami akan mengekstrak dan menatanya untuk Anda secara otomatis.</p>
                     </div>
                     <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(16,185,129,0.08)] transition-all duration-300">
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-green-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                         </div>
-                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Auto-Database</h3>
-                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Credentials are automatically provisioned and securely presented in your dashboard when requested.</p>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Database Otomatis</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Kredensial database langsung dibuat secara otomatis dan ditampilkan dengan aman di dashboard Anda saat dibutuhkan.</p>
                     </div>
                     <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(99,102,241,0.08)] transition-all duration-300">
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-indigo-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         </div>
-                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Secure Subdomains</h3>
-                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Projects are isolated onto personalized subdomains so your applications run independently.</p>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Subdomain Aman</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Setiap proyek diisolasi ke dalam subdomain pribadi agar aplikasi Anda dapat berjalan secara independen dan aman.</p>
                     </div>
                 </div>
 
                 <!-- Pricing Section -->
                 <div id="pricing" class="w-full mt-32 pt-20 border-t border-neutral-900">
                     <div class="text-center mb-16 select-none">
-                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight font-heading">Choose Your Environment</h2>
-                        <p class="text-xs sm:text-sm text-neutral-500 font-semibold uppercase tracking-wider">Select the perfect hosting resources for your student deployment.</p>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight font-heading">Pilih Lingkungan Anda</h2>
+                        <p class="text-xs sm:text-sm text-neutral-500 font-semibold uppercase tracking-wider">Pilih sumber daya hosting yang paling sesuai untuk kebutuhan deploy proyek Anda.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
@@ -146,17 +146,17 @@
                                     </div>
                                     <div class="flex items-baseline gap-1.5 mb-6 border-b border-neutral-900/60 pb-5">
                                         <span class="text-2xl font-black text-white tracking-tight font-heading">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
-                                        <span class="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">/ {{ $plan->duration_months }} mo</span>
+                                        <span class="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">/ {{ $plan->duration_months }} bln</span>
                                     </div>
                                     
                                     <p class="text-xs sm:text-xs text-neutral-450 font-semibold mb-6 flex-1 leading-relaxed">
-                                        {{ $plan->description ?? 'Reliable hosting for your professional student projects.' }}
+                                        {{ $plan->description ?? 'Layanan hosting andal untuk mendukung proyek profesional Anda.' }}
                                     </p>
 
                                     <!-- Disk Storage Meter visual details (Stripe Invoice aesthetic) -->
                                     <div class="mt-2 mb-6">
                                         <div class="flex justify-between text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-1.5">
-                                            <span>SSD Storage Allocation</span>
+                                            <span>Alokasi Penyimpanan SSD</span>
                                             <span>{{ $plan->max_storage_mb }}MB SSD</span>
                                         </div>
                                         <div class="w-full h-1.5 bg-neutral-900 rounded-full overflow-hidden border border-neutral-850">
@@ -171,26 +171,26 @@
                                         </li>
                                         <li class="flex items-center gap-3">
                                             <svg class="w-4 h-4 text-primary-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                                            <span>{{ $plan->max_databases }} Production Databases</span>
+                                            <span>{{ $plan->max_databases }} Database Produksi</span>
                                         </li>
                                         <li class="flex items-center gap-3">
                                             <svg class="w-4 h-4 text-primary-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                                            <span>Isolated Subdomain Slot</span>
+                                            <span>Slot Subdomain Terisolasi</span>
                                         </li>
                                         <li class="flex items-center gap-3">
                                             <svg class="w-4 h-4 text-primary-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                                            <span>Automatic SSL Protection</span>
+                                            <span>Perlindungan SSL Otomatis</span>
                                         </li>
                                     </ul>
 
                                     <a href="{{ auth()->check() ? route('client.plans.index') : route('register') }}" class="btn-secondary w-full text-center py-3 text-xs font-bold uppercase tracking-wider">
-                                        {{ auth()->check() ? 'Select Plan' : 'Get Started' }}
+                                        {{ auth()->check() ? 'Pilih Paket' : 'Mulai Sekarang' }}
                                     </a>
                                 </div>
                             </div>
                         @empty
                             <div class="col-span-full py-12 text-center text-neutral-500 border border-dashed border-neutral-900 rounded-2xl font-semibold text-xs uppercase tracking-wider">
-                                No plans available at the moment.
+                                Belum ada paket yang tersedia saat ini.
                             </div>
                         @endforelse
                     </div>
@@ -202,8 +202,8 @@
             <section id="testimonials" class="py-28 relative overflow-hidden w-full border-t border-neutral-900">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div class="text-center mb-16 select-none">
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight font-heading">Loved by Students</h2>
-                        <p class="text-xs sm:text-sm text-neutral-500 font-semibold uppercase tracking-wider">See what your peers are saying about Subly.</p>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight font-heading">Dicintai oleh Mahasiswa & Pelajar</h2>
+                        <p class="text-xs sm:text-sm text-neutral-500 font-semibold uppercase tracking-wider">Lihat apa yang rekan-rekan Anda katakan tentang Subly.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -223,7 +223,7 @@
                                     </div>
                                     <div>
                                         <p class="text-white font-bold text-xs tracking-wide font-heading">{{ $feedback->user->name }}</p>
-                                        <p class="text-neutral-500 text-[9px] font-bold uppercase tracking-wider font-heading">Verified Client</p>
+                                        <p class="text-neutral-500 text-[9px] font-bold uppercase tracking-wider font-heading">Klien Terverifikasi</p>
                                     </div>
                                 </div>
                             </div>
