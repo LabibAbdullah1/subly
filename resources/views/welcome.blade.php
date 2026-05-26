@@ -104,7 +104,7 @@
                 <!-- Feature Highlights -->
                 <div id="features" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-28 text-left w-full border-t border-neutral-900 pt-16 select-none">
                     <!-- Feature 1: Unggah ZIP (Theme Standard) -->
-                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(94,106,210,0.08)] transition-all duration-300">
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card">
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                         </div>
@@ -112,7 +112,7 @@
                         <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Cukup kompres file proyek Anda ke format .zip dan unggah. Kami akan mengekstrak dan menatanya untuk Anda secara otomatis.</p>
                     </div>
                     <!-- Feature 2: Database Otomatis (Theme Standard) -->
-                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(94,106,210,0.08)] transition-all duration-300">
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card">
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                         </div>
@@ -120,7 +120,7 @@
                         <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Kredensial database langsung dibuat secara otomatis dan ditampilkan dengan aman di dashboard Anda saat dibutuhkan.</p>
                     </div>
                     <!-- Feature 3: Subdomain Aman (Theme Standard) -->
-                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(94,106,210,0.08)] transition-all duration-300">
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card">
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         </div>
@@ -128,7 +128,7 @@
                         <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Setiap proyek diisolasi ke dalam subdomain pribadi agar aplikasi Anda dapat berjalan secara independen dan aman.</p>
                     </div>
                     <!-- Feature 4: SSL / HTTPS Otomatis (Theme Standard) -->
-                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(94,106,210,0.08)] transition-all duration-300">
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card">
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                         </div>
@@ -136,7 +136,7 @@
                         <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Setiap subdomain dilengkapi dengan sertifikat SSL gratis (Let's Encrypt) yang aktif secara otomatis untuk menjaga keamanan data pengguna.</p>
                     </div>
                     <!-- Feature 5: Proses 1x24 Jam (Theme Standard) -->
-                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(94,106,210,0.08)] transition-all duration-300">
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card">
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
@@ -144,7 +144,7 @@
                         <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Setiap pengajuan deploy diperiksa dan disiapkan secara manual dalam waktu maksimal 1x24 jam untuk menjamin konfigurasi berjalan sempurna.</p>
                     </div>
                     <!-- Feature 6: Chat Dengan Admin (SPECIAL HIGHLIGHT: Brighter Purple Glow & Distinct Border Highlight on Hover) -->
-                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(168,85,247,0.18)] hover:border-purple-500/30 transition-all duration-300 relative overflow-hidden group">
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card-special relative overflow-hidden group">
                         <!-- Glowing Badge in the Corner to stand out -->
                         <span class="absolute top-3 right-3 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[8px] font-bold uppercase tracking-wider select-none">Live Support</span>
                         

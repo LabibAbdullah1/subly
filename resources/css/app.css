@@ -150,6 +150,25 @@
     .hover-lift {
         @apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.08)];
     }
+
+    /* Bulletproof Hover effect for Feature Cards */
+    .feature-card {
+        @apply transition-all duration-300 cursor-pointer;
+    }
+    .feature-card:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 15px 40px rgba(94, 106, 210, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.045) !important;
+        border-color: rgba(94, 106, 210, 0.25) !important;
+    }
+    
+    .feature-card-special {
+        @apply transition-all duration-300 cursor-pointer;
+    }
+    .feature-card-special:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 15px 40px rgba(168, 85, 247, 0.18), inset 0 1px 0 0 rgba(255, 255, 255, 0.045) !important;
+        border-color: rgba(168, 85, 247, 0.35) !important;
+    }
 }
 
 /* Hide scrollbar utility */
