@@ -102,7 +102,7 @@
                 </div>
                 
                 <!-- Feature Highlights -->
-                <div id="features" class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-28 text-left w-full border-t border-neutral-900 pt-16 select-none">
+                <div id="features" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-28 text-left w-full border-t border-neutral-900 pt-16 select-none">
                     <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(94,106,210,0.08)] transition-all duration-300">
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
@@ -123,6 +123,27 @@
                         </div>
                         <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Subdomain Aman</h3>
                         <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Setiap proyek diisolasi ke dalam subdomain pribadi agar aplikasi Anda dapat berjalan secara independen dan aman.</p>
+                    </div>
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(244,63,94,0.08)] transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-rose-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        </div>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">SSL / HTTPS Otomatis</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Setiap subdomain dilengkapi dengan sertifikat SSL gratis (Let's Encrypt) yang aktif secara otomatis untuk menjaga keamanan data pengguna.</p>
+                    </div>
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(245,158,11,0.08)] transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-amber-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Proses 1x24 Jam</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Setiap pengajuan deploy diperiksa dan disiapkan secara manual dalam waktu maksimal 1x24 jam untuk menjamin konfigurasi berjalan sempurna.</p>
+                    </div>
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(99,102,241,0.08)] transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-indigo-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                        </div>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Chat Dengan Admin</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Konsultasikan kendala teknis atau tanyakan progres deploy secara langsung dengan admin melalui fitur Live Chat interaktif di portal Anda.</p>
                     </div>
                 </div>
 
