@@ -11,7 +11,10 @@
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800|outfit:500,700,800&display=swap" rel="stylesheet" />
 
         <!-- Styles / Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('layouts.assets')
+
+        <!-- Alpine.js CDN Fallback for Language Switcher -->
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
     <body class="antialiased bg-black text-neutral-200 selection:bg-primary-500 selection:text-white font-sans">
         
