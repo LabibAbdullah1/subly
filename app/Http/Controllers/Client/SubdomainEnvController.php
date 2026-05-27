@@ -24,7 +24,7 @@ class SubdomainEnvController extends Controller
      */
     public function update(Request $request, Subdomain $subdomain)
     {
-        if ($subdomain->user_id !== Auth::id()) {
+        if ($subdomain->user_id != Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -74,7 +74,7 @@ class SubdomainEnvController extends Controller
      */
     public function updateRaw(Request $request, Subdomain $subdomain)
     {
-        if ($subdomain->user_id !== Auth::id()) {
+        if ($subdomain->user_id != Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -137,7 +137,7 @@ class SubdomainEnvController extends Controller
      */
     public function updateNodeJsConfig(Request $request, Subdomain $subdomain)
     {
-        if ($subdomain->user_id !== Auth::id()) {
+        if ($subdomain->user_id != Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
