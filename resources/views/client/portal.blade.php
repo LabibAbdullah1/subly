@@ -203,13 +203,13 @@
                             <div class="flex flex-col gap-4" x-show="!isGitVerified">
                                 <div>
                                     <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Link Repositori GitHub</label>
-                                    <input type="url" x-model="gitUrl" placeholder="https://github.com/username/repository" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold" required>
+                                    <input type="url" x-model="gitUrl" name="github_repository_url" autocomplete="off" placeholder="https://github.com/username/repository" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold" required>
                                     <p class="text-[9px] text-neutral-550 mt-1 font-semibold">Gunakan format link HTTPS repositori GitHub Anda.</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Personal Access Token (PAT) (Opsional)</label>
-                                    <input type="password" x-model="gitToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold">
+                                    <input type="password" x-model="gitToken" name="github_pat_token" autocomplete="new-password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold">
                                     <p class="text-[9px] text-neutral-550 mt-2 font-semibold leading-relaxed">
                                         <span class="text-neutral-400 font-bold">Catatan Repositori Privat:</span> Jika repositori Anda privat, masukkan **GitHub Personal Access Token (PAT)** dengan hak baca (`repo` scope). Token disimpan aman terenkripsi.
                                     </p>
