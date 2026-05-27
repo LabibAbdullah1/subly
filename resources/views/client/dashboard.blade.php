@@ -78,7 +78,7 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($subdomains as $sub)
-                        <div class="glass-panel glass-panel-glow p-6 flex flex-col relative overflow-hidden group hover:-translate-y-0.5 transition-all duration-300 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.8)]">
+                        <div class="glass-panel p-6 flex flex-col relative overflow-hidden group hover:-translate-y-0.5 transition-all duration-300 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.8)]">
                             
                             <div class="flex items-center gap-3 mb-5 relative z-10">
                                 <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 border transition-all {{ $sub->status == 'active' ? 'bg-neutral-900 border-neutral-800 text-white' : 'bg-red-950/20 border-red-950/30 text-red-400' }}">
@@ -215,7 +215,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                             @foreach($subdomains as $sub)
                                 @foreach($sub->userDatabases as $db)
-                                    <div class="glass-panel glass-panel-glow p-5 shadow-lg group hover:-translate-y-0.5 transition-all duration-300">
+                                    <div class="glass-panel p-5 shadow-lg group hover:-translate-y-0.5 transition-all duration-300">
                                         <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                             <button onclick="copyToClipboard('Host: localhost\nDB: {{ $db->db_name }}\nUser: {{ $db->db_user }}\nPass: {{ $db->db_password }}', this)" class="p-1.5 text-neutral-500 hover:text-white rounded-lg hover:bg-neutral-900 transition-all cursor-pointer" title="Copy All Credentials">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
