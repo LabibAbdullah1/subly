@@ -44,23 +44,76 @@ class DeploymentQueueController extends Controller
         return redirect()->back()->with('success', 'Deployment status updated successfully.');
     }
 
-    public function extractAndDeploy(Deployment $deployment)
+    public function extractAndDeploy(Deployment $deployment, \App\Services\ServerProvisioningService $provisioningService)
     {
         if (!$deployment->subdomain) {
             return redirect()->back()->withErrors(['error' => 'Subdomain associated with this deployment no longer exists.']);
         }
 
+        // Meningkatkan batas eksekusi
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
         try {
-            // Mark deployment as successful
+            $subdomain = $deployment->subdomain;
+            $zipFileName = "deployment_v" . $deployment->version . ".zip";
+
+            // 1. Pemicu ekstraksi ZIP di cPanel
+            \Log::info("Automated Deploy: Mengekstrak zip '{$zipFileName}' di subdomain '{$subdomain->full_domain}'...");
+            $provisioningService->extractZipInSubdomain($subdomain, $zipFileName);
+
+            // 2. Hapus file ZIP sementara di cPanel
+            \Log::info("Automated Deploy: Menghapus zip '{$zipFileName}' dari cPanel...");
+            $provisioningService->deleteFileInSubdomain($subdomain, $zipFileName);
+
+            // 3. Deteksi tipe plan
+            $payment = $subdomain->payments()->where('status', 'success')->latest()->first();
+            if (!$payment) {
+                $payment = $subdomain->user->payments()->with('plan')->where('status', 'success')->latest()->first();
+            }
+            $planType = $payment && $payment->plan ? $payment->plan->type : 'PHP';
+
+            $postDeployNote = "Otomatis diekstrak dan dikonfigurasi oleh sistem Subly.";
+
+            // 4. Operasi khusus pasca-deploy untuk NodeJS
+            if (in_array($planType, ['NodeJS', 'Fullstack'])) {
+                // Jalankan npm install
+                try {
+                    \Log::info("Automated Deploy: Menjalankan 'npm install' untuk '{$subdomain->full_domain}'...");
+                    $provisioningService->installNpmModules($subdomain);
+                } catch (\Exception $npmEx) {
+                    \Log::warning("NPM install warn saat deploy: " . $npmEx->getMessage());
+                    $postDeployNote .= " (Peringatan: npm install gagal dijalankan otomatis)";
+                }
+
+                // Restart aplikasi Node.js
+                try {
+                    \Log::info("Automated Deploy: Merestart NodeJS App untuk '{$subdomain->full_domain}'...");
+                    $provisioningService->restartNodeJsApp($subdomain);
+                } catch (\Exception $restartEx) {
+                    \Log::warning("NodeJS App restart warn saat deploy: " . $restartEx->getMessage());
+                }
+            }
+
+            // 5. Sinkronisasi variabel lingkungan (.env dan .htaccess)
+            try {
+                \Log::info("Automated Deploy: Mensinkronkan variabel lingkungan untuk '{$subdomain->full_domain}'...");
+                $provisioningService->syncEnvironment($subdomain);
+            } catch (\Exception $envEx) {
+                \Log::warning("Environment sync warn saat deploy: " . $envEx->getMessage());
+            }
+
+            // 6. Tandai deployment sebagai sukses
             $deployment->update([
                 'status' => 'success',
                 'deployed_at' => now(),
-                'admin_note' => 'Disetujui admin untuk diekstrak secara manual di cPanel.',
+                'admin_note' => $postDeployNote,
             ]);
 
-            return redirect()->back()->with('success', "Deployment v{$deployment->version} berhasil disetujui! Status diubah menjadi Sukses. File ZIP aman berada di cPanel untuk Anda ekstrak secara manual.");
+            return redirect()->back()->with('success', "Deployment v{$deployment->version} berhasil diekstrak, dependencies dipasang, env disinkronkan, dan aplikasi dideploy secara otomatis!");
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => "Gagal menyetujui deployment: " . $e->getMessage()]);
+            \Log::error("Failed automated deployment: " . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => "Gagal mendeploy secara otomatis: " . $e->getMessage()]);
         }
     }
 

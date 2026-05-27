@@ -154,6 +154,19 @@ class ServerProvisioningService
             } catch (\Exception $e) {
                 Log::error("Failed to create default index.html: " . $e->getMessage());
             }
+
+            // 6. If NodeJS Plan, Automatically register the NodeJS application in cPanel Setup Node.js App
+            try {
+                $payment = $subdomain->payments()->where('status', 'success')->latest()->first();
+                $planType = $payment && $payment->plan ? $payment->plan->type : 'PHP';
+                if (in_array($planType, ['NodeJS', 'Fullstack'])) {
+                    // Create default NodeJS App with 'server.js' as startup and node 20
+                    $this->createNodeJsApp($subdomain, 'server.js', '20');
+                    Log::info("NodeJS App successfully registered in cPanel cl-selector during provisioning.");
+                }
+            } catch (\Exception $e) {
+                Log::error("Failed to automatically register NodeJS App during provisioning: " . $e->getMessage());
+            }
         } catch (\Exception $e) {
             Log::error("cPanel provisioning failed: " . $e->getMessage());
             throw $e;
@@ -273,6 +286,17 @@ class ServerProvisioningService
         }
 
         try {
+            // 0. Deregister NodeJS Selector App if NodeJS plan
+            try {
+                $payment = $subdomain->payments()->where('status', 'success')->latest()->first();
+                $planType = $payment && $payment->plan ? $payment->plan->type : 'PHP';
+                if (in_array($planType, ['NodeJS', 'Fullstack'])) {
+                    $this->deleteNodeJsApp($subdomain);
+                }
+            } catch (\Exception $e) {
+                Log::warning("Failed to automatically deregister NodeJS app from CloudLinux Selector: " . $e->getMessage());
+            }
+
             $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
             $rootDomain = config('services.hosting_panel.root_domain', 'subly.my.id');
 
@@ -1096,6 +1120,183 @@ class ServerProvisioningService
 
         } catch (\Exception $e) {
             Log::error("Failed to sync .htaccess env to cPanel: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Create/Register Node.js Selector App in cPanel.
+     */
+    public function createNodeJsApp(Subdomain $subdomain, string $startupFile = 'server.js', string $nodeVersion = '20', string $mode = 'production'): array
+    {
+        $startupFile = $subdomain->nodejs_startup_file ?? $startupFile;
+        $nodeVersion = $subdomain->nodejs_version ?? $nodeVersion;
+        $mode = $subdomain->nodejs_mode ?? $mode;
+
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Created NodeJS App for {$subdomain->full_domain} (Startup: {$startupFile}, Version: {$nodeVersion}, Mode: {$mode})");
+            return ['success' => true];
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            Log::info("Registering NodeJS App in cPanel Lvemanager for {$subdomain->full_domain}...");
+            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
+                'action' => 'create',
+                'type' => 'nodejs',
+                'app_root' => $cleanDir,
+                'app_uri' => '/',
+                'domain' => $subdomain->full_domain,
+                'startup_file' => $startupFile,
+                'version' => $nodeVersion,
+                'app_mode' => $mode,
+            ]);
+
+            return $response;
+        } catch (\Exception $e) {
+            Log::error("Failed to register Node.js App in cPanel: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Run 'npm install' (install dependencies) for the Node.js App in cPanel.
+     */
+    public function installNpmModules(Subdomain $subdomain): array
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Running 'npm install' for {$subdomain->full_domain}");
+            return ['success' => true];
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            Log::info("Triggering 'npm install' on cPanel server for {$subdomain->full_domain}...");
+            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
+                'action' => 'install-modules',
+                'type' => 'nodejs',
+                'app_root' => $cleanDir,
+            ]);
+
+            return $response;
+        } catch (\Exception $e) {
+            Log::error("Failed to run 'npm install' on cPanel: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Restart the Node.js App in cPanel.
+     */
+    public function restartNodeJsApp(Subdomain $subdomain): array
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Restarted NodeJS App for {$subdomain->full_domain}");
+            return ['success' => true];
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            Log::info("Restarting NodeJS App in cPanel for {$subdomain->full_domain}...");
+            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
+                'action' => 'restart',
+                'type' => 'nodejs',
+                'app_root' => $cleanDir,
+            ]);
+
+            return $response;
+        } catch (\Exception $e) {
+            Log::error("Failed to restart NodeJS App in cPanel: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Stop the Node.js App in cPanel.
+     */
+    public function stopNodeJsApp(Subdomain $subdomain): array
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Stopped NodeJS App for {$subdomain->full_domain}");
+            return ['success' => true];
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            Log::info("Stopping NodeJS App in cPanel for {$subdomain->full_domain}...");
+            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
+                'action' => 'stop',
+                'type' => 'nodejs',
+                'app_root' => $cleanDir,
+            ]);
+
+            return $response;
+        } catch (\Exception $e) {
+            Log::error("Failed to stop NodeJS App in cPanel: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Start the Node.js App in cPanel.
+     */
+    public function startNodeJsApp(Subdomain $subdomain): array
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Started NodeJS App for {$subdomain->full_domain}");
+            return ['success' => true];
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            Log::info("Starting NodeJS App in cPanel for {$subdomain->full_domain}...");
+            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
+                'action' => 'start',
+                'type' => 'nodejs',
+                'app_root' => $cleanDir,
+            ]);
+
+            return $response;
+        } catch (\Exception $e) {
+            Log::error("Failed to start NodeJS App in cPanel: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Delete/Deregister Node.js Selector App in cPanel.
+     */
+    public function deleteNodeJsApp(Subdomain $subdomain): array
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Deleted NodeJS App for {$subdomain->full_domain}");
+            return ['success' => true];
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            Log::info("Deregistering NodeJS App from cPanel Lvemanager for {$subdomain->full_domain}...");
+            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
+                'action' => 'delete',
+                'type' => 'nodejs',
+                'app_root' => $cleanDir,
+            ]);
+
+            return $response;
+        } catch (\Exception $e) {
+            Log::error("Failed to delete Node.js App from cPanel: " . $e->getMessage());
             throw $e;
         }
     }

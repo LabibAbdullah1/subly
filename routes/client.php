@@ -52,4 +52,7 @@ Route::prefix('subdomains')->name('subdomains.')->group(function () {
     // Environment Variables Management
     Route::post('/{subdomain}/env/update', [\App\Http\Controllers\Client\SubdomainEnvController::class, 'update'])->name('env.update');
     Route::post('/{subdomain}/env/update-raw', [\App\Http\Controllers\Client\SubdomainEnvController::class, 'updateRaw'])->name('env.update-raw');
+    
+    // NodeJS App Selector Configuration
+    Route::post('/{subdomain}/nodejs/update', [\App\Http\Controllers\Client\SubdomainEnvController::class, 'updateNodeJsConfig'])->name('nodejs.update');
 });
