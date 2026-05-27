@@ -44,12 +44,18 @@
                 </div>
             @endif
 
-            <!-- Back to Dashboard Shortcut -->
-            <div class="mb-1">
-               <a href="{{ route('client.index') }}" class="text-neutral-450 hover:text-white flex items-center gap-2 transition-colors text-xs font-bold uppercase tracking-wider w-fit active:scale-98">
+            <!-- Back to Dashboard Shortcut & File Manager Link -->
+            <div class="flex items-center justify-between gap-4 mb-1 select-none">
+                <a href="{{ route('client.index') }}" class="text-neutral-450 hover:text-white flex items-center gap-2 transition-colors text-xs font-bold uppercase tracking-wider w-fit active:scale-98">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
                     Kembali ke Dashboard
-               </a>
+                </a>
+                <a href="{{ route('client.subdomains.file-manager', $subdomain->id) }}" class="px-3.5 py-1.5 rounded-xl border border-neutral-850 bg-neutral-900/50 hover:bg-neutral-900 text-neutral-350 hover:text-white flex items-center gap-1.5 transition-all text-[10px] font-bold uppercase tracking-wider shadow-lg active:scale-95">
+                    <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-19.5 0A2.25 2.25 0 004.5 15h15a2.25 2.25 0 002.25-2.25m-19.5 0v.25A2.25 2.25 0 004.5 17.5h15a2.25 2.25 0 002.25-2.25M12 9.75V3m0 0L9 6m3-3l3 3" />
+                    </svg>
+                    Buka File Manager
+                </a>
             </div>
 
             <!-- Upload File & Git Deployment Card -->
@@ -435,9 +441,17 @@
                                         <p class="text-[10px] text-neutral-450 font-bold leading-relaxed">{{ $alertDesc }}</p>
                                     </div>
                                 </div>
-                                <button type="button" onclick="openRequestDiskModal()" class="px-4 py-2 border rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shrink-0 cursor-pointer active:scale-95 text-center {{ $btnColorClass }}">
-                                    Minta Tambahan Disk
-                                </button>
+                                <div class="flex gap-2.5">
+                                    <a href="{{ route('client.subdomains.file-manager', $subdomain->id) }}" class="px-4 py-2 border border-neutral-850 hover:border-neutral-700 bg-neutral-900/50 hover:bg-neutral-900 text-neutral-350 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shrink-0 cursor-pointer active:scale-95 text-center flex items-center justify-center gap-1">
+                                        <svg class="w-3.5 h-3.5 text-neutral-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        Bersihkan Berkas
+                                    </a>
+                                    <button type="button" onclick="openRequestDiskModal()" class="px-4 py-2 border rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shrink-0 cursor-pointer active:scale-95 text-center {{ $btnColorClass }}">
+                                        Minta Tambahan Disk
+                                    </button>
+                                </div>
                             </div>
                         @endif
                         
