@@ -84,7 +84,7 @@
 
             /* Elegant button system with click scaling */
             .btn-primary {
-                @apply inline-flex items-center justify-center px-5 py-2.5 bg-white text-black border border-transparent rounded-xl font-heading font-semibold text-xs uppercase tracking-wider hover:bg-neutral-100 hover:shadow-[0_0_20px_rgba(255,255,255,0.12)] focus:outline-none focus:ring-1 focus:ring-white transition-all duration-200 active:scale-[0.97] cursor-pointer;
+                @apply inline-flex items-center justify-center px-5 py-2.5 bg-gradient-to-r from-primary-500 to-indigo-600 text-white border border-transparent rounded-xl font-heading font-semibold text-xs uppercase tracking-wider hover:from-primary-400 hover:to-indigo-500 hover:shadow-[0_0_25px_rgba(94,106,210,0.35)] focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all duration-200 active:scale-[0.97] cursor-pointer;
             }
 
             .btn-secondary {
