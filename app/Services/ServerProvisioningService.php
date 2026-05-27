@@ -1125,45 +1125,87 @@ class ServerProvisioningService
     }
 
     /**
-     * Helper to run CloudLinux Selector CLI command directly on the server.
+     * Helper to run CloudLinux Selector command via cPanel UAPI Lvemanager::cl_selector,
+     * falling back to local CLI commands (cloudlinux-selector) if HTTP fails or Lvemanager is unavailable.
      */
-    protected function runCloudlinuxSelectorCli(string $action, string $cleanDir, array $additionalOpts = []): array
+    protected function runCloudlinuxSelector(string $action, string $cleanDir, array $additionalOpts = []): array
     {
+        $opts = array_merge(['app_root' => $cleanDir], $additionalOpts);
+
+        // 1. Coba UAPI Lvemanager::cl_selector terlebih dahulu (Garis Bawah '_', bukan Dash '-')
+        if ($this->driver === 'cpanel') {
+            try {
+                Log::info("Trying cPanel UAPI Lvemanager::cl_selector for action '{$action}'...");
+                
+                $params = array_merge([
+                    'action' => $action,
+                    'type' => 'nodejs',
+                ], $opts);
+
+                $response = $this->callCpanelApi('Lvemanager', 'cl_selector', $params);
+                if ($response['success']) {
+                    Log::info("cPanel UAPI Lvemanager::cl_selector succeeded!");
+                    return $response;
+                }
+            } catch (\Exception $e) {
+                Log::warning("cPanel UAPI Lvemanager::cl_selector failed: " . $e->getMessage() . ". Trying local CLI fallback...");
+            }
+        } else {
+            Log::info("SIMULATION [Log Driver]: NodeJS Selector action '{$action}' on '{$cleanDir}'");
+            return ['success' => true];
+        }
+
+        // 2. Fallback: Eksekusi local CLI cloudlinux-selector secara langsung di server
         try {
-            $opts = array_merge(['app_root' => $cleanDir], $additionalOpts);
             $optsJson = json_encode($opts, JSON_UNESCAPED_SLASHES);
             
-            // Format command
-            $cmd = "cloudlinux-selector " . escapeshellarg($action) . " --json --opts " . escapeshellarg($optsJson) . " 2>&1";
+            // Perubahan nama action untuk standard CLI delete
+            $cliAction = $action === 'delete' ? 'destroy' : $action;
             
-            Log::info("Executing CloudLinux CLI: {$cmd}");
-            $output = shell_exec($cmd);
-            Log::info("CloudLinux CLI Output: " . $output);
+            // Daftar binary penelusuran lokasi
+            $binaries = [
+                '/usr/bin/cloudlinux-selector',
+                '/usr/local/bin/cloudlinux-selector',
+                'cloudlinux-selector',
+                '/usr/bin/cl-selector',
+                '/usr/local/bin/cl-selector',
+            ];
+            
+            $output = null;
+            $lastException = null;
 
-            if (empty($output)) {
-                throw new \Exception("Execution returned empty output.");
+            foreach ($binaries as $bin) {
+                $cmd = "$bin " . escapeshellarg($cliAction) . " --json --opts " . escapeshellarg($optsJson) . " 2>&1";
+                Log::info("Executing local CloudLinux CLI: {$cmd}");
+                $output = shell_exec($cmd);
+                Log::info("CloudLinux CLI Output: " . $output);
+
+                if (!empty($output) && !str_contains($output, 'not found') && !str_contains($output, 'No such file')) {
+                    $decoded = json_decode($output, true);
+                    if ($decoded && isset($decoded['result']) && $decoded['result'] === 'success') {
+                        return ['success' => true, 'data' => $decoded];
+                    }
+                    if (str_contains(strtolower($output), 'success') || str_contains(strtolower($output), 'complete') || str_contains(strtolower($output), 'created')) {
+                        return ['success' => true, 'output' => $output];
+                    }
+                    if (str_contains(strtolower($output), 'already exists') || str_contains(strtolower($output), 'already exist')) {
+                        return ['success' => true, 'warning' => 'already_exists', 'output' => $output];
+                    }
+                    
+                    $errMsg = $decoded['message'] ?? $decoded['reason'] ?? $output;
+                    $lastException = new \Exception($errMsg);
+                    break; // Terbaca sukses eksekusi walaupun CLI mereturn kegagalan internal
+                }
             }
 
-            $decoded = json_decode($output, true);
-            if ($decoded && isset($decoded['result']) && $decoded['result'] === 'success') {
-                return ['success' => true, 'data' => $decoded];
+            if ($lastException) {
+                throw $lastException;
             }
 
-            // Fallback: Jika tidak berupa JSON tetapi mengandung pesan sukses
-            if (str_contains(strtolower($output), 'success') || str_contains(strtolower($output), 'complete') || str_contains(strtolower($output), 'created')) {
-                return ['success' => true, 'output' => $output];
-            }
-
-            // Jika aplikasi sudah terdaftar, anggap sukses
-            if (str_contains(strtolower($output), 'already exists') || str_contains(strtolower($output), 'already exist')) {
-                return ['success' => true, 'warning' => 'already_exists', 'output' => $output];
-            }
-
-            $errorMessage = $decoded['message'] ?? $decoded['reason'] ?? $output;
-            throw new \Exception($errorMessage);
+            throw new \Exception("Could not execute cloudlinux-selector on the server (command not found in cagefs path).");
         } catch (\Exception $e) {
-            Log::error("CloudLinux Selector CLI Failed: " . $e->getMessage());
-            throw $e;
+            Log::error("CloudLinux Selector Automation failed completely: " . $e->getMessage());
+            throw new \Exception("Koneksi NodeJS cPanel gagal (UAPI & CLI Fallback Error: " . $e->getMessage() . ")");
         }
     }
 
@@ -1176,18 +1218,13 @@ class ServerProvisioningService
         $nodeVersion = $subdomain->nodejs_version ?? $nodeVersion;
         $mode = $subdomain->nodejs_mode ?? $mode;
 
-        if ($this->driver !== 'cpanel') {
-            Log::info("SIMULATION: Created NodeJS App for {$subdomain->full_domain} (Startup: {$startupFile}, Version: {$nodeVersion}, Mode: {$mode})");
-            return ['success' => true];
-        }
-
         $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
         $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
         // Menggunakan prefix interpreter versi CloudLinux (misal node-v20)
         $interpreter = "node-v" . $nodeVersion;
 
-        return $this->runCloudlinuxSelectorCli('create', $cleanDir, [
+        return $this->runCloudlinuxSelector('create', $cleanDir, [
             'app_mode' => $mode,
             'interpreter' => $interpreter,
             'domain' => $subdomain->full_domain,
@@ -1201,15 +1238,10 @@ class ServerProvisioningService
      */
     public function installNpmModules(Subdomain $subdomain): array
     {
-        if ($this->driver !== 'cpanel') {
-            Log::info("SIMULATION: Running 'npm install' for {$subdomain->full_domain}");
-            return ['success' => true];
-        }
-
         $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
         $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-        return $this->runCloudlinuxSelectorCli('install-modules', $cleanDir);
+        return $this->runCloudlinuxSelector('install-modules', $cleanDir);
     }
 
     /**
@@ -1217,15 +1249,10 @@ class ServerProvisioningService
      */
     public function restartNodeJsApp(Subdomain $subdomain): array
     {
-        if ($this->driver !== 'cpanel') {
-            Log::info("SIMULATION: Restarted NodeJS App for {$subdomain->full_domain}");
-            return ['success' => true];
-        }
-
         $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
         $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-        return $this->runCloudlinuxSelectorCli('restart', $cleanDir);
+        return $this->runCloudlinuxSelector('restart', $cleanDir);
     }
 
     /**
@@ -1233,15 +1260,10 @@ class ServerProvisioningService
      */
     public function stopNodeJsApp(Subdomain $subdomain): array
     {
-        if ($this->driver !== 'cpanel') {
-            Log::info("SIMULATION: Stopped NodeJS App for {$subdomain->full_domain}");
-            return ['success' => true];
-        }
-
         $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
         $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-        return $this->runCloudlinuxSelectorCli('stop', $cleanDir);
+        return $this->runCloudlinuxSelector('stop', $cleanDir);
     }
 
     /**
@@ -1249,15 +1271,10 @@ class ServerProvisioningService
      */
     public function startNodeJsApp(Subdomain $subdomain): array
     {
-        if ($this->driver !== 'cpanel') {
-            Log::info("SIMULATION: Started NodeJS App for {$subdomain->full_domain}");
-            return ['success' => true];
-        }
-
         $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
         $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-        return $this->runCloudlinuxSelectorCli('start', $cleanDir);
+        return $this->runCloudlinuxSelector('start', $cleanDir);
     }
 
     /**
@@ -1265,14 +1282,9 @@ class ServerProvisioningService
      */
     public function deleteNodeJsApp(Subdomain $subdomain): array
     {
-        if ($this->driver !== 'cpanel') {
-            Log::info("SIMULATION: Deleted NodeJS App for {$subdomain->full_domain}");
-            return ['success' => true];
-        }
-
         $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
         $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-        return $this->runCloudlinuxSelectorCli('destroy', $cleanDir);
+        return $this->runCloudlinuxSelector('delete', $cleanDir);
     }
 }
