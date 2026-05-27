@@ -927,6 +927,25 @@ class ServerProvisioningService
         $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
         $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
+        // Layer 1: Try direct local filesystem extraction (suPHP / LSAPI running on same server)
+        $targetDir = $subdomain->doc_root;
+        $zipFilePath = $targetDir . '/' . $fileName;
+
+        if (is_dir($targetDir) && is_writable($targetDir) && file_exists($zipFilePath)) {
+            Log::info("Local filesystem is accessible and writable. Extracting zip locally via ZipArchive...");
+            $zip = new \ZipArchive();
+            if ($zip->open($zipFilePath) === true) {
+                $zip->extractTo($targetDir);
+                $zip->close();
+                Log::info("Successfully extracted {$fileName} locally via ZipArchive in {$targetDir}");
+                return;
+            } else {
+                throw new \Exception("Gagal membuka atau membaca file arsip ZIP untuk diekstrak secara lokal.");
+            }
+        }
+
+        // Layer 2: Fallback to cPanel UAPI Fileman/extract if remote or not local
+        Log::info("Local filesystem not writable/accessible. Falling back to cPanel UAPI Fileman/extract...");
         $this->callCpanelApi('Fileman', 'extract', [
             'dir' => $cleanDir,
             'file' => $fileName,
@@ -949,6 +968,17 @@ class ServerProvisioningService
         $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
         $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
+        // Layer 1: Try direct local filesystem deletion
+        $targetDir = $subdomain->doc_root;
+        $filePath = $targetDir . '/' . $fileName;
+
+        if (file_exists($filePath) && is_writable($filePath)) {
+            Log::info("Deleting file locally: {$filePath}");
+            @unlink($filePath);
+            return;
+        }
+
+        // Layer 2: Fallback to cPanel UAPI Fileman/unlink if remote
         try {
             $this->callCpanelApi('Fileman', 'unlink', [
                 'dir' => $cleanDir,
