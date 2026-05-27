@@ -48,4 +48,8 @@ Route::prefix('subdomains')->name('subdomains.')->group(function () {
     Route::post('/', [SubdomainController::class, 'store'])->name('store');
     Route::get('/{subdomain}/renew', [SubdomainController::class, 'renew'])->name('renew');
     Route::delete('/{subdomain}', [SubdomainController::class, 'destroy'])->name('destroy');
+    
+    // Environment Variables Management
+    Route::post('/{subdomain}/env/update', [\App\Http\Controllers\Client\SubdomainEnvController::class, 'update'])->name('env.update');
+    Route::post('/{subdomain}/env/update-raw', [\App\Http\Controllers\Client\SubdomainEnvController::class, 'updateRaw'])->name('env.update-raw');
 });

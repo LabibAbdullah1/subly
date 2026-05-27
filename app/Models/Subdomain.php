@@ -33,6 +33,11 @@ class Subdomain extends Model
         return $this->hasMany(UserDatabase::class);
     }
 
+    public function envs()
+    {
+        return $this->hasMany(SubdomainEnv::class);
+    }
+
     public function deployments()
     {
         return $this->hasMany(Deployment::class);

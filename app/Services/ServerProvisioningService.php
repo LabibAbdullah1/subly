@@ -959,4 +959,144 @@ class ServerProvisioningService
             Log::warning("Failed to delete file {$fileName} in cPanel: " . $e->getMessage());
         }
     }
+
+    /**
+     * Sync environment variables based on the subdomain's plan type.
+     */
+    public function syncEnvironment(Subdomain $subdomain): void
+    {
+        // 1. Get the subdomain's plan type
+        $payment = $subdomain->payments()->where('status', 'success')->latest()->first();
+        if (!$payment) {
+            $payment = $subdomain->user->payments()->with('plan')->where('status', 'success')->latest()->first();
+        }
+        $planType = $payment && $payment->plan ? $payment->plan->type : 'PHP';
+
+        // 2. Fetch the environment variables from database
+        $variables = $subdomain->envs()->pluck('value', 'key')->toArray();
+
+        Log::info("Syncing environment variables for subdomain: {$subdomain->full_domain}", [
+            'plan_type' => $planType,
+            'variables_count' => count($variables),
+        ]);
+
+        // 3. Write variables according to plan type
+        if (in_array($planType, ['NodeJS', 'Fullstack'])) {
+            // Write to both .htaccess and .env for Node.js / Fullstack apps
+            $this->writeToHtaccessEnv($subdomain, $variables);
+            $this->writeToEnvFile($subdomain, $variables);
+        } else {
+            // Write only to .env for PHP / Laravel / Python / others
+            $this->writeToEnvFile($subdomain, $variables);
+        }
+    }
+
+    /**
+     * Write environment variables to the .env file in the subdomain's document root.
+     */
+    protected function writeToEnvFile(Subdomain $subdomain, array $variables): void
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Syncing environment to .env for {$subdomain->full_domain}");
+            return;
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            // Format as standard .env file content
+            $envContent = "# SUBLY ENVIRONMENT VARIABLES - GENERATED AUTOMATICALLY\n";
+            foreach ($variables as $key => $value) {
+                // Ensure value is double quoted to handle spaces and symbols safely
+                $envContent .= "{$key}=\"{$value}\"\n";
+            }
+
+            Log::info("Writing .env file on cPanel for {$subdomain->full_domain}");
+            $this->callCpanelApi('Fileman', 'save_file_content', [
+                'dir' => $cleanDir,
+                'file' => '.env',
+                'content' => $envContent,
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Failed to sync .env to cPanel: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Write environment variables to the .htaccess file in the subdomain's document root (for Passenger Node.js app).
+     */
+    protected function writeToHtaccessEnv(Subdomain $subdomain, array $variables): void
+    {
+        if ($this->driver !== 'cpanel') {
+            Log::info("SIMULATION: Syncing environment to .htaccess for {$subdomain->full_domain}");
+            return;
+        }
+
+        try {
+            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+
+            // 1. Get existing .htaccess content
+            $existingHtaccess = "";
+            try {
+                $response = $this->callCpanelApi('Fileman', 'get_file_content', [
+                    'dir' => $cleanDir,
+                    'file' => '.htaccess',
+                ]);
+                
+                if ($response['success']) {
+                    $existingHtaccess = $response['data']['result']['data']['content'] 
+                        ?? $response['data']['cpanelresult']['data']['content'] 
+                        ?? $response['data']['content'] 
+                        ?? "";
+                }
+            } catch (\Exception $e) {
+                Log::warning("No existing .htaccess found or unable to read it: " . $e->getMessage() . ". Starting fresh.");
+                $existingHtaccess = "";
+            }
+
+            // 2. Generate new CloudLinux/LiteSpeed Env block
+            $newEnvBlock = "# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN\n";
+            $newEnvBlock .= "<IfModule Litespeed>\n";
+            foreach ($variables as $key => $value) {
+                $newEnvBlock .= "SetEnv {$key} \"{$value}\"\n";
+            }
+            $newEnvBlock .= "</IfModule>\n";
+            $newEnvBlock .= "# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END";
+
+            // 3. Regex replacement or append
+            $pattern = '/# DO NOT REMOVE OR MODIFY\. CLOUDLINUX ENV VARS CONFIGURATION BEGIN.*# DO NOT REMOVE OR MODIFY\. CLOUDLINUX ENV VARS CONFIGURATION END/s';
+
+            if (preg_match($pattern, $existingHtaccess)) {
+                $updatedHtaccess = preg_replace($pattern, $newEnvBlock, $existingHtaccess);
+            } else {
+                $updatedHtaccess = rtrim($existingHtaccess) . "\n\n" . $newEnvBlock . "\n";
+            }
+
+            Log::info("Writing .htaccess env block on cPanel for {$subdomain->full_domain}");
+            $this->callCpanelApi('Fileman', 'save_file_content', [
+                'dir' => $cleanDir,
+                'file' => '.htaccess',
+                'content' => $updatedHtaccess,
+            ]);
+
+            // 4. Touch tmp/restart.txt to restart Passenger
+            try {
+                $this->callCpanelApi('Fileman', 'save_file_content', [
+                    'dir' => $cleanDir . '/tmp',
+                    'file' => 'restart.txt',
+                    'content' => 'restart_at_' . time(),
+                ]);
+                Log::info("Successfully triggered Passenger Node.js restart via tmp/restart.txt");
+            } catch (\Exception $e) {
+                Log::warning("Skipped touching tmp/restart.txt (might be PHP or directory does not exist): " . $e->getMessage());
+            }
+
+        } catch (\Exception $e) {
+            Log::error("Failed to sync .htaccess env to cPanel: " . $e->getMessage());
+            throw $e;
+        }
+    }
 }

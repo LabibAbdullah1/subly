@@ -237,6 +237,128 @@
                 </div>
             </div>
 
+            <!-- Environment Variables (.env) Card -->
+            <div x-data="{ 
+                activeTab: 'form', 
+                variables: [
+                    @foreach($subdomain->envs as $env)
+                        { key: '{{ $env->key }}', value: '{{ addslashes($env->value) }}', is_secret: {{ $env->is_secret ? 'true' : 'false' }}, show: false },
+                    @endforeach
+                    @if($subdomain->envs->isEmpty())
+                        { key: '', value: '', is_secret: false, show: false }
+                    @endif
+                ],
+                addVariable() {
+                    this.variables.push({ key: '', value: '', is_secret: false, show: false });
+                },
+                removeVariable(index) {
+                    this.variables.splice(index, 1);
+                    if (this.variables.length === 0) {
+                        this.addVariable();
+                    }
+                },
+                rawEnv: `{!! addslashes($subdomain->envs->map(fn($e) => $e->key . '=' . $e->value)->implode("\n")) !!}`
+            }" class="glass-panel glass-panel-glow p-6 flex flex-col w-full shadow-2xl">
+                
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white">
+                            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-white tracking-tight">Variabel Lingkungan (.env)</h3>
+                            <p class="text-[10px] text-neutral-500 font-semibold mt-0.5">Kelola konfigurasi sensitif aplikasi Anda dengan enkripsi aman.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Switcher -->
+                    <div class="bg-neutral-950/60 p-1 rounded-xl inline-flex border border-neutral-900 backdrop-blur-md self-start sm:self-center">
+                        <button type="button" @click="activeTab = 'form'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeTab === 'form' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">Form Editor</button>
+                        <button type="button" @click="activeTab = 'raw'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeTab === 'raw' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">Raw Editor</button>
+                    </div>
+                </div>
+
+                <!-- Form Editor Mode -->
+                <div x-show="activeTab === 'form'" class="flex flex-col gap-4">
+                    <form action="{{ route('client.subdomains.env.update', $subdomain) }}" method="POST" class="flex flex-col gap-4">
+                        @csrf
+                        <div class="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                            <template x-for="(variable, index) in variables" :key="index">
+                                <div class="flex items-center gap-3">
+                                    <!-- Key Input -->
+                                    <div class="flex-1">
+                                        <input type="text" :name="'keys['+index+']'" x-model="variable.key" placeholder="CONTOH_KEY" class="input-field placeholder-neutral-600 font-mono text-xs uppercase tracking-wider" required>
+                                    </div>
+                                    <!-- Value Input & Masking -->
+                                    <div class="flex-[1.5] relative flex items-center">
+                                        <input :type="variable.is_secret && !variable.show ? 'password' : 'text'" :name="'values['+index+']'" x-model="variable.value" placeholder="Nilai variabel..." class="input-field placeholder-neutral-600 text-xs pr-10 font-semibold" required>
+                                        
+                                        <!-- Mask Toggle (Eye Icon) -->
+                                        <button type="button" @click="variable.show = !variable.show" class="absolute right-3 text-neutral-500 hover:text-white transition-colors cursor-pointer select-none">
+                                            <svg x-show="!variable.show" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                            <svg x-show="variable.show" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display: none;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.025 10.025 0 012.23-3.812m3-1.72a9.982 9.982 0 013.238-1.428M13.4 13.4a3.375 3.375 0 01-4.8-4.8m4.8 4.8a3.3 3.3 0 01-.1.4M9.8 9.8a3.3 3.3 0 01-.4-.1M10.8 10.8L12 12m4.2 4.2L19 19m-4.2-4.2a3.375 3.375 0 00-4.8-4.8m-6 3a10.025 10.025 0 0115.42-7.81m-3 3a3.375 3.375 0 00-4.8-4.8" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <!-- Secret Toggle (Lock Icon) -->
+                                    <div class="flex items-center justify-center shrink-0">
+                                        <input type="hidden" :name="'secrets['+index+']'" :value="variable.is_secret ? '1' : '0'">
+                                        <button type="button" @click="variable.is_secret = !variable.is_secret" class="w-8 h-8 rounded-lg border flex items-center justify-center transition-all cursor-pointer" :class="variable.is_secret ? 'bg-white/5 border-white/20 text-white' : 'bg-transparent border-neutral-900 text-neutral-550 hover:text-neutral-350 hover:border-neutral-750'">
+                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <!-- Delete Button -->
+                                    <button type="button" @click="removeVariable(index)" class="w-8 h-8 rounded-lg border border-neutral-900 hover:border-red-900/40 text-neutral-550 hover:text-red-400 bg-transparent flex items-center justify-center transition-all cursor-pointer active:scale-95">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-3 mt-2">
+                            <!-- Add Row Button -->
+                            <button type="button" @click="addVariable()" class="btn border border-neutral-850 hover:border-neutral-700 text-neutral-300 font-bold uppercase tracking-wider text-[10px] h-11 flex items-center justify-center gap-1.5 active:scale-98 shrink-0 cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                Tambah Baris
+                            </button>
+                            
+                            <!-- Save Button -->
+                            <button type="submit" class="flex-1 btn-primary font-extrabold uppercase text-[10px] tracking-wider h-11 flex items-center justify-center gap-2 active:scale-98 cursor-pointer">
+                                Simpan & Sinkronkan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Raw Editor Mode -->
+                <div x-show="activeTab === 'raw'" class="flex flex-col gap-4" style="display: none;">
+                    <form action="{{ route('client.subdomains.env.update-raw', $subdomain) }}" method="POST" class="flex flex-col gap-4">
+                        @csrf
+                        <div>
+                            <textarea name="raw_env" x-model="rawEnv" rows="8" class="input-field w-full resize-y placeholder-neutral-600 font-mono text-xs text-left" placeholder="# Contoh format .env&#10;APP_NAME=SublyApp&#10;API_KEY=0b11a00206aec4d1d86b8e36b664ebb1&#10;DEBUG_MODE=true"></textarea>
+                            <p class="text-[9px] text-neutral-500 mt-2 font-semibold">Tips: Tuliskan variabel dengan format <code class="text-neutral-400 font-mono font-bold">KEY=VALUE</code> per baris. Komentar diawali dengan <code class="text-neutral-400 font-mono font-bold">#</code> akan dilewati secara otomatis.</p>
+                        </div>
+                        
+                        <button type="submit" class="w-full btn-primary font-extrabold uppercase text-[10px] tracking-wider h-11 flex items-center justify-center gap-2 active:scale-98 cursor-pointer">
+                            Simpan & Parsing Mentah
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
             <!-- Platform Feedback Card -->
             @php $planFeedback = $plan ? $feedbacks->get($plan->id) : null; @endphp
             @if($plan && !$planFeedback)
