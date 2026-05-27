@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ReportController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('index');
+Route::get('disk', [DashboardController::class, 'diskUsage'])->name('disk.index');
 Route::resource('plans', PlanController::class);
 Route::resource('vouchers', VoucherController::class);
 Route::resource('users', UserController::class);

@@ -90,6 +90,12 @@
                                         {{ __('Database') }}
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('admin.disk.index') }}" wire:navigate class="sidebar-link {{ request()->routeIs('admin.disk.*') ? 'active' : '' }}">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" /></svg>
+                                        {{ __('Penggunaan Disk') }}
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -282,6 +288,12 @@
                                     <a @click="sidebarOpen = false" href="{{ route('admin.databases.index') }}" wire:navigate class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.databases.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>
                                         {{ __('Database') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a @click="sidebarOpen = false" href="{{ route('admin.disk.index') }}" wire:navigate class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.disk.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
+                                        <svg class="w-4.5 h-4.5 text-neutral-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" /></svg>
+                                        {{ __('Penggunaan Disk') }}
                                     </a>
                                 </li>
                             </ul>
