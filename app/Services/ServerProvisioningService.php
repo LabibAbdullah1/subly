@@ -1097,5 +1097,5 @@ class ServerProvisioningService
         } catch (\Exception $e) {
             Log::error("Failed to sync .htaccess env to cPanel: " . $e->getMessage());
             throw $e;
-        }
     }
+}
