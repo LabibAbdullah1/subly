@@ -194,7 +194,23 @@
 
     <!-- Glassmorphic Delete Confirmation Modal (Livewire Driven) -->
     @if(!empty($deletePath))
-        <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-md transition-all duration-300 select-none animate-fade-in">
+        <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-md transition-all duration-300 select-none animate-fade-in"
+             x-data
+             x-init="
+                const mainEl = document.querySelector('main');
+                if (mainEl) {
+                    mainEl.style.overflowY = 'hidden';
+                    mainEl.style.transform = 'none';
+                }
+                document.body.style.overflow = 'hidden';
+                $cleanup(() => {
+                    if (mainEl) {
+                        mainEl.style.overflowY = '';
+                        mainEl.style.transform = '';
+                    }
+                    document.body.style.overflow = '';
+                });
+             ">
             <div class="bg-neutral-950 border border-neutral-900 rounded-3xl max-w-md w-full p-6 mx-4 shadow-2xl flex flex-col relative overflow-hidden transform scale-100 transition-all duration-300 animate-scale-up">
                 <!-- Faint Ambient Circle -->
                 <div class="absolute -right-20 -top-20 w-48 h-48 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>

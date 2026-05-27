@@ -688,6 +688,10 @@
                         </div>
                     `;
 
+                    const mainEl = document.querySelector('main');
+                    if (mainEl) mainEl.style.overflowY = 'hidden';
+                    document.body.style.overflow = 'hidden';
+
                     overlay.appendChild(container);
                     document.body.appendChild(overlay);
 
@@ -700,7 +704,11 @@
                     const closeModal = () => {
                         overlay.classList.add('opacity-0');
                         container.classList.add('scale-95');
-                        setTimeout(() => overlay.remove(), 300);
+                        setTimeout(() => {
+                            overlay.remove();
+                            if (mainEl) mainEl.style.overflowY = '';
+                            document.body.style.overflow = '';
+                        }, 300);
                     };
 
                     container.querySelector('.btn-cancel').addEventListener('click', closeModal);
