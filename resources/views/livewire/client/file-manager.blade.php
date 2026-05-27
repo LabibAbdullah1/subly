@@ -199,14 +199,15 @@
              x-init="
                 const mainEl = document.querySelector('main');
                 if (mainEl) {
+                    $el.style.position = 'absolute';
+                    $el.style.top = mainEl.scrollTop + 'px';
+                    $el.style.height = mainEl.clientHeight + 'px';
                     mainEl.style.overflowY = 'hidden';
-                    mainEl.style.transform = 'none';
                 }
                 document.body.style.overflow = 'hidden';
                 $cleanup(() => {
                     if (mainEl) {
                         mainEl.style.overflowY = '';
-                        mainEl.style.transform = '';
                     }
                     document.body.style.overflow = '';
                 });
