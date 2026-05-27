@@ -55,6 +55,7 @@ Route::prefix('subdomains')->name('subdomains.')->group(function () {
 
     // GitHub Integration Management
     Route::post('/{subdomain}/git/connect', [\App\Http\Controllers\Client\GitDeploymentController::class, 'connect'])->name('git.connect');
+    Route::post('/{subdomain}/git/check-repository', [\App\Http\Controllers\Client\GitDeploymentController::class, 'checkRepository'])->name('git.check-repository');
     Route::post('/{subdomain}/git/pull', [\App\Http\Controllers\Client\GitDeploymentController::class, 'pull'])->name('git.pull');
     Route::post('/{subdomain}/git/disconnect', [\App\Http\Controllers\Client\GitDeploymentController::class, 'disconnect'])->name('git.disconnect');
 });

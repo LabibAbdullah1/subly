@@ -120,4 +120,78 @@ class GitDeploymentController extends Controller
             return redirect()->back()->withErrors(['git_disconnect' => 'Gagal memutuskan repositori: ' . $e->getMessage()]);
         }
     }
+
+    /**
+     * Check GitHub repository access and fetch its branches dynamically via AJAX.
+     */
+    public function checkRepository(Request $request, Subdomain $subdomain)
+    {
+        if ($subdomain->user_id != Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'Aksi tidak sah.'], 403);
+        }
+
+        $request->validate([
+            'git_url' => 'required|url|string',
+            'git_token' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            $parsed = $this->gitService->parseGithubUrl($request->git_url);
+            $owner = $parsed['owner'];
+            $repo = $parsed['repo'];
+            
+            $apiClient = \Illuminate\Support\Facades\Http::withHeaders([
+                'User-Agent' => 'Subly-Git-Engine',
+                'Accept' => 'application/vnd.github+json'
+            ]);
+
+            if (!empty($request->git_token)) {
+                $apiClient = $apiClient->withToken($request->git_token);
+            }
+
+            $response = $apiClient->timeout(15)->get("https://api.github.com/repos/{$owner}/{$repo}/branches");
+
+            if ($response->status() === 404) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Repositori tidak ditemukan atau bersifat privat. Harap masukkan Personal Access Token (PAT) Anda jika privat.'
+                ]);
+            }
+
+            if ($response->status() === 401) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Token Akses GitHub (PAT) Anda tidak valid.'
+                ]);
+            }
+
+            if (!$response->successful()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengakses GitHub API (HTTP Status: ' . $response->status() . ').'
+                ]);
+            }
+
+            // Extract branch names
+            $branches = collect($response->json())->pluck('name')->toArray();
+
+            if (empty($branches)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Repositori tidak memiliki branch aktif.'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'branches' => $branches
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ]);
+        }
+    }
 }

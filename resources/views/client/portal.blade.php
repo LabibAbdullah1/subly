@@ -53,7 +53,61 @@
             </div>
 
             <!-- Upload File & Git Deployment Card -->
-            <div x-data="{ activeDeployTab: '{{ $subdomain->git_url ? 'git' : 'zip' }}', isGitDeploying: false }" class="glass-panel glass-panel-glow p-6 flex flex-col w-full shadow-2xl">
+            <div x-data="{ 
+                activeDeployTab: '{{ $subdomain->git_url ? 'git' : 'zip' }}', 
+                isGitDeploying: false,
+                isGitChecking: false,
+                isGitVerified: false,
+                gitUrl: '',
+                gitToken: '',
+                gitBranches: [],
+                selectedBranch: 'main',
+                gitCheckError: '',
+                async checkRepository() {
+                    if (!this.gitUrl) {
+                        this.gitCheckError = 'Harap masukkan URL repositori GitHub.';
+                        return;
+                    }
+                    this.isGitChecking = true;
+                    this.gitCheckError = '';
+                    this.isGitVerified = false;
+                    this.gitBranches = [];
+                    
+                    try {
+                        let response = await fetch('{{ route('client.subdomains.git.check-repository', $subdomain) }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                git_url: this.gitUrl,
+                                git_token: this.gitToken
+                            })
+                        });
+                        
+                        let data = await response.json();
+                        if (data.success) {
+                            this.gitBranches = data.branches;
+                            this.isGitVerified = true;
+                            // Set default branch to main if it exists, otherwise master, otherwise the first branch
+                            if (this.gitBranches.includes('main')) {
+                                this.selectedBranch = 'main';
+                            } else if (this.gitBranches.includes('master')) {
+                                this.selectedBranch = 'master';
+                            } else {
+                                this.selectedBranch = this.gitBranches[0];
+                            }
+                        } else {
+                            this.gitCheckError = data.message;
+                        }
+                    } catch (err) {
+                        this.gitCheckError = 'Koneksi gagal: ' + err.message;
+                    } finally {
+                        this.isGitChecking = false;
+                    }
+                }
+            }" class="glass-panel glass-panel-glow p-6 flex flex-col w-full shadow-2xl">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                     <div class="flex items-center gap-3">
                         <div class="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white">
@@ -143,37 +197,83 @@
                 <!-- Tab: GitHub Integration -->
                 <div x-show="activeDeployTab === 'git'" class="flex-1 flex flex-col" style="display: none;">
                     @if(empty($subdomain->git_url))
-                        <!-- Not Connected State -->
-                        <form action="{{ route('client.subdomains.git.connect', $subdomain) }}" method="POST" @submit="isGitDeploying = true" class="flex-1 flex flex-col gap-5">
-                            @csrf
-                            <div>
-                                <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Link Repositori GitHub</label>
-                                <input type="url" name="git_url" placeholder="https://github.com/username/repository" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold" required>
-                                <p class="text-[9px] text-neutral-550 mt-1 font-semibold">Gunakan format link HTTPS repositori GitHub Anda.</p>
-                            </div>
-
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <div class="flex-1">
-                                    <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Branch</label>
-                                    <input type="text" name="git_branch" value="main" placeholder="main" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-bold font-mono uppercase tracking-wider" required>
+                        <!-- Not Connected State (Interactive Check & Connect Wizard) -->
+                        <div class="flex-grow flex flex-col gap-5">
+                            <!-- Link Repositori & Token Input -->
+                            <div class="flex flex-col gap-4" x-show="!isGitVerified">
+                                <div>
+                                    <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Link Repositori GitHub</label>
+                                    <input type="url" x-model="gitUrl" placeholder="https://github.com/username/repository" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold" required>
+                                    <p class="text-[9px] text-neutral-550 mt-1 font-semibold">Gunakan format link HTTPS repositori GitHub Anda.</p>
                                 </div>
-                                <div class="flex-[1.5]">
+
+                                <div>
                                     <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Personal Access Token (PAT) (Opsional)</label>
-                                    <input type="password" name="git_token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold">
+                                    <input type="password" x-model="gitToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold">
+                                    <p class="text-[9px] text-neutral-550 mt-2 font-semibold leading-relaxed">
+                                        <span class="text-neutral-400 font-bold">Catatan Repositori Privat:</span> Jika repositori Anda privat, masukkan **GitHub Personal Access Token (PAT)** dengan hak baca (`repo` scope). Token disimpan aman terenkripsi.
+                                    </p>
+                                </div>
+
+                                <!-- Check Repository Button -->
+                                <button type="button" @click="checkRepository()" :disabled="isGitChecking" class="w-full btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer" :class="isGitChecking ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
+                                    <svg x-show="isGitChecking" class="animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24" style="display: none;">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span class="font-extrabold uppercase text-xs tracking-wider" x-text="isGitChecking ? 'Sedang Memeriksa...' : 'Periksa & Konek Repositori'">Periksa & Konek Repositori</span>
+                                </button>
+
+                                <!-- Error Alert -->
+                                <div x-show="gitCheckError" class="p-3.5 bg-red-950/20 border border-red-900/30 text-red-400 text-xs rounded-xl font-bold flex items-center gap-2.5 animate-fade-in" style="display: none;">
+                                    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"></path></svg>
+                                    <span x-text="gitCheckError"></span>
                                 </div>
                             </div>
-                            <p class="text-[9px] text-neutral-500 font-semibold leading-relaxed">
-                                <span class="text-neutral-400 font-bold">Catatan Repositori Privat:</span> Jika repositori Anda privat, masukkan **GitHub Personal Access Token (Classic atau Fine-grained)** dengan hak baca repositori. Token ini disimpan terenkripsi dengan aman.
-                            </p>
 
-                            <button type="submit" :disabled="isGitDeploying" class="w-full btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer" :class="isGitDeploying ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
-                                <span class="font-extrabold uppercase text-xs tracking-wider" x-text="isGitDeploying ? 'Sedang Mengimpor...' : 'Hubungkan & Impor Kode'">Hubungkan & Impor Kode</span>
-                                <svg x-show="isGitDeploying" class="animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24" style="display: none;">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                            </button>
-                        </form>
+                            <!-- Verified & Branch Select wizard -->
+                            <div class="flex flex-col gap-5 animate-fade-in" x-show="isGitVerified" style="display: none;">
+                                <div class="p-4 bg-emerald-950/20 border border-emerald-900/30 text-emerald-400 text-xs rounded-xl font-bold flex items-center gap-2.5">
+                                    <svg class="w-4.5 h-4.5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                    <div>
+                                        <p class="font-extrabold">Koneksi Repositori Terverifikasi!</p>
+                                        <p class="text-[10px] text-neutral-400 font-semibold mt-0.5" x-text="gitUrl"></p>
+                                    </div>
+                                </div>
+
+                                <form action="{{ route('client.subdomains.git.connect', $subdomain) }}" method="POST" @submit="isGitDeploying = true" class="flex flex-col gap-5">
+                                    @csrf
+                                    <input type="hidden" name="git_url" :value="gitUrl">
+                                    <input type="hidden" name="git_token" :value="gitToken">
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Pilih Branch Target</label>
+                                        <select name="git_branch" x-model="selectedBranch" class="input-field font-semibold cursor-pointer">
+                                            <template x-for="branch in gitBranches" :key="branch">
+                                                <option :value="branch" x-text="branch" class="bg-neutral-950 text-white font-mono"></option>
+                                            </template>
+                                        </select>
+                                        <p class="text-[9px] text-neutral-550 mt-1 font-semibold">Silakan pilih branch yang ingin Anda deploy ke subdomain ini.</p>
+                                    </div>
+
+                                    <div class="flex gap-3">
+                                        <!-- Back/Reset Button -->
+                                        <button type="button" @click="isGitVerified = false; gitBranches = []; gitCheckError = ''" class="px-4 border border-neutral-850 hover:border-neutral-700 bg-neutral-900/50 hover:bg-neutral-900 text-neutral-300 font-bold uppercase tracking-wider text-[10px] h-12 rounded-xl flex items-center justify-center shrink-0 cursor-pointer transition-all active:scale-95">
+                                            Kembali
+                                        </button>
+                                        
+                                        <!-- Connect Button -->
+                                        <button type="submit" :disabled="isGitDeploying" class="flex-1 btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer" :class="isGitDeploying ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
+                                            <svg x-show="isGitDeploying" class="animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24" style="display: none;">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <span class="font-extrabold uppercase text-xs tracking-wider" x-text="isGitDeploying ? 'Sedang Impor Kode...' : 'Hubungkan & Impor Kode'">Hubungkan & Impor Kode</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     @else
                         <!-- Already Connected State -->
                         <div class="flex-1 flex flex-col gap-6">
