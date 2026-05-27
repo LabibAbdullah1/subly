@@ -52,4 +52,9 @@ Route::prefix('subdomains')->name('subdomains.')->group(function () {
     // Environment Variables Management
     Route::post('/{subdomain}/env/update', [\App\Http\Controllers\Client\SubdomainEnvController::class, 'update'])->name('env.update');
     Route::post('/{subdomain}/env/update-raw', [\App\Http\Controllers\Client\SubdomainEnvController::class, 'updateRaw'])->name('env.update-raw');
+
+    // GitHub Integration Management
+    Route::post('/{subdomain}/git/connect', [\App\Http\Controllers\Client\GitDeploymentController::class, 'connect'])->name('git.connect');
+    Route::post('/{subdomain}/git/pull', [\App\Http\Controllers\Client\GitDeploymentController::class, 'pull'])->name('git.pull');
+    Route::post('/{subdomain}/git/disconnect', [\App\Http\Controllers\Client\GitDeploymentController::class, 'disconnect'])->name('git.disconnect');
 });

@@ -52,82 +52,210 @@
                </a>
             </div>
 
-            <!-- Upload File Deployment Card -->
-            <div class="glass-panel glass-panel-glow p-6 flex flex-col w-full shadow-2xl">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>
+            <!-- Upload File & Git Deployment Card -->
+            <div x-data="{ activeDeployTab: '{{ $subdomain->git_url ? 'git' : 'zip' }}', isGitDeploying: false }" class="glass-panel glass-panel-glow p-6 flex flex-col w-full shadow-2xl">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>
+                        </div>
+                        <h3 class="text-sm font-bold text-white tracking-tight">Deploy Kode</h3>
                     </div>
-                    <h3 class="text-sm font-bold text-white tracking-tight">Deploy Kode</h3>
+                    
+                    <!-- Tab Switcher -->
+                    <div class="bg-neutral-950/60 p-1 rounded-xl inline-flex border border-neutral-900 backdrop-blur-md self-start sm:self-center">
+                        <button type="button" @click="activeDeployTab = 'zip'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeDeployTab === 'zip' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">Upload ZIP</button>
+                        <button type="button" @click="activeDeployTab = 'git'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeDeployTab === 'git' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">GitHub Integration</button>
+                    </div>
                 </div>
                 
-                <form action="{{ route('client.deployments.store') }}" method="POST" class="flex-1 flex flex-col gap-6" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="subdomain_id" value="{{ $subdomain->id }}">
-                    
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">File Proyek (.zip)</label>
-                        <div class="flex justify-center h-48 border border-neutral-850 border-dashed rounded-xl transition-all relative overflow-hidden group bg-black/40 cursor-pointer hover:border-neutral-500 duration-200" id="upload-dropzone" onclick="document.getElementById('zip_file').click()">
-                            <!-- Hidden File Input -->
-                            <input id="zip_file" name="zip_file" type="file" class="hidden" accept=".zip" required onchange="handleFileSelect(this)">
-                            
-                            <!-- Default State -->
-                            <div class="flex flex-col items-center justify-center space-y-2.5 w-full relative z-10 transition-opacity duration-300" id="default-upload-state">
-                                <div id="upload-icon-container" class="transform group-hover:scale-102 transition-transform duration-200 text-neutral-500 group-hover:text-white">
-                                    <svg class="mx-auto h-10 w-10" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true" stroke-width="2">
-                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
+                <!-- Tab: Upload ZIP File -->
+                <div x-show="activeDeployTab === 'zip'" class="flex-1 flex flex-col">
+                    <form action="{{ route('client.deployments.store') }}" method="POST" class="flex-1 flex flex-col gap-6" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="subdomain_id" value="{{ $subdomain->id }}">
+                        
+                        <div class="flex-1">
+                            <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">File Proyek (.zip)</label>
+                            <div class="flex justify-center h-48 border border-neutral-850 border-dashed rounded-xl transition-all relative overflow-hidden group bg-black/40 cursor-pointer hover:border-neutral-500 duration-200" id="upload-dropzone" onclick="document.getElementById('zip_file').click()">
+                                <!-- Hidden File Input -->
+                                <input id="zip_file" name="zip_file" type="file" class="hidden" accept=".zip" required onchange="handleFileSelect(this)">
+                                
+                                <!-- Default State -->
+                                <div class="flex flex-col items-center justify-center space-y-2.5 w-full relative z-10 transition-opacity duration-300" id="default-upload-state">
+                                    <div id="upload-icon-container" class="transform group-hover:scale-102 transition-transform duration-200 text-neutral-500 group-hover:text-white">
+                                        <svg class="mx-auto h-10 w-10" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true" stroke-width="2">
+                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <div class="text-center px-4">
+                                        <p class="text-xs font-bold text-neutral-350 group-hover:text-white transition-colors uppercase tracking-wider">Unggah file</p>
+                                        <p class="text-[10px] text-neutral-500 font-semibold mt-1">atau seret dan lepas file ZIP ke sini</p>
+                                    </div>
+                                    <p class="text-[9px] text-neutral-550 uppercase tracking-widest font-extrabold">ZIP Maks {{ $plan ? $plan->max_storage_mb : 50 }}MB</p>
                                 </div>
-                                <div class="text-center px-4">
-                                    <p class="text-xs font-bold text-neutral-350 group-hover:text-white transition-colors uppercase tracking-wider">Unggah file</p>
-                                    <p class="text-[10px] text-neutral-500 font-semibold mt-1">atau seret dan lepas file ZIP ke sini</p>
+
+                                <!-- File Selected State -->
+                                <div class="hidden absolute inset-0 flex-col items-center justify-center bg-white/2 backdrop-blur-sm w-full h-full p-4 z-20" id="file-selected-state">
+                                    <button type="button" onclick="event.stopPropagation(); cancelUpload()" class="absolute top-3 right-3 text-neutral-400 hover:text-white bg-neutral-905/80 p-2 rounded-lg border border-neutral-900 hover:border-neutral-700 transition-all shadow-lg active:scale-95 cursor-pointer" title="Batalkan Unggahan">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                    <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white mb-2.5 border border-white/10 shadow-lg">
+                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    </div>
+                                    <p class="text-xs font-bold text-white truncate max-w-[85%] text-center px-4" id="file-chosen-text">filename.zip</p>
+                                    <p class="text-[10px] text-neutral-400 font-bold mt-1" id="file-info-text">0.00 MB</p>
                                 </div>
-                                <p class="text-[9px] text-neutral-550 uppercase tracking-widest font-extrabold">ZIP Maks {{ $plan ? $plan->max_storage_mb : 50 }}MB</p>
+                            </div>
+                            <p class="text-[10px] text-neutral-500 mt-3 flex items-center gap-1.5 font-semibold">
+                                <svg class="w-3.5 h-3.5 text-primary-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                Versi baru akan otomatis ditambahkan ke riwayat deployment Anda.
+                            </p>
+                        </div>
+
+                        <div class="flex-1">
+                            <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Catatan Deployment (Opsional)</label>
+                            <textarea id="notes" name="notes" rows="2" class="input-field placeholder-neutral-600 resize-none font-medium text-xs sm:text-sm mt-1" placeholder="Contoh: Perbaikan UI, Update Fitur Login, dll."></textarea>
+                        </div>
+
+                        <!-- Chunk Upload Progress Bar -->
+                        <div id="progress-container" class="hidden mb-2">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest" id="progress-label">Uploading...</span>
+                                <span class="text-xs font-bold text-white" id="progress-percent">0%</span>
+                            </div>
+                            <div class="w-full bg-neutral-900 rounded-full h-1 overflow-hidden shadow-inner">
+                                <div id="progress-bar" class="bg-white h-1 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        @php $hasActiveDeployment = $subdomain->deployments()->where('status', 'success')->exists(); @endphp
+                        <button type="button" id="deploy-btn" onclick="submitDeployment(event, {{ $hasActiveDeployment ? 'true' : 'false' }})" class="w-full btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer {{ (!$plan) ? 'opacity-40 cursor-not-allowed grayscale pointer-events-none' : '' }}" {{ (!$plan) ? 'disabled' : '' }}>
+                            <span id="btn-text" class="font-extrabold uppercase text-xs tracking-wider">{{ !$plan ? 'Perlu Berlangganan' : 'Mulai Deployment' }}</span>
+                            <svg id="btn-spinner" class="hidden animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Tab: GitHub Integration -->
+                <div x-show="activeDeployTab === 'git'" class="flex-1 flex flex-col" style="display: none;">
+                    @if(empty($subdomain->git_url))
+                        <!-- Not Connected State -->
+                        <form action="{{ route('client.subdomains.git.connect', $subdomain) }}" method="POST" @submit="isGitDeploying = true" class="flex-1 flex flex-col gap-5">
+                            @csrf
+                            <div>
+                                <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Link Repositori GitHub</label>
+                                <input type="url" name="git_url" placeholder="https://github.com/username/repository" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold" required>
+                                <p class="text-[9px] text-neutral-550 mt-1 font-semibold">Gunakan format link HTTPS repositori GitHub Anda.</p>
                             </div>
 
-                            <!-- File Selected State -->
-                            <div class="hidden absolute inset-0 flex-col items-center justify-center bg-white/2 backdrop-blur-sm w-full h-full p-4 z-20" id="file-selected-state">
-                                <button type="button" onclick="event.stopPropagation(); cancelUpload()" class="absolute top-3 right-3 text-neutral-400 hover:text-white bg-neutral-905/80 p-2 rounded-lg border border-neutral-900 hover:border-neutral-700 transition-all shadow-lg active:scale-95 cursor-pointer" title="Batalkan Unggahan">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                </button>
-                                <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white mb-2.5 border border-white/10 shadow-lg">
-                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="flex-1">
+                                    <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Branch</label>
+                                    <input type="text" name="git_branch" value="main" placeholder="main" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-bold font-mono uppercase tracking-wider" required>
                                 </div>
-                                <p class="text-xs font-bold text-white truncate max-w-[85%] text-center px-4" id="file-chosen-text">filename.zip</p>
-                                <p class="text-[10px] text-neutral-400 font-bold mt-1" id="file-info-text">0.00 MB</p>
+                                <div class="flex-[1.5]">
+                                    <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Personal Access Token (PAT) (Opsional)</label>
+                                    <input type="password" name="git_token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="input-field placeholder-neutral-600 text-xs sm:text-sm font-semibold">
+                                </div>
+                            </div>
+                            <p class="text-[9px] text-neutral-500 font-semibold leading-relaxed">
+                                <span class="text-neutral-400 font-bold">Catatan Repositori Privat:</span> Jika repositori Anda privat, masukkan **GitHub Personal Access Token (Classic atau Fine-grained)** dengan hak baca repositori. Token ini disimpan terenkripsi dengan aman.
+                            </p>
+
+                            <button type="submit" :disabled="isGitDeploying" class="w-full btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer" :class="isGitDeploying ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
+                                <span class="font-extrabold uppercase text-xs tracking-wider" x-text="isGitDeploying ? 'Sedang Mengimpor...' : 'Hubungkan & Impor Kode'">Hubungkan & Impor Kode</span>
+                                <svg x-show="isGitDeploying" class="animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24" style="display: none;">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    @else
+                        <!-- Already Connected State -->
+                        <div class="flex-1 flex flex-col gap-6">
+                            <!-- Visual Connection Header -->
+                            <div class="bg-neutral-950/60 p-4 rounded-xl border border-neutral-900 flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3.5">
+                                    <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white relative animate-fade-in">
+                                        <!-- GitHub Icon -->
+                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                                        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-neutral-950 animate-ping"></span>
+                                        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-neutral-950"></span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">GitHub Terhubung</h4>
+                                        <p class="text-[10px] text-neutral-500 font-bold mt-0.5">Integrasi kode otomatis aktif.</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 animate-fade-in">Aktif</span>
+                                </div>
+                            </div>
+
+                            <!-- Styled Table Detail -->
+                            <div class="border border-neutral-900 rounded-xl overflow-hidden animate-fade-in">
+                                <div class="grid grid-cols-3 border-b border-neutral-900 p-3 bg-neutral-950/20 text-[10px] font-bold uppercase tracking-widest text-neutral-500">
+                                    <div class="col-span-1">Properti</div>
+                                    <div class="col-span-2">Nilai / Konfigurasi</div>
+                                </div>
+                                <div class="divide-y divide-neutral-900 font-medium text-xs text-neutral-300">
+                                    <div class="grid grid-cols-3 p-3">
+                                        <div class="text-neutral-450 font-semibold">Repository URL</div>
+                                        <div class="col-span-2 text-white truncate font-bold hover:underline">
+                                            <a href="{{ $subdomain->git_url }}" target="_blank" class="flex items-center gap-1">
+                                                {{ $subdomain->git_url }}
+                                                <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-3 p-3">
+                                        <div class="text-neutral-450 font-semibold">Branch Target</div>
+                                        <div class="col-span-2 font-mono uppercase tracking-wider font-bold text-white">{{ $subdomain->git_branch }}</div>
+                                    </div>
+                                    <div class="grid grid-cols-3 p-3">
+                                        <div class="text-neutral-450 font-semibold">Pembaruan Terakhir</div>
+                                        <div class="col-span-2 font-semibold text-neutral-350">{{ $subdomain->git_last_commit ?? 'Belum ada sync' }}</div>
+                                    </div>
+                                    <div class="grid grid-cols-3 p-3">
+                                        <div class="text-neutral-450 font-semibold">Terhubung Sejak</div>
+                                        <div class="col-span-2 font-semibold text-neutral-350">
+                                            {{ $subdomain->git_connected_at ? $subdomain->git_connected_at->format('d M Y H:i') : '-' }} 
+                                            <span class="text-[10px] text-neutral-500 ml-1">({{ $subdomain->git_connected_at ? $subdomain->git_connected_at->diffForHumans() : '' }})</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Git Pull and Disconnect Actions -->
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <!-- Pull Button Form -->
+                                <form action="{{ route('client.subdomains.git.pull', $subdomain) }}" method="POST" @submit="isGitDeploying = true" class="flex-1">
+                                    @csrf
+                                    <button type="submit" :disabled="isGitDeploying" class="w-full btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer" :class="isGitDeploying ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
+                                        <svg x-show="!isGitDeploying" class="w-4.5 h-4.5 animate-pulse" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+                                        <svg x-show="isGitDeploying" class="animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24" style="display: none;">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span class="font-extrabold uppercase text-xs tracking-wider" x-text="isGitDeploying ? 'Menarik Perubahan Terbaru...' : 'Tarik Perubahan Terbaru (Pull)'">Tarik Perubahan Terbaru (Pull)</span>
+                                    </button>
+                                </form>
+
+                                <!-- Disconnect Button Form -->
+                                <form action="{{ route('client.subdomains.git.disconnect', $subdomain) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin memutuskan repositori GitHub dari subdomain ini? Data repositori akan dihapus dari pengaturan Subly Anda.');">
+                                    @csrf
+                                    <button type="submit" :disabled="isGitDeploying" class="w-full sm:w-auto px-5 border border-red-950 hover:border-red-900 bg-red-950/20 text-red-500 hover:text-red-400 font-extrabold uppercase text-xs tracking-wider h-12 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] cursor-pointer" :class="isGitDeploying ? 'opacity-40 grayscale pointer-events-none' : ''">
+                                        Putuskan
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                        <p class="text-[10px] text-neutral-500 mt-3 flex items-center gap-1.5 font-semibold">
-                            <svg class="w-3.5 h-3.5 text-primary-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            Versi baru akan otomatis ditambahkan ke riwayat deployment Anda.
-                        </p>
-                    </div>
-
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Catatan Deployment (Opsional)</label>
-                        <textarea id="notes" name="notes" rows="2" class="input-field placeholder-neutral-600 resize-none font-medium text-xs sm:text-sm mt-1" placeholder="Contoh: Perbaikan UI, Update Fitur Login, dll."></textarea>
-                    </div>
-
-                    <!-- Chunk Upload Progress Bar -->
-                    <div id="progress-container" class="hidden mb-2">
-                        <div class="flex justify-between items-center mb-1.5">
-                            <span class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest" id="progress-label">Uploading...</span>
-                            <span class="text-xs font-bold text-white" id="progress-percent">0%</span>
-                        </div>
-                        <div class="w-full bg-neutral-900 rounded-full h-1 overflow-hidden shadow-inner">
-                            <div id="progress-bar" class="bg-white h-1 rounded-full transition-all duration-300" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    @php $hasActiveDeployment = $subdomain->deployments()->where('status', 'success')->exists(); @endphp
-                    <button type="button" id="deploy-btn" onclick="submitDeployment(event, {{ $hasActiveDeployment ? 'true' : 'false' }})" class="w-full btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer {{ (!$plan) ? 'opacity-40 cursor-not-allowed grayscale pointer-events-none' : '' }}" {{ (!$plan) ? 'disabled' : '' }}>
-                        <span id="btn-text" class="font-extrabold uppercase text-xs tracking-wider">{{ !$plan ? 'Perlu Berlangganan' : 'Mulai Deployment' }}</span>
-                        <svg id="btn-spinner" class="hidden animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </button>
-                </form>
+                    @endif
+                </div>
             </div>
 
             <!-- Storage details & Hosting Details list -->
