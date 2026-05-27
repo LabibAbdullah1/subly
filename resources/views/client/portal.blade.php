@@ -237,69 +237,6 @@
                 </div>
             </div>
 
-            @if($plan && in_array($plan->type, ['NodeJS', 'Fullstack']))
-                <!-- NodeJS App Configuration Card -->
-                <div class="glass-panel glass-panel-glow p-6 flex flex-col w-full shadow-2xl">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white">
-                            <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-bold text-white tracking-tight">Konfigurasi Aplikasi Node.js</h3>
-                            <p class="text-[10px] text-neutral-500 font-semibold mt-0.5">Atur runtime, versi Node, startup file, dan tipe lingkungan aplikasi Anda.</p>
-                        </div>
-                    </div>
-
-                    <form action="{{ route('client.subdomains.nodejs.update', $subdomain) }}" method="POST" class="flex flex-col gap-5">
-                        @csrf
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Node.js Version Select -->
-                            <div>
-                                <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Versi Node.js</label>
-                                <select name="nodejs_version" class="input-field font-semibold cursor-pointer text-xs sm:text-sm">
-                                    <option value="20" class="bg-neutral-950 text-white" {{ $subdomain->nodejs_version == '20' ? 'selected' : '' }}>🟢 Node.js v20.x (LTS - Direkomendasikan)</option>
-                                    <option value="18" class="bg-neutral-950 text-white" {{ $subdomain->nodejs_version == '18' ? 'selected' : '' }}>🟡 Node.js v18.x (LTS Lama)</option>
-                                    <option value="22" class="bg-neutral-950 text-white" {{ $subdomain->nodejs_version == '22' ? 'selected' : '' }}>🔵 Node.js v22.x (Terbaru)</option>
-                                </select>
-                            </div>
-
-                            <!-- Application Mode Select -->
-                            <div>
-                                <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Mode Aplikasi (NODE_ENV)</label>
-                                <select name="nodejs_mode" class="input-field font-semibold cursor-pointer text-xs sm:text-sm">
-                                    <option value="production" class="bg-neutral-950 text-white" {{ $subdomain->nodejs_mode == 'production' ? 'selected' : '' }}>🚀 Production (Optimasi & Cepat)</option>
-                                    <option value="development" class="bg-neutral-950 text-white" {{ $subdomain->nodejs_mode == 'development' ? 'selected' : '' }}>🛠️ Development (Mode Debug)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Startup File Input -->
-                            <div>
-                                <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">File Startup Utama</label>
-                                <input type="text" name="nodejs_startup_file" value="{{ $subdomain->nodejs_startup_file ?? 'server.js' }}" placeholder="Contoh: server.js atau app.js atau src/app.js" class="input-field text-xs sm:text-sm font-semibold" required>
-                                <p class="text-[9px] text-neutral-500 mt-1.5 font-medium">Berkas entri utama Node.js Anda relatif terhadap folder root aplikasi.</p>
-                            </div>
-
-                            <!-- Read-only Folder Root & URL Details -->
-                            <div>
-                                <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Folder Utama Aplikasi (App Root)</label>
-                                <input type="text" value="~/{{ str_replace(config('app.doc_root_prefix'), '', $subdomain->doc_root) }}" class="input-field text-xs sm:text-sm font-bold text-neutral-500 bg-neutral-950/40 select-all shrink-0 border-neutral-900/70" disabled readonly>
-                                <p class="text-[9px] text-neutral-550 mt-1.5 font-extrabold uppercase tracking-wide">Path URL: https://{{ $subdomain->full_domain }}</p>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer">
-                            <span class="font-extrabold uppercase text-xs tracking-wider">Simpan & Terapkan Konfigurasi</span>
-                        </button>
-                    </form>
-                </div>
-            @endif
-
             <!-- Environment Variables (.env) Card -->
             <div x-data="{ 
                 activeTab: 'form', 

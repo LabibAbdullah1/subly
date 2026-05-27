@@ -16,9 +16,6 @@ class Subdomain extends Model
         'full_domain',
         'doc_root',
         'status',
-        'nodejs_version',
-        'nodejs_startup_file',
-        'nodejs_mode',
         'expired_at',
     ];
 
