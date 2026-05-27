@@ -113,7 +113,7 @@
                         this.isGitChecking = false;
                     }
                 }
-            }" class="glass-panel glass-panel-glow p-6 flex flex-col w-full shadow-2xl">
+            }" class="glass-panel p-6 flex flex-col w-full shadow-2xl">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                     <div class="flex items-center gap-3">
                         <div class="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white">
@@ -124,8 +124,8 @@
                     
                     <!-- Tab Switcher -->
                     <div class="bg-neutral-950/60 p-1 rounded-xl inline-flex border border-neutral-900 backdrop-blur-md self-start sm:self-center">
-                        <button type="button" @click="activeDeployTab = 'zip'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeDeployTab === 'zip' ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/10' : 'text-neutral-400 hover:text-white'">Upload ZIP</button>
-                        <button type="button" @click="activeDeployTab = 'git'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeDeployTab === 'git' ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/10' : 'text-neutral-400 hover:text-white'">GitHub Integration</button>
+                        <button type="button" @click="activeDeployTab = 'zip'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeDeployTab === 'zip' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">Upload ZIP</button>
+                        <button type="button" @click="activeDeployTab = 'git'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeDeployTab === 'git' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">GitHub Integration</button>
                     </div>
                 </div>
                 
@@ -573,7 +573,7 @@
                     }
                 },
                 rawEnv: `{!! addslashes($subdomain->envs->map(fn($e) => $e->key . '=' . $e->value)->implode("\n")) !!}`
-            }" class="glass-panel glass-panel-glow p-6 flex flex-col w-full shadow-2xl">
+            }" class="glass-panel p-6 flex flex-col w-full shadow-2xl">
                 
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                     <div class="flex items-center gap-3">
@@ -590,8 +590,8 @@
                     
                     <!-- Tab Switcher -->
                     <div class="bg-neutral-950/60 p-1 rounded-xl inline-flex border border-neutral-900 backdrop-blur-md self-start sm:self-center">
-                        <button type="button" @click="activeTab = 'form'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeTab === 'form' ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/10' : 'text-neutral-400 hover:text-white'">Form Editor</button>
-                        <button type="button" @click="activeTab = 'raw'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeTab === 'raw' ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/10' : 'text-neutral-400 hover:text-white'">Raw Editor</button>
+                        <button type="button" @click="activeTab = 'form'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeTab === 'form' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">Form Editor</button>
+                        <button type="button" @click="activeTab = 'raw'" class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer" :class="activeTab === 'raw' ? 'bg-white text-black shadow-lg shadow-white/5' : 'text-neutral-400 hover:text-white'">Raw Editor</button>
                     </div>
                 </div>
 
