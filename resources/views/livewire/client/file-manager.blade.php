@@ -193,67 +193,66 @@
     </div>
 
     <!-- Glassmorphic Delete Confirmation Modal (Livewire Driven) -->
-    @if(!empty($deletePath))
-        <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-md transition-all duration-300 select-none animate-fade-in"
-             x-data
-             x-init="
-                const mainEl = document.querySelector('main');
-                if (mainEl) {
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-md transition-all duration-300 select-none animate-fade-in"
+         x-data="{ deletePath: @entangle('deletePath') }"
+         x-show="deletePath !== ''"
+         x-init="
+            const mainEl = document.querySelector('main');
+            $watch('deletePath', value => {
+                if (value !== '') {
                     $el.style.position = 'absolute';
-                    $el.style.top = mainEl.scrollTop + 'px';
-                    $el.style.height = mainEl.clientHeight + 'px';
-                    mainEl.style.overflowY = 'hidden';
-                }
-                document.body.style.overflow = 'hidden';
-                $cleanup(() => {
-                    if (mainEl) {
-                        mainEl.style.overflowY = '';
-                    }
+                    $el.style.top = mainEl ? mainEl.scrollTop + 'px' : '0px';
+                    $el.style.height = mainEl ? mainEl.clientHeight + 'px' : '100%';
+                    if (mainEl) mainEl.style.overflowY = 'hidden';
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    if (mainEl) mainEl.style.overflowY = '';
                     document.body.style.overflow = '';
-                });
-             ">
-            <div class="bg-neutral-950 border border-neutral-900 rounded-3xl max-w-md w-full p-6 mx-4 shadow-2xl flex flex-col relative overflow-hidden transform scale-100 transition-all duration-300 animate-scale-up">
-                <!-- Faint Ambient Circle -->
-                <div class="absolute -right-20 -top-20 w-48 h-48 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+                }
+            });
+         "
+         style="display: none;">
+        <div class="bg-neutral-950 border border-neutral-900 rounded-3xl max-w-md w-full p-6 mx-4 shadow-2xl flex flex-col relative overflow-hidden transform scale-100 transition-all duration-300 animate-scale-up">
+            <!-- Faint Ambient Circle -->
+            <div class="absolute -right-20 -top-20 w-48 h-48 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
-                <div class="flex items-center gap-3.5 mb-5 pb-4 border-b border-neutral-900/60">
-                    <div class="w-10 h-10 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 shrink-0 shadow-lg">
-                        <svg class="w-5 h-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
-                    </div>
-                    <div class="text-left">
-                        <h3 class="text-sm font-bold text-white tracking-tight">Konfirmasi Hapus</h3>
-                        <p class="text-[10px] text-neutral-500 font-bold mt-0.5">Tindakan ini permanen dan tidak dapat dibatalkan.</p>
-                    </div>
-                    <button type="button" wire:click="closeDeleteModal" class="absolute top-5 right-5 text-neutral-500 hover:text-white p-1.5 rounded-xl hover:bg-neutral-900 transition-all cursor-pointer">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
+            <div class="flex items-center gap-3.5 mb-5 pb-4 border-b border-neutral-900/60">
+                <div class="w-10 h-10 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 shrink-0 shadow-lg">
+                    <svg class="w-5 h-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
                 </div>
-
-                <p class="text-xs text-neutral-400 font-semibold leading-relaxed text-left">
-                    Apakah Anda yakin ingin menghapus <span class="text-white font-bold">{{ $deleteIsDir ? 'folder' : 'berkas' }}</span> di bawah ini?
-                </p>
-
-                <!-- High fidelity filename display box to prevent awkward wrapping -->
-                <div class="p-3.5 bg-red-500/5 border border-red-500/10 rounded-2xl font-mono text-xs text-red-300 break-all text-center select-all my-4.5 shadow-inner">
-                    {{ $deleteName }}
+                <div class="text-left">
+                    <h3 class="text-sm font-bold text-white tracking-tight">Konfirmasi Hapus</h3>
+                    <p class="text-[10px] text-neutral-500 font-bold mt-0.5">Tindakan ini permanen dan tidak dapat dibatalkan.</p>
                 </div>
+                <button type="button" wire:click="closeDeleteModal" class="absolute top-5 right-5 text-neutral-500 hover:text-white p-1.5 rounded-xl hover:bg-neutral-900 transition-all cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
 
-                <p class="text-[10px] text-neutral-500 font-bold text-left mb-1 select-none">
-                    *Item di atas akan didelete selamanya dari server cPanel Anda.
-                </p>
+            <p class="text-xs text-neutral-400 font-semibold leading-relaxed text-left">
+                Apakah Anda yakin ingin menghapus <span class="text-white font-bold">{{ $deleteIsDir ? 'folder' : 'berkas' }}</span> di bawah ini?
+            </p>
 
-                <div class="grid grid-cols-2 gap-3.5 select-none w-full mt-5">
-                    <button type="button" wire:click="closeDeleteModal" class="h-11 rounded-xl bg-neutral-900 hover:bg-neutral-850 border border-neutral-800 text-neutral-300 hover:text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-95">
-                        Batal
-                    </button>
-                    
-                    <button type="button" wire:click="deleteItem" class="h-11 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-black uppercase tracking-wider flex items-center justify-center cursor-pointer transition-all duration-300 active:scale-95 shadow-[0_4px_20px_rgba(239,68,68,0.2)]">
-                        Ya, Hapus
-                    </button>
-                </div>
+            <!-- High fidelity filename display box to prevent awkward wrapping -->
+            <div class="p-3.5 bg-red-500/5 border border-red-500/10 rounded-2xl font-mono text-xs text-red-300 break-all text-center select-all my-4.5 shadow-inner">
+                {{ $deleteName }}
+            </div>
+
+            <p class="text-[10px] text-neutral-500 font-bold text-left mb-1 select-none">
+                *Item di atas akan didelete selamanya dari server cPanel Anda.
+            </p>
+
+            <div class="grid grid-cols-2 gap-3.5 select-none w-full mt-5">
+                <button type="button" wire:click="closeDeleteModal" class="h-11 rounded-xl bg-neutral-900 hover:bg-neutral-850 border border-neutral-800 text-neutral-300 hover:text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-95">
+                    Batal
+                </button>
+                
+                <button type="button" wire:click="deleteItem" class="h-11 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-black uppercase tracking-wider flex items-center justify-center cursor-pointer transition-all duration-300 active:scale-95 shadow-[0_4px_20px_rgba(239,68,68,0.2)]">
+                    Ya, Hapus
+                </button>
             </div>
         </div>
-    @endif
+    </div>
     
     <script>
         document.addEventListener('livewire:init', () => {
