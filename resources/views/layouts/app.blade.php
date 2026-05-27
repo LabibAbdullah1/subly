@@ -400,7 +400,7 @@
 
                 // Initialize sleek dropdown selectors globally
                 window.initCustomDropdowns = function() {
-                    const selects = document.querySelectorAll('select:not(.custom-dropdown-hidden)');
+                    const selects = document.querySelectorAll('select:not(.custom-dropdown-hidden):not(.bypass-custom-select)');
                     selects.forEach(select => {
                         if (select.closest('.custom-dropdown') || select.style.display === 'none' || select.classList.contains('custom-dropdown-hidden')) return;
 
