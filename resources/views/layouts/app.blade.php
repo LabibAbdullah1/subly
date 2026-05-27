@@ -400,7 +400,7 @@
 
                 // Initialize sleek dropdown selectors globally
                 window.initCustomDropdowns = function() {
-                    const selects = document.querySelectorAll('select:not(.custom-dropdown-hidden):not(.bypass-custom-select)');
+                    const selects = document.querySelectorAll('select:not(.custom-dropdown-hidden)');
                     selects.forEach(select => {
                         if (select.closest('.custom-dropdown') || select.style.display === 'none' || select.classList.contains('custom-dropdown-hidden')) return;
 
@@ -453,31 +453,45 @@
                         const menu = document.createElement('div');
                         menu.className = 'custom-dropdown-menu absolute left-0 right-0 mt-1.5 bg-neutral-950 border border-neutral-900 rounded-xl shadow-2xl py-1.5 z-[99999] opacity-0 scale-95 pointer-events-none transition-all duration-150 origin-top max-h-60 overflow-y-auto scrollbar-thin';
                         
-                        Array.from(select.options).forEach((opt, idx) => {
-                            const item = document.createElement('div');
-                            item.className = 'custom-dropdown-item px-4 py-2 text-xs sm:text-sm text-neutral-400 hover:bg-neutral-900 hover:text-white cursor-pointer transition-colors font-medium select-none truncate';
-                            if (opt.selected) item.className += ' bg-neutral-900 text-white font-semibold';
-                            if (opt.disabled) item.className += ' opacity-40 cursor-not-allowed pointer-events-none';
-                            
-                            item.textContent = opt.textContent;
-                            item.dataset.value = opt.value;
-
-                            item.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                if (opt.disabled) return;
-
-                                select.selectedIndex = idx;
-                                menu.querySelectorAll('.custom-dropdown-item').forEach(el => el.classList.remove('bg-neutral-900', 'text-white', 'font-semibold'));
-                                item.classList.add('bg-neutral-900', 'text-white', 'font-semibold');
+                        const rebuildOptions = () => {
+                            menu.innerHTML = '';
+                            Array.from(select.options).forEach((opt, idx) => {
+                                const item = document.createElement('div');
+                                item.className = 'custom-dropdown-item px-4 py-2 text-xs sm:text-sm text-neutral-400 hover:bg-neutral-900 hover:text-white cursor-pointer transition-colors font-medium select-none truncate';
+                                if (opt.selected) item.className += ' bg-neutral-900 text-white font-semibold';
+                                if (opt.disabled) item.className += ' opacity-40 cursor-not-allowed pointer-events-none';
                                 
-                                labelSpan.textContent = opt.textContent;
-                                closeMenu();
+                                item.textContent = opt.textContent;
+                                item.dataset.value = opt.value;
 
-                                select.dispatchEvent(new Event('change', { bubbles: true }));
+                                item.addEventListener('click', (e) => {
+                                    e.stopPropagation();
+                                    if (opt.disabled) return;
+
+                                    select.selectedIndex = idx;
+                                    menu.querySelectorAll('.custom-dropdown-item').forEach(el => el.classList.remove('bg-neutral-900', 'text-white', 'font-semibold'));
+                                    item.classList.add('bg-neutral-900', 'text-white', 'font-semibold');
+                                    
+                                    labelSpan.textContent = opt.textContent;
+                                    closeMenu();
+
+                                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                                });
+
+                                menu.appendChild(item);
                             });
 
-                            menu.appendChild(item);
+                            const currentOption = select.options[select.selectedIndex] || select.options[0];
+                            labelSpan.textContent = currentOption ? currentOption.textContent : 'Select...';
+                        };
+
+                        rebuildOptions();
+
+                        // Set up MutationObserver to watch for changes to the native select's options
+                        const observer = new MutationObserver(() => {
+                            rebuildOptions();
                         });
+                        observer.observe(select, { childList: true, subtree: true, characterData: true });
 
                         const openMenu = () => {
                             document.querySelectorAll('.custom-dropdown-menu').forEach(m => {

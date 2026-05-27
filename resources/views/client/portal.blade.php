@@ -260,7 +260,7 @@
                                                         $el.appendChild(opt);
                                                     });
                                                 "
-                                                class="bypass-custom-select input-field font-semibold cursor-pointer">
+                                                class="input-field font-semibold cursor-pointer">
                                         </select>
                                         <p class="text-[9px] text-neutral-550 mt-1 font-semibold">Silakan pilih branch yang ingin Anda deploy ke subdomain ini.</p>
                                     </div>
