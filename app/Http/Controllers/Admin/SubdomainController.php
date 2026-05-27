@@ -127,4 +127,26 @@ class SubdomainController extends Controller
         $subdomain->delete();
         return redirect()->route('admin.subdomains.index')->with('success', 'Subdomain deleted successfully.');
     }
+
+    /**
+     * Admin: Set or clear a per-subdomain custom storage quota override.
+     * Accessible from the Disk Monitoring page.
+     */
+    public function updateStorageOverride(Request $request, Subdomain $subdomain)
+    {
+        $validated = $request->validate([
+            'storage_override_mb' => 'nullable|integer|min:1|max:102400', // max 100 GB
+        ]);
+
+        $subdomain->update([
+            'storage_override_mb' => $validated['storage_override_mb'] ?: null, // null = follow plan
+        ]);
+
+        $label = $validated['storage_override_mb']
+            ? "{$validated['storage_override_mb']} MB"
+            : 'Mengikuti paket';
+
+        return redirect()->route('admin.disk.index')
+            ->with('success', "Kuota storage {$subdomain->full_domain} diperbarui: {$label}.");
+    }
 }

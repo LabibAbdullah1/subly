@@ -149,7 +149,13 @@
                                 </td>
                                 <td class="table-td">
                                     <span class="text-xs font-bold text-neutral-200 block uppercase">{{ $item['plan_name'] }}</span>
-                                    <span class="text-[9px] text-neutral-500 font-extrabold uppercase mt-0.5 block tracking-wider">Batas: {{ $item['max_storage_mb'] }} MB</span>
+                                    @if($subdomain->storage_override_mb)
+                                        <span class="text-[9px] font-extrabold uppercase mt-0.5 block tracking-wider text-amber-400" title="Batas kustom ditetapkan oleh Admin">
+                                            ✎ Override: {{ $subdomain->storage_override_mb }} MB
+                                        </span>
+                                    @else
+                                        <span class="text-[9px] text-neutral-500 font-extrabold uppercase mt-0.5 block tracking-wider">Batas Paket: {{ $item['max_storage_mb'] }} MB</span>
+                                    @endif
                                 </td>
                                 <td class="table-td text-center font-mono text-xs font-semibold text-neutral-350">
                                     {{ $item['dir_mb'] >= 1 ? $item['dir_mb'] . ' MB' : round($item['dir_bytes']/1024, 1) . ' KB' }}
@@ -180,9 +186,43 @@
                                     </div>
                                 </td>
                                 <td class="table-td text-right">
-                                    <div class="flex items-center justify-end gap-3.5">
-                                        <a href="{{ route('admin.subdomains.show', $subdomain) }}" wire:navigate class="text-xs font-bold uppercase tracking-wider text-white hover:underline transition-colors">Detail</a>
-                                        <a href="{{ route('admin.users.show', $item['user']) }}" wire:navigate class="text-xs font-bold uppercase tracking-wider text-neutral-500 hover:text-white transition-colors">Profil Klien</a>
+                                    <div class="flex flex-col items-end gap-2">
+                                        {{-- Quick storage override form --}}
+                                        <form action="{{ route('admin.subdomains.storage_override', $subdomain) }}" method="POST"
+                                              class="flex items-center gap-1.5 group/sform"
+                                              id="storage-form-{{ $subdomain->id }}"
+                                              title="Set kuota storage kustom. Kosongkan untuk mengikuti paket.">
+                                            @csrf
+                                            <input
+                                                type="number"
+                                                name="storage_override_mb"
+                                                min="1"
+                                                max="102400"
+                                                placeholder="MB…"
+                                                value="{{ $subdomain->storage_override_mb }}"
+                                                class="w-16 text-[10px] text-right bg-neutral-900 border border-neutral-800 focus:border-amber-500/50 rounded-md px-2 py-1 text-neutral-300 focus:outline-none focus:ring-1 focus:ring-amber-500/30 placeholder-neutral-700 font-mono transition-colors"
+                                                title="Kuota storage kustom dalam MB. Kosongkan = mengikuti paket."
+                                            />
+                                            <button type="submit"
+                                                class="text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-md border transition-all
+                                                       {{ $subdomain->storage_override_mb ? 'border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20' : 'border-neutral-800 bg-neutral-900 text-neutral-500 hover:text-white hover:border-neutral-600' }}"
+                                                title="Simpan kuota storage"
+                                            >
+                                                {{ $subdomain->storage_override_mb ? '✎' : '✓' }}
+                                            </button>
+                                            @if($subdomain->storage_override_mb)
+                                                <button type="submit" name="storage_override_mb" value=""
+                                                    class="text-[9px] font-bold text-neutral-600 hover:text-red-400 transition-colors px-1"
+                                                    title="Reset ke batas paket (hapus override)"
+                                                    onclick="this.form.querySelector('[name=storage_override_mb]').value=''"
+                                                >✕</button>
+                                            @endif
+                                        </form>
+                                        {{-- Navigation links --}}
+                                        <div class="flex items-center gap-3">
+                                            <a href="{{ route('admin.subdomains.show', $subdomain) }}" class="text-[10px] font-bold uppercase tracking-wider text-white hover:underline transition-colors">Detail</a>
+                                            <a href="{{ route('admin.users.show', $item['user']) }}" class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 hover:text-white transition-colors">Klien</a>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

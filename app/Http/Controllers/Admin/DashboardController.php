@@ -40,7 +40,9 @@ class DashboardController extends Controller
         foreach ($subdomains as $subdomain) {
             $payment = $subdomain->payments()->where('status', 'success')->latest()->first();
             $plan = $payment ? $payment->plan : null;
-            $maxStorageMB = $plan ? $plan->max_storage_mb : 50;
+            // Use per-subdomain override if admin has set one, else fall back to plan quota
+            $maxStorageMB = $subdomain->storage_override_mb
+                ?? ($plan ? $plan->max_storage_mb : 50);
 
             // 1. Directory size — PHP recursive scan of client's actual doc_root directory
             $realDirectoryBytes = 0;

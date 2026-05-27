@@ -18,6 +18,7 @@ Route::resource('plans', PlanController::class);
 Route::resource('vouchers', VoucherController::class);
 Route::resource('users', UserController::class);
 Route::resource('subdomains', SubdomainController::class);
+Route::post('subdomains/{subdomain}/storage-override', [SubdomainController::class, 'updateStorageOverride'])->name('subdomains.storage_override');
 Route::resource('databases', UserDatabaseController::class);
 Route::resource('payments', PaymentController::class)->only(['index', 'show']);
 Route::post('payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');

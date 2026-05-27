@@ -20,6 +20,7 @@ class Subdomain extends Model
         'doc_root',
         'status',
         'expired_at',
+        'storage_override_mb',
         'git_url',
         'git_branch',
         'git_token',
