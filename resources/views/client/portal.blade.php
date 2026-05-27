@@ -248,10 +248,19 @@
 
                                     <div>
                                         <label class="block text-xs font-bold text-neutral-450 uppercase tracking-widest mb-2">Pilih Branch Target</label>
-                                        <select name="git_branch" x-model="selectedBranch" class="input-field font-semibold cursor-pointer">
-                                            <template x-for="branch in gitBranches" :key="branch">
-                                                <option :value="branch" x-text="branch" class="bg-neutral-950 text-white font-mono"></option>
-                                            </template>
+                                        <select name="git_branch" x-model="selectedBranch" 
+                                                x-effect="
+                                                    $el.innerHTML = '';
+                                                    gitBranches.forEach(branch => {
+                                                        let opt = document.createElement('option');
+                                                        opt.value = branch;
+                                                        opt.textContent = branch;
+                                                        opt.className = 'bg-neutral-950 text-white font-mono';
+                                                        if (branch === selectedBranch) opt.selected = true;
+                                                        $el.appendChild(opt);
+                                                    });
+                                                "
+                                                class="input-field font-semibold cursor-pointer">
                                         </select>
                                         <p class="text-[9px] text-neutral-550 mt-1 font-semibold">Silakan pilih branch yang ingin Anda deploy ke subdomain ini.</p>
                                     </div>
