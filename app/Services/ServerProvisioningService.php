@@ -1125,6 +1125,49 @@ class ServerProvisioningService
     }
 
     /**
+     * Helper to run CloudLinux Selector CLI command directly on the server.
+     */
+    protected function runCloudlinuxSelectorCli(string $action, string $cleanDir, array $additionalOpts = []): array
+    {
+        try {
+            $opts = array_merge(['app_root' => $cleanDir], $additionalOpts);
+            $optsJson = json_encode($opts, JSON_UNESCAPED_SLASHES);
+            
+            // Format command
+            $cmd = "cloudlinux-selector " . escapeshellarg($action) . " --json --opts " . escapeshellarg($optsJson) . " 2>&1";
+            
+            Log::info("Executing CloudLinux CLI: {$cmd}");
+            $output = shell_exec($cmd);
+            Log::info("CloudLinux CLI Output: " . $output);
+
+            if (empty($output)) {
+                throw new \Exception("Execution returned empty output.");
+            }
+
+            $decoded = json_decode($output, true);
+            if ($decoded && isset($decoded['result']) && $decoded['result'] === 'success') {
+                return ['success' => true, 'data' => $decoded];
+            }
+
+            // Fallback: Jika tidak berupa JSON tetapi mengandung pesan sukses
+            if (str_contains(strtolower($output), 'success') || str_contains(strtolower($output), 'complete') || str_contains(strtolower($output), 'created')) {
+                return ['success' => true, 'output' => $output];
+            }
+
+            // Jika aplikasi sudah terdaftar, anggap sukses
+            if (str_contains(strtolower($output), 'already exists') || str_contains(strtolower($output), 'already exist')) {
+                return ['success' => true, 'warning' => 'already_exists', 'output' => $output];
+            }
+
+            $errorMessage = $decoded['message'] ?? $decoded['reason'] ?? $output;
+            throw new \Exception($errorMessage);
+        } catch (\Exception $e) {
+            Log::error("CloudLinux Selector CLI Failed: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
      * Create/Register Node.js Selector App in cPanel.
      */
     public function createNodeJsApp(Subdomain $subdomain, string $startupFile = 'server.js', string $nodeVersion = '20', string $mode = 'production'): array
@@ -1138,27 +1181,19 @@ class ServerProvisioningService
             return ['success' => true];
         }
 
-        try {
-            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
-            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-            Log::info("Registering NodeJS App in cPanel Lvemanager for {$subdomain->full_domain}...");
-            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
-                'action' => 'create',
-                'type' => 'nodejs',
-                'app_root' => $cleanDir,
-                'app_uri' => '/',
-                'domain' => $subdomain->full_domain,
-                'startup_file' => $startupFile,
-                'version' => $nodeVersion,
-                'app_mode' => $mode,
-            ]);
+        // Menggunakan prefix interpreter versi CloudLinux (misal node-v20)
+        $interpreter = "node-v" . $nodeVersion;
 
-            return $response;
-        } catch (\Exception $e) {
-            Log::error("Failed to register Node.js App in cPanel: " . $e->getMessage());
-            throw $e;
-        }
+        return $this->runCloudlinuxSelectorCli('create', $cleanDir, [
+            'app_mode' => $mode,
+            'interpreter' => $interpreter,
+            'domain' => $subdomain->full_domain,
+            'app_uri' => '/',
+            'startup_file' => $startupFile,
+        ]);
     }
 
     /**
@@ -1171,22 +1206,10 @@ class ServerProvisioningService
             return ['success' => true];
         }
 
-        try {
-            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
-            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-            Log::info("Triggering 'npm install' on cPanel server for {$subdomain->full_domain}...");
-            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
-                'action' => 'install-modules',
-                'type' => 'nodejs',
-                'app_root' => $cleanDir,
-            ]);
-
-            return $response;
-        } catch (\Exception $e) {
-            Log::error("Failed to run 'npm install' on cPanel: " . $e->getMessage());
-            throw $e;
-        }
+        return $this->runCloudlinuxSelectorCli('install-modules', $cleanDir);
     }
 
     /**
@@ -1199,22 +1222,10 @@ class ServerProvisioningService
             return ['success' => true];
         }
 
-        try {
-            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
-            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-            Log::info("Restarting NodeJS App in cPanel for {$subdomain->full_domain}...");
-            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
-                'action' => 'restart',
-                'type' => 'nodejs',
-                'app_root' => $cleanDir,
-            ]);
-
-            return $response;
-        } catch (\Exception $e) {
-            Log::error("Failed to restart NodeJS App in cPanel: " . $e->getMessage());
-            throw $e;
-        }
+        return $this->runCloudlinuxSelectorCli('restart', $cleanDir);
     }
 
     /**
@@ -1227,22 +1238,10 @@ class ServerProvisioningService
             return ['success' => true];
         }
 
-        try {
-            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
-            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-            Log::info("Stopping NodeJS App in cPanel for {$subdomain->full_domain}...");
-            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
-                'action' => 'stop',
-                'type' => 'nodejs',
-                'app_root' => $cleanDir,
-            ]);
-
-            return $response;
-        } catch (\Exception $e) {
-            Log::error("Failed to stop NodeJS App in cPanel: " . $e->getMessage());
-            throw $e;
-        }
+        return $this->runCloudlinuxSelectorCli('stop', $cleanDir);
     }
 
     /**
@@ -1255,22 +1254,10 @@ class ServerProvisioningService
             return ['success' => true];
         }
 
-        try {
-            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
-            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-            Log::info("Starting NodeJS App in cPanel for {$subdomain->full_domain}...");
-            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
-                'action' => 'start',
-                'type' => 'nodejs',
-                'app_root' => $cleanDir,
-            ]);
-
-            return $response;
-        } catch (\Exception $e) {
-            Log::error("Failed to start NodeJS App in cPanel: " . $e->getMessage());
-            throw $e;
-        }
+        return $this->runCloudlinuxSelectorCli('start', $cleanDir);
     }
 
     /**
@@ -1283,21 +1270,9 @@ class ServerProvisioningService
             return ['success' => true];
         }
 
-        try {
-            $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
-            $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $cleanDir = ltrim(str_replace(["/home/{$cpanelUser}/", "home/{$cpanelUser}/"], '', $subdomain->doc_root), '/');
 
-            Log::info("Deregistering NodeJS App from cPanel Lvemanager for {$subdomain->full_domain}...");
-            $response = $this->callCpanelApi('Lvemanager', 'cl-selector', [
-                'action' => 'delete',
-                'type' => 'nodejs',
-                'app_root' => $cleanDir,
-            ]);
-
-            return $response;
-        } catch (\Exception $e) {
-            Log::error("Failed to delete Node.js App from cPanel: " . $e->getMessage());
-            throw $e;
-        }
+        return $this->runCloudlinuxSelectorCli('destroy', $cleanDir);
     }
 }
