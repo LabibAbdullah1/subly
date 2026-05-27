@@ -45,7 +45,7 @@
                 @if (Route::has('login'))
                     <nav class="flex items-center gap-6">
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="text-xs font-bold uppercase tracking-wider text-neutral-450 hover:text-white transition-colors font-heading">
+                            <a href="{{ route('dashboard') }}" class="text-xs font-bold uppercase tracking-wider text-neutral-450 hover:text-white transition-colors font-heading">
                                 Dashboard
                             </a>
                         @else
@@ -84,7 +84,7 @@
                 
                 <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="btn-primary w-full sm:w-auto px-8 gap-2.5">
+                        <a href="{{ route('dashboard') }}" class="btn-primary w-full sm:w-auto px-8 gap-2.5">
                             <span>Buka Dashboard</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>

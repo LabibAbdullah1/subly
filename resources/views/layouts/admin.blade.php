@@ -261,6 +261,12 @@
                             <h4 class="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-3 px-3">Infrastruktur</h4>
                             <ul class="space-y-1">
                                 <li>
+                                    <a @click="sidebarOpen = false" href="https://arenhost.id/client/clientarea.php" target="_blank" class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold text-neutral-400 hover:text-white hover:bg-neutral-900/40 active:scale-[0.98] transition-all">
+                                        <svg class="w-4.5 h-4.5 text-neutral-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                                        {{ __('Arenhost ID') }}
+                                    </a>
+                                </li>
+                                <li>
                                     <a @click="sidebarOpen = false" href="{{ route('admin.deployments.index') }}" wire:navigate class="flex items-center gap-3.5 px-4 h-12 rounded-xl text-xs font-semibold {{ request()->routeIs('admin.deployments.*') ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-900/40' }} active:scale-[0.98] transition-all">
                                         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                         {{ __('Deployment') }}
