@@ -32,17 +32,17 @@
                 }
             }
             $grandTotalBytes = $totalFileBytes + $totalDbBytes;
-            
-            $grandTotalDisplay = $grandTotalBytes >= 1073741824 
-                ? round($grandTotalBytes / 1073741824, 2) . ' GB' 
+
+            $grandTotalDisplay = $grandTotalBytes >= 1073741824
+                ? round($grandTotalBytes / 1073741824, 2) . ' GB'
                 : round($grandTotalBytes / 1048576, 2) . ' MB';
 
-            $totalFileDisplay = $totalFileBytes >= 1073741824 
-                ? round($totalFileBytes / 1073741824, 2) . ' GB' 
+            $totalFileDisplay = $totalFileBytes >= 1073741824
+                ? round($totalFileBytes / 1073741824, 2) . ' GB'
                 : round($totalFileBytes / 1048576, 2) . ' MB';
 
-            $totalDbDisplay = $totalDbBytes >= 1073741824 
-                ? round($totalDbBytes / 1073741824, 2) . ' GB' 
+            $totalDbDisplay = $totalDbBytes >= 1073741824
+                ? round($totalDbBytes / 1073741824, 2) . ' GB'
                 : round($totalDbBytes / 1048576, 2) . ' MB';
         @endphp
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 select-none">
@@ -218,11 +218,6 @@
                                                 >✕</button>
                                             @endif
                                         </form>
-                                        {{-- Navigation links --}}
-                                        <div class="flex items-center gap-3">
-                                            <a href="{{ route('admin.subdomains.show', $subdomain) }}" class="text-[10px] font-bold uppercase tracking-wider text-white hover:underline transition-colors">Detail</a>
-                                            <a href="{{ route('admin.users.show', $item['user']) }}" class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 hover:text-white transition-colors">Klien</a>
-                                        </div>
                                     </div>
                                 </td>
                             </tr>
