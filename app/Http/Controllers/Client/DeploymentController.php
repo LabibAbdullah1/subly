@@ -179,8 +179,8 @@ class DeploymentController extends Controller
             throw new \Exception('Could not read ZIP file metadata.');
         }
 
-        if (($usedStorageBytes + $extractedSize) > ($plan->max_storage_mb * 1024 * 1024)) {
-            $limitMB = $plan->max_storage_mb;
+        $limitMB = $subdomain->storage_override_mb ?? $plan->max_storage_mb;
+        if (($usedStorageBytes + $extractedSize) > ($limitMB * 1024 * 1024)) {
             $usedMB = round($usedStorageBytes / 1048576, 2);
             $newMB = round($extractedSize / 1048576, 2);
             throw new \Exception("Storage limit exceeded. Limit: $limitMB MB. Current: $usedMB MB. New site: $newMB MB.");

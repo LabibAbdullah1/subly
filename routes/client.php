@@ -58,4 +58,8 @@ Route::prefix('subdomains')->name('subdomains.')->group(function () {
     Route::post('/{subdomain}/git/check-repository', [\App\Http\Controllers\Client\GitDeploymentController::class, 'checkRepository'])->name('git.check-repository');
     Route::post('/{subdomain}/git/pull', [\App\Http\Controllers\Client\GitDeploymentController::class, 'pull'])->name('git.pull');
     Route::post('/{subdomain}/git/disconnect', [\App\Http\Controllers\Client\GitDeploymentController::class, 'disconnect'])->name('git.disconnect');
+
+    // File Manager Management
+    Route::get('/{subdomain}/file-manager', [\App\Http\Controllers\Client\FileManagerController::class, 'index'])->name('file-manager');
+    Route::delete('/{subdomain}/file-manager', [\App\Http\Controllers\Client\FileManagerController::class, 'destroy'])->name('file-manager.destroy');
 });

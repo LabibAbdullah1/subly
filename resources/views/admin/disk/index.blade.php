@@ -147,14 +147,17 @@
                                         Klien: {{ $item['user']->name }} ({{ $item['user']->email }})
                                     </div>
                                 </td>
-                                <td class="table-td">
-                                    <span class="text-xs font-bold text-neutral-200 block uppercase">{{ $item['plan_name'] }}</span>
+                                 <td class="table-td">
+                                    <span class="text-xs font-bold text-neutral-200 block uppercase tracking-tight">{{ $item['plan_name'] }}</span>
                                     @if($subdomain->storage_override_mb)
-                                        <span class="text-[9px] font-extrabold uppercase mt-0.5 block tracking-wider text-amber-400" title="Batas kustom ditetapkan oleh Admin">
-                                            ✎ Override: {{ $subdomain->storage_override_mb }} MB
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 text-amber-400 mt-1 select-none shadow-[0_2px_8px_rgba(245,158,11,0.05)]" title="Batas kustom ditetapkan oleh Admin">
+                                            <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                            </svg>
+                                            Override: {{ $subdomain->storage_override_mb }} MB
                                         </span>
                                     @else
-                                        <span class="text-[9px] text-neutral-500 font-extrabold uppercase mt-0.5 block tracking-wider">Batas Paket: {{ $item['max_storage_mb'] }} MB</span>
+                                        <span class="text-[9px] text-neutral-500 font-extrabold uppercase mt-1 block tracking-wider">Batas Paket: {{ $item['max_storage_mb'] }} MB</span>
                                     @endif
                                 </td>
                                 <td class="table-td text-center font-mono text-xs font-semibold text-neutral-350">
@@ -186,36 +189,63 @@
                                     </div>
                                 </td>
                                 <td class="table-td text-right">
-                                    <div class="flex flex-col items-end gap-2">
+                                    <div class="flex items-center justify-end">
                                         {{-- Quick storage override form --}}
                                         <form action="{{ route('admin.subdomains.storage_override', $subdomain) }}" method="POST"
-                                              class="flex items-center gap-1.5 group/sform"
-                                              id="storage-form-{{ $subdomain->id }}"
-                                              title="Set kuota storage kustom. Kosongkan untuk mengikuti paket.">
+                                              class="flex items-center gap-2 group/sform relative"
+                                              id="storage-form-{{ $subdomain->id }}">
                                             @csrf
-                                            <input
-                                                type="number"
-                                                name="storage_override_mb"
-                                                min="1"
-                                                max="102400"
-                                                placeholder="MB…"
-                                                value="{{ $subdomain->storage_override_mb }}"
-                                                class="w-16 text-[10px] text-right bg-neutral-900 border border-neutral-800 focus:border-amber-500/50 rounded-md px-2 py-1 text-neutral-300 focus:outline-none focus:ring-1 focus:ring-amber-500/30 placeholder-neutral-700 font-mono transition-colors"
-                                                title="Kuota storage kustom dalam MB. Kosongkan = mengikuti paket."
-                                            />
+                                            <div class="relative flex items-center">
+                                                <input
+                                                    type="number"
+                                                    name="storage_override_mb"
+                                                    min="1"
+                                                    max="102400"
+                                                    placeholder="Batas"
+                                                    value="{{ $subdomain->storage_override_mb }}"
+                                                    class="w-20 pl-2 pr-7 py-1.5 text-xs text-right rounded-xl border font-mono transition-all duration-300 outline-none focus:ring-2
+                                                           {{ $subdomain->storage_override_mb 
+                                                               ? 'bg-amber-500/5 border-amber-500/30 text-amber-300 placeholder-amber-700/50 focus:border-amber-500/60 focus:ring-amber-500/10' 
+                                                               : 'bg-black border-neutral-850 text-neutral-300 placeholder-neutral-700 focus:border-neutral-500 focus:ring-neutral-500/10' }}"
+                                                    title="Kuota storage kustom (MB). Kosongkan untuk mengikuti batas paket."
+                                                />
+                                                <span class="absolute right-2 text-[9px] font-bold select-none font-sans pointer-events-none 
+                                                             {{ $subdomain->storage_override_mb ? 'text-amber-500/50' : 'text-neutral-600' }}">
+                                                    MB
+                                                </span>
+                                            </div>
+                                            
                                             <button type="submit"
-                                                class="text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-md border transition-all
-                                                       {{ $subdomain->storage_override_mb ? 'border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20' : 'border-neutral-800 bg-neutral-900 text-neutral-500 hover:text-white hover:border-neutral-600' }}"
+                                                class="p-2 rounded-xl border transition-all duration-300 flex items-center justify-center cursor-pointer active:scale-95
+                                                       {{ $subdomain->storage_override_mb 
+                                                           ? 'border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 shadow-[0_2px_8px_rgba(245,158,11,0.08)]' 
+                                                           : 'border-neutral-850 bg-neutral-900 text-neutral-500 hover:text-white hover:border-neutral-600' }}"
                                                 title="Simpan kuota storage"
                                             >
-                                                {{ $subdomain->storage_override_mb ? '✎' : '✓' }}
+                                                @if($subdomain->storage_override_mb)
+                                                    <!-- Pencil edit icon -->
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                    </svg>
+                                                @else
+                                                    <!-- Check/Save icon -->
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                    </svg>
+                                                @endif
                                             </button>
+
                                             @if($subdomain->storage_override_mb)
                                                 <button type="submit" name="storage_override_mb" value=""
-                                                    class="text-[9px] font-bold text-neutral-600 hover:text-red-400 transition-colors px-1"
+                                                    class="p-2 rounded-xl border border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/15 hover:text-red-300 hover:border-red-500/40 transition-all duration-300 flex items-center justify-center cursor-pointer active:scale-95"
                                                     title="Reset ke batas paket (hapus override)"
                                                     onclick="this.form.querySelector('[name=storage_override_mb]').value=''"
-                                                >✕</button>
+                                                >
+                                                    <!-- Close / Trash icon -->
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
                                             @endif
                                         </form>
                                     </div>

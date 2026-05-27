@@ -146,7 +146,7 @@
                                         <p class="text-xs font-bold text-neutral-350 group-hover:text-white transition-colors uppercase tracking-wider">Unggah file</p>
                                         <p class="text-[10px] text-neutral-500 font-semibold mt-1">atau seret dan lepas file ZIP ke sini</p>
                                     </div>
-                                    <p class="text-[9px] text-neutral-550 uppercase tracking-widest font-extrabold">ZIP Maks {{ $plan ? $plan->max_storage_mb : 50 }}MB</p>
+                                    <p class="text-[9px] text-neutral-550 uppercase tracking-widest font-extrabold">ZIP Maks {{ $subdomain->storage_override_mb ?? ($plan ? $plan->max_storage_mb : 50) }}MB</p>
                                 </div>
 
                                 <!-- File Selected State -->
@@ -377,9 +377,9 @@
                 </div>
 
                 <!-- Sleek progress details for disk usage -->
-                @if($plan)
+                @if($plan || $subdomain->storage_override_mb)
                     @php
-                        $maxMB = $plan->max_storage_mb;
+                        $maxMB = $subdomain->storage_override_mb ?? ($plan ? $plan->max_storage_mb : 0);
                         $storagePercent = $maxMB > 0 ? min(100, round(($usedStorageMB / $maxMB) * 100, 2)) : 0;
                         
                         $storageText = 'text-white border-neutral-900 bg-neutral-950';
@@ -390,16 +390,56 @@
                     <div class="p-6 border-b border-neutral-900/60 flex flex-col gap-4">
                         <div class="flex justify-between items-center">
                             <span class="text-xs font-bold text-neutral-350 uppercase tracking-wider">Total Penggunaan Disk</span>
-                            <span class="text-[9px] font-bold {{ $storageText }} px-2 py-0.5 rounded border tracking-wide select-none">
-                                {{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB
-                                <span class="ml-1.5 opacity-80">({{ $storagePercent }}%)</span>
-                            </span>
+                            <div class="flex items-center gap-2">
+                                @if($subdomain->storage_override_mb)
+                                    <span class="px-2 py-0.5 inline-flex text-[9px] font-bold uppercase tracking-wider rounded-md border border-amber-500/20 bg-amber-500/10 text-amber-400 select-none animate-pulse" title="Batas penyimpanan disesuaikan oleh Admin">
+                                        Override Admin
+                                    </span>
+                                @endif
+                                <span class="text-[9px] font-bold {{ $storageText }} px-2 py-0.5 rounded border tracking-wide select-none">
+                                    {{ $usedStorageDisplay }} / {{ $maxMB }} MB
+                                    <span class="ml-1.5 opacity-80">({{ $storagePercent }}%)</span>
+                                </span>
+                            </div>
                         </div>
                         
                         <!-- Sleek 6px loader -->
                         <div class="w-full bg-neutral-900/60 rounded-full h-1.5 overflow-hidden">
                             <div class="bg-white h-1.5 rounded-full transition-all duration-700 ease-out" style="width: {{ $storagePercent }}%"></div>
                         </div>
+
+                        @if($storagePercent >= 85)
+                            @php
+                                $isFull = $storagePercent >= 100;
+                                $alertBorder = $isFull ? 'border-red-500/20 bg-red-500/5' : 'border-amber-500/20 bg-amber-500/5';
+                                $alertIconBg = $isFull ? 'bg-red-500/10 text-red-400' : 'bg-amber-500/10 text-amber-400';
+                                $alertTitleColor = $isFull ? 'text-red-400' : 'text-amber-400';
+                                $alertTitle = $isFull ? 'Kapasitas Penyimpanan Penuh (' . $storagePercent . '%)' : 'Penyimpanan Hampir Penuh (' . $storagePercent . '%)';
+                                $alertDesc = $isFull 
+                                    ? 'Penyimpanan Anda telah melebihi batas maksimum. Harap hapus beberapa file lama atau ajukan permintaan tambahan kapasitas penyimpanan.' 
+                                    : 'Penyimpanan Anda hampir penuh. Deploy baru atau aktivitas database mungkin akan terganggu.';
+                                $btnColorClass = $isFull 
+                                    ? 'border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 shadow-[0_2px_12px_rgba(239,68,68,0.1)]'
+                                    : 'border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 shadow-[0_2px_12px_rgba(245,158,11,0.1)]';
+                            @endphp
+                            
+                            <div class="p-4 rounded-2xl border {{ $alertBorder }} flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 shadow-md">
+                                <div class="flex items-start gap-3">
+                                    <div class="p-2.5 rounded-xl {{ $alertIconBg }} shrink-0 border border-white/5 shadow-inner">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex flex-col gap-0.5">
+                                        <h4 class="text-xs font-black {{ $alertTitleColor }} uppercase tracking-wider">{{ $alertTitle }}</h4>
+                                        <p class="text-[10px] text-neutral-450 font-bold leading-relaxed">{{ $alertDesc }}</p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="openRequestDiskModal()" class="px-4 py-2 border rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shrink-0 cursor-pointer active:scale-95 text-center {{ $btnColorClass }}">
+                                    Minta Tambahan Disk
+                                </button>
+                            </div>
+                        @endif
                         
                         <!-- Detailed Breakdown Card Grid -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-3.5 border-t border-neutral-900/50">
@@ -758,7 +798,7 @@
                 
                 const sizeMB = (file.size / 1024 / 1024).toFixed(2);
                 const sizeKB = (file.size / 1024).toFixed(2);
-                const maxMB = {{ $plan ? $plan->max_storage_mb : 50 }};
+                const maxMB = {{ $subdomain->storage_override_mb ?? ($plan ? $plan->max_storage_mb : 50) }};
                 const displaySize = file.size >= 1048576 ? sizeMB + ' MB' : sizeKB + ' KB';
                 
                 defaultState.classList.add('hidden', 'opacity-0');
@@ -994,5 +1034,234 @@
                 }
             }
         }
+
+        // --- REQUEST DISK SPACE SYSTEM ---
+        let selectedDiskSize = '';
+
+        function openRequestDiskModal() {
+            const modal = document.getElementById('request-disk-modal');
+            const errorDiv = document.getElementById('request-disk-error');
+            const reasonArea = document.getElementById('request-disk-reason');
+            const customInput = document.getElementById('custom-disk-size');
+            
+            selectedDiskSize = '';
+            if (errorDiv) errorDiv.classList.add('hidden');
+            if (reasonArea) reasonArea.value = '';
+            if (customInput) customInput.value = '';
+            
+            const customContainer = document.getElementById('custom-disk-size-container');
+            if (customContainer) customContainer.classList.add('hidden');
+            
+            document.querySelectorAll('.disk-preset-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-black', 'border-white', 'shadow-lg');
+                btn.classList.add('bg-neutral-900/50', 'text-neutral-300', 'border-neutral-850');
+            });
+
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.classList.add('opacity-100');
+                }, 50);
+            }
+        }
+
+        function closeRequestDiskModal() {
+            const modal = document.getElementById('request-disk-modal');
+            if (modal) {
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        function selectDiskPreset(preset, btn) {
+            selectedDiskSize = preset;
+            
+            document.querySelectorAll('.disk-preset-btn').forEach(b => {
+                b.classList.remove('bg-white', 'text-black', 'border-white', 'shadow-lg');
+                b.classList.add('bg-neutral-900/50', 'text-neutral-300', 'border-neutral-850');
+            });
+
+            btn.classList.remove('bg-neutral-900/50', 'text-neutral-300', 'border-neutral-850');
+            btn.classList.add('bg-white', 'text-black', 'border-white', 'shadow-lg');
+
+            const customContainer = document.getElementById('custom-disk-size-container');
+            if (customContainer) {
+                if (preset === 'Custom') {
+                    customContainer.classList.remove('hidden');
+                    const customInput = document.getElementById('custom-disk-size');
+                    if (customInput) customInput.focus();
+                } else {
+                    customContainer.classList.add('hidden');
+                }
+            }
+        }
+
+        async function submitDiskRequest() {
+            const reasonArea = document.getElementById('request-disk-reason');
+            const errorDiv = document.getElementById('request-disk-error');
+            const errorText = document.getElementById('request-disk-error-text');
+            const customSizeInput = document.getElementById('custom-disk-size');
+            
+            if (errorDiv) errorDiv.classList.add('hidden');
+
+            if (!selectedDiskSize) {
+                if (errorText) errorText.innerText = "Harap pilih tambahan kapasitas terlebih dahulu.";
+                if (errorDiv) errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            let sizeLabel = selectedDiskSize;
+            if (selectedDiskSize === 'Custom') {
+                const val = customSizeInput ? customSizeInput.value.trim() : '';
+                if (!val || val <= 0) {
+                    if (errorText) errorText.innerText = "Harap masukkan nilai kapasitas kustom yang valid (minimal 1 MB).";
+                    if (errorDiv) errorDiv.classList.remove('hidden');
+                    if (customSizeInput) customSizeInput.focus();
+                    return;
+                }
+                sizeLabel = `+${val} MB`;
+            }
+
+            const reason = reasonArea ? reasonArea.value.trim() : '';
+            if (!reason) {
+                if (errorText) errorText.innerText = "Harap berikan alasan singkat agar permintaan Anda disetujui Admin.";
+                if (errorDiv) errorDiv.classList.remove('hidden');
+                if (reasonArea) reasonArea.focus();
+                return;
+            }
+
+            const currentUsage = "{{ $usedStorageDisplay }} / {{ $maxMB }} MB";
+            const messageText = `Halo Admin 👋,\n\nSaya ingin meminta tambahan kapasitas penyimpanan disk untuk subdomain *{{ $subdomain->full_domain }}*.\n\n📊 Kapasitas saat ini: *${currentUsage}*\n💾 Tambahan kapasitas yang diminta: *${sizeLabel}*\n📝 Alasan / Catatan:\n"${reason}"`;
+
+            const btn = document.getElementById('submit-disk-req-btn');
+            const btnText = document.getElementById('submit-disk-req-btn-text');
+            const spinner = document.getElementById('submit-disk-req-btn-spinner');
+
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+            }
+            if (spinner) spinner.classList.remove('hidden');
+            if (btnText) btnText.innerText = "Mengirim...";
+
+            try {
+                const formData = new FormData();
+                formData.append('message', messageText);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                const response = await fetch('{{ route('client.chat.store') }}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Gagal mengirim permintaan.');
+                }
+
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Permintaan dikirim! Mengalihkan ke Chat...');
+                }
+
+                closeRequestDiskModal();
+                
+                setTimeout(() => {
+                    window.location.href = '{{ route('client.chat.index') }}';
+                }, 1500);
+
+            } catch (err) {
+                console.error('Request disk space error:', err);
+                if (errorText) errorText.innerText = err.message || "Terjadi kesalahan sistem. Silakan coba lagi.";
+                if (errorDiv) errorDiv.classList.remove('hidden');
+                
+                if (btn) {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                }
+                if (spinner) spinner.classList.add('hidden');
+                if (btnText) btnText.innerText = "Kirim Permintaan";
+            }
+        }
     </script>
+
+    <!-- Request Disk Space Modal -->
+    <div id="request-disk-modal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/85 backdrop-blur-md transition-all duration-300 opacity-0 select-none">
+        <div class="bg-neutral-950 border border-neutral-900 rounded-2xl max-w-md w-full p-6 mx-4 shadow-2xl flex flex-col relative overflow-hidden transition-all duration-300 transform scale-95">
+            <!-- Faint Ambient Circle -->
+            <div class="absolute -right-20 -top-20 w-48 h-48 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex items-center gap-3.5 mb-5 pb-4 border-b border-neutral-900">
+                <div class="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-850 flex items-center justify-center text-white shrink-0">
+                    <svg class="w-4.5 h-4.5 text-neutral-450" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75" />
+                    </svg>
+                </div>
+                <div class="text-left">
+                    <h3 class="text-sm font-bold text-white tracking-tight">Minta Tambahan Disk</h3>
+                    <p class="text-[10px] text-neutral-500 font-bold mt-0.5">Kirim permintaan tambahan penyimpanan ke Admin.</p>
+                </div>
+                <button type="button" onclick="closeRequestDiskModal()" class="absolute top-4 right-4 text-neutral-500 hover:text-white p-1 rounded-lg border border-transparent hover:border-neutral-900 transition-all cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-4 text-left">
+                <!-- Size presets -->
+                <div>
+                    <label class="block text-[10px] font-bold text-neutral-450 uppercase tracking-widest mb-2.5">Pilih Tambahan Kapasitas</label>
+                    <div class="grid grid-cols-3 gap-2" id="disk-presets-container">
+                        <button type="button" onclick="selectDiskPreset('+100 MB', this)" class="disk-preset-btn px-3 py-2.5 rounded-xl border border-neutral-850 bg-neutral-900/50 hover:bg-neutral-900 text-xs font-bold text-neutral-300 hover:text-white transition-all duration-200 cursor-pointer text-center active:scale-95">+100 MB</button>
+                        <button type="button" onclick="selectDiskPreset('+250 MB', this)" class="disk-preset-btn px-3 py-2.5 rounded-xl border border-neutral-850 bg-neutral-900/50 hover:bg-neutral-900 text-xs font-bold text-neutral-300 hover:text-white transition-all duration-200 cursor-pointer text-center active:scale-95">+250 MB</button>
+                        <button type="button" onclick="selectDiskPreset('+500 MB', this)" class="disk-preset-btn px-3 py-2.5 rounded-xl border border-neutral-850 bg-neutral-900/50 hover:bg-neutral-900 text-xs font-bold text-neutral-300 hover:text-white transition-all duration-200 cursor-pointer text-center active:scale-95">+500 MB</button>
+                        <button type="button" onclick="selectDiskPreset('+1 GB', this)" class="disk-preset-btn px-3 py-2.5 rounded-xl border border-neutral-850 bg-neutral-900/50 hover:bg-neutral-900 text-xs font-bold text-neutral-300 hover:text-white transition-all duration-200 cursor-pointer text-center active:scale-95">+1 GB</button>
+                        <button type="button" onclick="selectDiskPreset('Custom', this)" class="disk-preset-btn px-3 py-2.5 rounded-xl border border-neutral-850 bg-neutral-900/50 hover:bg-neutral-900 text-xs font-bold text-neutral-300 hover:text-white transition-all duration-200 cursor-pointer text-center active:scale-95">Custom</button>
+                    </div>
+                </div>
+
+                <!-- Custom Size Input (hidden by default) -->
+                <div id="custom-disk-size-container" class="hidden animate-fade-in">
+                    <label class="block text-[10px] font-bold text-neutral-450 uppercase tracking-widest mb-1.5">Kapasitas Kustom (MB)</label>
+                    <div class="relative flex items-center bg-black border border-neutral-850 rounded-xl px-3.5 py-2.5 focus-within:border-neutral-500 transition-all">
+                        <input type="number" id="custom-disk-size" min="1" max="51200" class="bg-transparent border-none p-0 focus:ring-0 text-white font-mono text-xs sm:text-sm w-full outline-none" placeholder="Masukkan angka MB (misal: 750)">
+                        <span class="text-neutral-500 font-mono text-xs pl-2 ml-2 border-l border-neutral-850 shrink-0 select-none">MB</span>
+                    </div>
+                </div>
+
+                <!-- Reason text area -->
+                <div>
+                    <label class="block text-[10px] font-bold text-neutral-450 uppercase tracking-widest mb-1.5">Alasan / Catatan Dukungan</label>
+                    <textarea id="request-disk-reason" rows="3" class="input-field placeholder-neutral-600 resize-none font-medium text-xs sm:text-sm" placeholder="Jelaskan kebutuhan kapasitas tambahan Anda (misal: penambahan file media, database bertambah, dll.)"></textarea>
+                </div>
+
+                <!-- Error Notice -->
+                <div id="request-disk-error" class="hidden p-3 bg-red-950/20 border border-red-900/30 text-red-400 text-xs rounded-xl font-bold flex items-center gap-2 animate-fade-in">
+                    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"></path></svg>
+                    <span id="request-disk-error-text">Harap isi formulir dengan benar.</span>
+                </div>
+
+                <div class="flex gap-3 mt-2 select-none">
+                    <!-- Cancel Button -->
+                    <button type="button" onclick="closeRequestDiskModal()" class="px-4 border border-neutral-850 hover:border-neutral-700 bg-neutral-900/50 hover:bg-neutral-900 text-neutral-300 font-bold uppercase tracking-wider text-[10px] h-12 rounded-xl flex items-center justify-center shrink-0 cursor-pointer transition-all active:scale-95">
+                        Batal
+                    </button>
+                    
+                    <!-- Submit Button -->
+                    <button type="button" id="submit-disk-req-btn" onclick="submitDiskRequest()" class="flex-1 btn-primary h-12 flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer shadow-[0_4px_16px_rgba(255,255,255,0.05)]">
+                        <span id="submit-disk-req-btn-text" class="font-extrabold uppercase text-xs tracking-wider">Kirim Permintaan</span>
+                        <svg id="submit-disk-req-btn-spinner" class="hidden animate-spin h-4.5 w-4.5 text-black" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

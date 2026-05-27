@@ -164,6 +164,27 @@ class GitDeploymentService
             }
         }
 
+        // 4.5 Storage Limit Check (respecting admin override)
+        $user = $subdomain->user;
+        $payment = $subdomain->payments()->where('status', 'success')->latest()->first() 
+                   ?? $user->payments()->with('plan')->where('status', 'success')->latest()->first();
+        $plan = $payment ? $payment->plan : null;
+        $limitMB = $subdomain->storage_override_mb ?? ($plan ? $plan->max_storage_mb : 50);
+
+        $usedStorageBytes = 0;
+        foreach ($subdomain->deployments as $deployment) {
+            if ($deployment->zip_path && Storage::exists($deployment->zip_path)) {
+                $usedStorageBytes += $deployment->zip_size > 0 ? $deployment->zip_size : Storage::size($deployment->zip_path);
+            }
+        }
+
+        if (($usedStorageBytes + $extractedSize) > ($limitMB * 1024 * 1024)) {
+            $usedMB = round($usedStorageBytes / 1048576, 2);
+            $newMB = round($extractedSize / 1048576, 2);
+            $this->cleanUpLocal($tempDir);
+            throw new \Exception("Batas penyimpanan terlampaui. Batas Anda: $limitMB MB. Terpakai: $usedMB MB. Tambahan repositori baru: $newMB MB.");
+        }
+
         // 5. Repack to a clean structure zip
         $cleanZipPath = $tempDir . '/repacked_deployment.zip';
         $cleanZip = new ZipArchive();
