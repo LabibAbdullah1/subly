@@ -54,7 +54,7 @@
 
             <!-- Upload File & Git Deployment Card -->
             <div x-data="{ 
-                activeDeployTab: '{{ $subdomain->git_url ? 'git' : 'zip' }}', 
+                activeDeployTab: 'git', 
                 isGitDeploying: false,
                 isGitChecking: false,
                 isGitVerified: false,
@@ -387,28 +387,52 @@
                             $storageText = 'text-red-400 bg-red-950/20 border-red-900/30';
                         }
                     @endphp
-                    <div class="p-6 border-b border-neutral-900/60">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-semibold text-neutral-350">Penggunaan Disk (Arsip ZIP + Ekstrak)</span>
+                    <div class="p-6 border-b border-neutral-900/60 flex flex-col gap-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-neutral-350 uppercase tracking-wider">Total Penggunaan Disk</span>
                             <span class="text-[9px] font-bold {{ $storageText }} px-2 py-0.5 rounded border tracking-wide select-none">
                                 {{ $usedStorageDisplay }} / {{ $plan->max_storage_mb }} MB
                                 <span class="ml-1.5 opacity-80">({{ $storagePercent }}%)</span>
                             </span>
                         </div>
                         
-                        <!-- Sleek 3px loader -->
-                        <div class="w-full bg-neutral-900 rounded-full h-1 overflow-hidden mb-2.5">
-                            <div class="bg-white h-1 rounded-full transition-all duration-700 ease-out" style="width: {{ $storagePercent }}%"></div>
+                        <!-- Sleek 6px loader -->
+                        <div class="w-full bg-neutral-900/60 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-white h-1.5 rounded-full transition-all duration-700 ease-out" style="width: {{ $storagePercent }}%"></div>
                         </div>
                         
-                        @if($liveSiteBytes > 0)
-                            <div class="flex justify-between items-center pt-2.5 border-t border-neutral-900/50">
-                                <span class="text-[9px] uppercase tracking-widest text-neutral-500 font-bold">Root Dokumen Tidak Dikompresi</span>
-                                <span class="text-[10px] text-white font-mono font-bold">
-                                    {{ $liveSiteBytes >= 1048576 ? round($liveSiteBytes / 1048576, 2) . ' MB' : round($liveSiteBytes / 1024, 2) . ' KB' }}
-                                </span>
+                        <!-- Detailed Breakdown Card Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-3.5 border-t border-neutral-900/50">
+                            <!-- Left: File size -->
+                            <div class="bg-neutral-950/40 border border-neutral-900/40 p-3 rounded-xl flex items-center justify-between gap-3.5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-7 h-7 rounded-lg bg-neutral-900 border border-neutral-850 flex items-center justify-center text-neutral-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15a2.25 2.25 0 012.25 2.25v.75m-19.5 0A2.25 2.25 0 004.5 15h15a2.25 2.25 0 002.25-2.25m-19.5 0v.25A2.25 2.25 0 004.5 17.5h15a2.25 2.25 0 002.25-2.25M12 9.75V3m0 0L9 6m3-3l3 3" /></svg>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-[8px] uppercase tracking-widest text-neutral-500 font-extrabold">Ukuran Direktori (Files)</span>
+                                        <span class="text-xs font-bold text-white mt-0.5">
+                                            {{ $realDirectoryBytes >= 1048576 ? round($realDirectoryBytes / 1048576, 2) . ' MB' : round($realDirectoryBytes / 1024, 2) . ' KB' }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                        @endif
+
+                            <!-- Right: Database size -->
+                            <div class="bg-neutral-950/40 border border-neutral-900/40 p-3 rounded-xl flex items-center justify-between gap-3.5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-7 h-7 rounded-lg bg-neutral-900 border border-neutral-850 flex items-center justify-center text-neutral-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75" /></svg>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-[8px] uppercase tracking-widest text-neutral-500 font-extrabold">MySQL Database</span>
+                                        <span class="text-xs font-bold text-white mt-0.5">
+                                            {{ $realDatabaseBytes >= 1048576 ? round($realDatabaseBytes / 1048576, 2) . ' MB' : round($realDatabaseBytes / 1024, 2) . ' KB' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 @endif
 

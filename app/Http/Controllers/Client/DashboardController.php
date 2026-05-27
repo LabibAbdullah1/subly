@@ -44,30 +44,58 @@ class DashboardController extends Controller
         $feedbacks = class_exists(\App\Models\Feedback::class) ? $user->feedback()->get()->keyBy('plan_id') : collect();
         $purchasedPlans = $user->payments()->with('plan')->where('status', 'success')->get()->pluck('plan')->filter()->unique('id');
 
-        $usedStorageBytes = 0;
-        $liveSiteBytes = 0;
-        
-        foreach ($subdomain->deployments as $deployment) {
-            if ($deployment->zip_path && \Storage::exists($deployment->zip_path)) {
-                // Count the ZIP archive size
-                $usedStorageBytes += $deployment->zip_size > 0 ? $deployment->zip_size : \Storage::size($deployment->zip_path);
+        // Calculate actual directory size of the subdomain's root directory on the server
+        $realDirectoryBytes = 0;
+        $latestSuccess = $subdomain->deployments()->where('status', 'success')->latest()->first();
+        $docRoot = $subdomain->doc_root;
+
+        if (is_dir($docRoot)) {
+            try {
+                $files = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($docRoot, \RecursiveDirectoryIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::LEAVES_ONLY
+                );
+                foreach ($files as $file) {
+                    if ($file->isFile()) {
+                        $realDirectoryBytes += $file->getSize();
+                    }
+                }
+            } catch (\Exception $e) {
+                // Fallback to deployment log size on failure
+                $realDirectoryBytes = $latestSuccess ? $latestSuccess->extracted_size : 0;
+            }
+        } else {
+            // Fallback if directory does not exist yet or local simulation
+            $realDirectoryBytes = $latestSuccess ? $latestSuccess->extracted_size : 0;
+        }
+
+        // Calculate actual database size used by the subdomain on MySQL
+        $realDatabaseBytes = 0;
+        $database = $subdomain->userDatabases()->first();
+        if ($database) {
+            try {
+                $dbName = $database->db_name;
+                $result = \DB::select("SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = ?", [$dbName]);
+                if (!empty($result) && isset($result[0]->size)) {
+                    $realDatabaseBytes = (int) $result[0]->size;
+                }
+            } catch (\Exception $e) {
+                \Log::warning("Gagal mengambil ukuran database untuk {$subdomain->full_domain}: " . $e->getMessage());
+                $realDatabaseBytes = 0;
             }
         }
 
-        // Add the extracted size of the latest successful deployment (the live site)
-        $latestSuccess = $subdomain->deployments()->where('status', 'success')->latest()->first();
-        if ($latestSuccess) {
-            $liveSiteBytes = $latestSuccess->extracted_size;
-        }
-
-        $totalBytes = $usedStorageBytes + $liveSiteBytes;
+        // Combine both sizes for real storage limits tracking
+        $totalBytes = $realDirectoryBytes + $realDatabaseBytes;
         
-        // Convert to MB but keep precision for small files
         $usedStorageMB = round($totalBytes / 1048576, 4);
         $usedStorageDisplay = $totalBytes >= 1048576 
             ? round($totalBytes / 1048576, 2) . ' MB' 
             : round($totalBytes / 1024, 2) . ' KB';
 
-        return view('client.portal', compact('user', 'subdomain', 'plan', 'payment', 'feedbacks', 'purchasedPlans', 'usedStorageMB', 'usedStorageDisplay', 'liveSiteBytes'));
+        return view('client.portal', compact(
+            'user', 'subdomain', 'plan', 'payment', 'feedbacks', 'purchasedPlans', 
+            'usedStorageMB', 'usedStorageDisplay', 'realDirectoryBytes', 'realDatabaseBytes'
+        ));
     }
 }
