@@ -84,11 +84,11 @@
                                                 <span class="text-[10px] text-neutral-500 font-semibold italic">{{ $deployment->created_at->diffForHumans() }}</span>
                                             </div>
                                             @if(str_contains($deployment->notes ?? '', 'GitHub'))
-                                                <div class="text-[9px] text-neutral-450 mt-1.5 select-all font-semibold truncate max-w-[220px]" title="{{ $deployment->notes }}">
+                                                <div class="text-[9px] text-neutral-450 mt-1.5 select-all font-semibold truncate w-48 sm:w-64 md:w-80 block" title="{{ $deployment->notes }}">
                                                     {{ str_replace('GitHub Pull - ', '', $deployment->notes) }}
                                                 </div>
                                             @elseif($deployment->notes)
-                                                <div class="text-[9px] text-neutral-550 mt-1.5 italic font-semibold truncate max-w-[220px]" title="{{ $deployment->notes }}">
+                                                <div class="text-[9px] text-neutral-555 mt-1.5 italic font-semibold truncate w-48 sm:w-64 md:w-80 block" title="{{ $deployment->notes }}">
                                                     Catatan: {{ $deployment->notes }}
                                                 </div>
                                             @endif
@@ -154,8 +154,8 @@
                                 @forelse($completedDeployments as $deployment)
                                     <tr class="hover:bg-neutral-900/20 transition-all duration-350 group/row">
                                         <td class="table-td px-4">
-                                            <div class="flex items-center justify-between">
-                                                <div>
+                                            <div class="flex items-center justify-between min-w-0 w-full">
+                                                <div class="min-w-0 flex-1">
                                                     <div class="text-xs font-bold text-neutral-200 group-hover/row:text-white transition-colors">{{ $deployment->subdomain?->full_domain ?? 'Subdomain Dihapus' }}</div>
                                                     <div class="text-[10px] text-neutral-500 font-semibold mt-0.5">Pemilik: {{ $deployment->subdomain?->user?->name ?? 'Pengguna Dihapus/Tidak Dikenal' }}</div>
                                                     <div class="flex flex-wrap items-center gap-2 mt-1 select-none">
@@ -168,11 +168,11 @@
                                                         @endif
                                                     </div>
                                                     @if(str_contains($deployment->notes ?? '', 'GitHub'))
-                                                        <div class="text-[9px] text-neutral-450 mt-1 select-all font-semibold truncate max-w-[220px]" title="{{ $deployment->notes }}">
+                                                        <div class="text-[9px] text-neutral-450 mt-1 select-all font-semibold truncate w-48 sm:w-64 md:w-80 block" title="{{ $deployment->notes }}">
                                                             {{ str_replace('GitHub Pull - ', '', $deployment->notes) }}
                                                         </div>
                                                     @elseif($deployment->notes)
-                                                        <div class="text-[9px] text-neutral-500 mt-1 italic font-semibold truncate max-w-[220px]" title="{{ $deployment->notes }}">
+                                                        <div class="text-[9px] text-neutral-500 mt-1 italic font-semibold truncate w-48 sm:w-64 md:w-80 block" title="{{ $deployment->notes }}">
                                                             Catatan: {{ $deployment->notes }}
                                                         </div>
                                                     @endif
