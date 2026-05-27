@@ -79,7 +79,7 @@
                 </h1>
                 
                 <p class="text-xs sm:text-sm text-neutral-450 max-w-lg mb-12 leading-relaxed font-semibold">
-                    Platform managed hosting premium yang dirancang khusus untuk mahasiswa dan pelajar. Unggah kode Anda, dan kami akan mengurus infrastruktur, keamanan database, serta subdomain secara instan.
+                    Platform managed hosting premium yang dirancang khusus untuk mahasiswa dan pelajar. Hubungkan langsung GitHub Anda atau unggah file ZIP, dan kami akan mengurus otomatisasi cPanel, keamanan database MySQL, serta pemantauan disk secara instan.
                 </p>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
@@ -111,13 +111,13 @@
                         <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Unggah ZIP</h3>
                         <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Cukup kompres file proyek Anda ke format .zip dan unggah. Kami akan mengekstrak dan menatanya untuk Anda secara otomatis.</p>
                     </div>
-                    <!-- Feature 2: Database Otomatis (Theme Standard) -->
+                    <!-- Feature 2: Monitoring Penyimpanan Real-Time (Theme Standard) -->
                     <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card">
                         <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" /></svg>
                         </div>
-                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Database Otomatis</h3>
-                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Kredensial database langsung dibuat secara otomatis dan ditampilkan dengan aman di dashboard Anda saat dibutuhkan.</p>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Penyimpanan Real-Time</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Pantau secara transparan dan akurat kapasitas penyimpanan direktori file proyek Anda beserta besaran database MySQL secara terpadu langsung dari server cPanel.</p>
                     </div>
                     <!-- Feature 3: Subdomain Aman (Theme Standard) -->
                     <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card">
@@ -135,13 +135,15 @@
                         <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">SSL / HTTPS Otomatis</h3>
                         <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Setiap subdomain dilengkapi dengan sertifikat SSL gratis (Let's Encrypt) yang aktif secara otomatis untuk menjaga keamanan data pengguna.</p>
                     </div>
-                    <!-- Feature 5: Proses 1x24 Jam (Theme Standard) -->
-                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card">
-                        <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-primary-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <!-- Feature 5: Integrasi GitHub (SPECIAL HIGHLIGHT: Glowing Badge & Emerald Accents) -->
+                    <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card relative overflow-hidden group">
+                        <span class="absolute top-3 right-3 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px] font-bold uppercase tracking-wider select-none font-heading animate-pulse">Terbaru</span>
+                        
+                        <div class="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-900 flex items-center justify-center mb-5 text-emerald-400 group-hover:scale-105 transition-transform duration-300">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                         </div>
-                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Proses 1x24 Jam</h3>
-                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Setiap pengajuan deploy diperiksa dan disiapkan secara manual dalam waktu maksimal 1x24 jam untuk menjamin konfigurasi berjalan sempurna.</p>
+                        <h3 class="text-white font-bold tracking-wide mb-2 text-sm uppercase font-heading">Integrasi GitHub</h3>
+                        <p class="text-xs sm:text-xs text-neutral-450 font-semibold leading-relaxed">Hubungkan repositori GitHub Anda secara langsung. Verifikasi akses instan, pilih target branch dinamis, dan lakukan pembaruan kode (Git Pull) 1-klik yang andal.</p>
                     </div>
                     <!-- Feature 6: Chat Dengan Admin (SPECIAL HIGHLIGHT: Brighter Purple Glow & Distinct Border Highlight on Hover) -->
                     <div class="glass-panel glass-panel-glow p-6 sm:p-8 feature-card-special relative overflow-hidden group">
