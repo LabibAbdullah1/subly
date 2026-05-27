@@ -492,6 +492,152 @@ class ServerProvisioningService
     }
 
     /**
+     * Get the actual database disk usage in bytes from cPanel UAPI.
+     * Uses Mysql::list_databases which returns disk_usage for each DB.
+     * Falls back to 0 on any failure.
+     */
+    public function getCpanelDatabaseSize(string $dbName): int
+    {
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $apiUrl = config('services.hosting_panel.url', 'https://tersius.kencang.id:2083');
+        $apiKey = config('services.hosting_panel.api_key', '');
+        $driver = config('services.hosting_panel.driver', 'log');
+
+        if ($driver !== 'cpanel' || empty($apiKey)) {
+            return 0;
+        }
+
+        $headers = ['Authorization' => "cpanel {$cpanelUser}:{$apiKey}"];
+
+        // Try HTTP UAPI first: Mysql::list_databases returns disk_usage per DB
+        try {
+            $response = \Illuminate\Support\Facades\Http::withHeaders($headers)
+                ->withoutVerifying()
+                ->timeout(10)
+                ->get("{$apiUrl}/execute/Mysql/list_databases");
+
+            if ($response->successful() && $response->json('status') == 1) {
+                $databases = $response->json('data') ?? [];
+                foreach ($databases as $db) {
+                    // cPanel returns disk_usage in bytes; db name may have cpanel prefix
+                    if (isset($db['database']) && $db['database'] === $dbName) {
+                        return (int) ($db['disk_usage'] ?? 0);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning("cPanel HTTP Mysql::list_databases failed: " . $e->getMessage());
+        }
+
+        // Fallback: Try CLI uapi
+        try {
+            $binaries = ['uapi', '/usr/bin/uapi', '/usr/local/cpanel/bin/uapi'];
+            foreach ($binaries as $bin) {
+                $cmd = "{$bin} --output=json Mysql list_databases";
+                $res = shell_exec($cmd);
+                if ($res) {
+                    $output = json_decode($res, true);
+                    if (isset($output['status']) && $output['status'] == 1) {
+                        $databases = $output['data'] ?? [];
+                        foreach ($databases as $db) {
+                            if (isset($db['database']) && $db['database'] === $dbName) {
+                                return (int) ($db['disk_usage'] ?? 0);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning("cPanel CLI Mysql::list_databases failed: " . $e->getMessage());
+        }
+
+        return 0;
+    }
+
+    /**
+     * Get actual directory size in bytes from cPanel UAPI Fileman::list_files with du.
+     * Falls back to 0 if unavailable.
+     */
+    public function getCpanelDirectorySize(string $docRoot): int
+    {
+        $cpanelUser = config('services.hosting_panel.username', 'sublymyi');
+        $apiUrl = config('services.hosting_panel.url', 'https://tersius.kencang.id:2083');
+        $apiKey = config('services.hosting_panel.api_key', '');
+        $driver = config('services.hosting_panel.driver', 'log');
+
+        if ($driver !== 'cpanel' || empty($apiKey)) {
+            // Local fallback for dev/log mode
+            if (is_dir($docRoot)) {
+                try {
+                    $bytes = 0;
+                    $files = new \RecursiveIteratorIterator(
+                        new \RecursiveDirectoryIterator($docRoot, \RecursiveDirectoryIterator::SKIP_DOTS),
+                        \RecursiveIteratorIterator::LEAVES_ONLY
+                    );
+                    foreach ($files as $file) {
+                        if ($file->isFile()) {
+                            $bytes += $file->getSize();
+                        }
+                    }
+                    return $bytes;
+                } catch (\Exception $e) {
+                    return 0;
+                }
+            }
+            return 0;
+        }
+
+        $headers = ['Authorization' => "cpanel {$cpanelUser}:{$apiKey}"];
+
+        // Strip home prefix to get relative path for cPanel Fileman API
+        $homePrefix = "/home/{$cpanelUser}/";
+        $relDir = str_starts_with($docRoot, $homePrefix)
+            ? substr($docRoot, strlen($homePrefix))
+            : ltrim($docRoot, '/');
+
+        // Try HTTP UAPI: Fileman::get_file_information with type check
+        try {
+            $response = \Illuminate\Support\Facades\Http::withHeaders($headers)
+                ->withoutVerifying()
+                ->timeout(10)
+                ->get("{$apiUrl}/execute/Fileman/get_file_information", [
+                    'path' => $relDir,
+                ]);
+
+            if ($response->successful() && $response->json('status') == 1) {
+                $data = $response->json('data') ?? [];
+                // get_file_information returns 'size' for the directory (du output in bytes)
+                if (isset($data['size']) && $data['size'] > 0) {
+                    return (int) $data['size'];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning("cPanel HTTP Fileman::get_file_information failed for {$relDir}: " . $e->getMessage());
+        }
+
+        // Fallback: local recursive scan (works on shared host where PHP can read the dir)
+        if (is_dir($docRoot)) {
+            try {
+                $bytes = 0;
+                $files = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($docRoot, \RecursiveDirectoryIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::LEAVES_ONLY
+                );
+                foreach ($files as $file) {
+                    if ($file->isFile()) {
+                        $bytes += $file->getSize();
+                    }
+                }
+                return $bytes;
+            } catch (\Exception $e) {
+                Log::warning("Local directory scan failed for {$docRoot}: " . $e->getMessage());
+            }
+        }
+
+        return 0;
+    }
+
+    /**
      * Call cPanel API via HTTP, falling back to local CLI (uapi) if HTTP times out or fails.
      */
     protected function callCpanelApi(string $module, string $function, array $params): array

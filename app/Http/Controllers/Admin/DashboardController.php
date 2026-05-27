@@ -30,7 +30,7 @@ class DashboardController extends Controller
     /**
      * Display live disk and database resource monitoring for all client subdomains.
      */
-    public function diskUsage()
+    public function diskUsage(\App\Services\ServerProvisioningService $provisioningService)
     {
         $subdomains = Subdomain::with(['user', 'userDatabases', 'payments.plan'])->get();
 
@@ -40,63 +40,60 @@ class DashboardController extends Controller
             $plan = $payment ? $payment->plan : null;
             $maxStorageMB = $plan ? $plan->max_storage_mb : 50;
 
-            // 1. Calculate actual directory size of the subdomain's root directory on cPanel
-            $realDirectoryBytes = 0;
-            $latestSuccess = $subdomain->deployments()->where('status', 'success')->latest()->first();
-            $docRoot = $subdomain->doc_root;
+            // 1. Get actual directory size via cPanel UAPI (with local fallback for dev mode)
+            $realDirectoryBytes = $provisioningService->getCpanelDirectorySize($subdomain->doc_root);
 
-            if (is_dir($docRoot)) {
-                try {
-                    $files = new \RecursiveIteratorIterator(
-                        new \RecursiveDirectoryIterator($docRoot, \RecursiveDirectoryIterator::SKIP_DOTS),
-                        \RecursiveIteratorIterator::LEAVES_ONLY
-                    );
-                    foreach ($files as $file) {
-                        if ($file->isFile()) {
-                            $realDirectoryBytes += $file->getSize();
-                        }
-                    }
-                } catch (\Exception $e) {
-                    $realDirectoryBytes = $latestSuccess ? $latestSuccess->extracted_size : 0;
-                }
-            } else {
-                $realDirectoryBytes = $latestSuccess ? $latestSuccess->extracted_size : 0;
+            // If cPanel returned 0, fall back to deployment extracted_size as last resort
+            if ($realDirectoryBytes === 0) {
+                $latestSuccess = $subdomain->deployments()->where('status', 'success')->latest()->first();
+                $realDirectoryBytes = $latestSuccess ? ($latestSuccess->extracted_size ?? 0) : 0;
             }
 
-            // 2. Calculate actual database size on MySQL
+            // 2. Get actual database size via cPanel UAPI Mysql::list_databases
             $realDatabaseBytes = 0;
+            $dbSizeIsLive = false;
             $database = $subdomain->userDatabases()->first();
-            if ($database) {
-                try {
-                    $dbName = $database->db_name;
-                    $result = \DB::select("SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = ?", [$dbName]);
-                    if (!empty($result) && isset($result[0]->size)) {
-                        $realDatabaseBytes = (int) $result[0]->size;
+            if ($database && !empty($database->db_name)) {
+                $realDatabaseBytes = $provisioningService->getCpanelDatabaseSize($database->db_name);
+                if ($realDatabaseBytes > 0) {
+                    $dbSizeIsLive = true;
+                } else {
+                    // Final fallback: information_schema (works if same MySQL user has access)
+                    try {
+                        $result = \DB::select(
+                            "SELECT COALESCE(SUM(data_length + index_length), 0) AS size FROM information_schema.TABLES WHERE table_schema = ?",
+                            [$database->db_name]
+                        );
+                        if (!empty($result) && isset($result[0]->size) && $result[0]->size > 0) {
+                            $realDatabaseBytes = (int) $result[0]->size;
+                            $dbSizeIsLive = true;
+                        }
+                    } catch (\Exception $e) {
+                        \Log::warning("information_schema fallback failed for {$subdomain->full_domain}: " . $e->getMessage());
                     }
-                } catch (\Exception $e) {
-                    $realDatabaseBytes = 0;
                 }
             }
 
-            // Combine sizes for dashboard metrics
+            // 3. Combine sizes
             $totalBytes = $realDirectoryBytes + $realDatabaseBytes;
-            $totalMB = round($totalBytes / 1048576, 2);
-            $dirMB = round($realDirectoryBytes / 1048576, 2);
-            $dbMB = round($realDatabaseBytes / 1048576, 2);
+            $totalMB    = round($totalBytes / 1048576, 2);
+            $dirMB      = round($realDirectoryBytes / 1048576, 2);
+            $dbMB       = round($realDatabaseBytes / 1048576, 2);
             $usagePercent = $maxStorageMB > 0 ? min(100, round(($totalMB / $maxStorageMB) * 100, 2)) : 0;
 
             $diskData[] = [
-                'subdomain' => $subdomain,
-                'user' => $subdomain->user,
-                'plan_name' => $plan ? $plan->name : 'N/A',
+                'subdomain'      => $subdomain,
+                'user'           => $subdomain->user,
+                'plan_name'      => $plan ? $plan->name : 'N/A',
                 'max_storage_mb' => $maxStorageMB,
-                'dir_bytes' => $realDirectoryBytes,
-                'db_bytes' => $realDatabaseBytes,
-                'total_bytes' => $totalBytes,
-                'dir_mb' => $dirMB,
-                'db_mb' => $dbMB,
-                'total_mb' => $totalMB,
-                'percent' => $usagePercent
+                'dir_bytes'      => $realDirectoryBytes,
+                'db_bytes'       => $realDatabaseBytes,
+                'total_bytes'    => $totalBytes,
+                'dir_mb'         => $dirMB,
+                'db_mb'          => $dbMB,
+                'total_mb'       => $totalMB,
+                'percent'        => $usagePercent,
+                'db_size_live'   => $dbSizeIsLive,
             ];
         }
 

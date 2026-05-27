@@ -83,15 +83,7 @@
                                                 @endif
                                                 <span class="text-[10px] text-neutral-500 font-semibold italic">{{ $deployment->created_at->diffForHumans() }}</span>
                                             </div>
-                                            @if(str_contains($deployment->notes ?? '', 'GitHub'))
-                                                <div class="text-[9px] text-neutral-450 mt-1.5 select-all font-semibold truncate w-48 sm:w-64 md:w-80 block" title="{{ $deployment->notes }}">
-                                                    {{ str_replace('GitHub Pull - ', '', $deployment->notes) }}
-                                                </div>
-                                            @elseif($deployment->notes)
-                                                <div class="text-[9px] text-neutral-555 mt-1.5 italic font-semibold truncate w-48 sm:w-64 md:w-80 block" title="{{ $deployment->notes }}">
-                                                    Catatan: {{ $deployment->notes }}
-                                                </div>
-                                            @endif
+
                                         </td>
                                         <td class="table-td text-right pr-6">
                                             <div class="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
@@ -167,15 +159,7 @@
                                                             </span>
                                                         @endif
                                                     </div>
-                                                    @if(str_contains($deployment->notes ?? '', 'GitHub'))
-                                                        <div class="text-[9px] text-neutral-450 mt-1 select-all font-semibold truncate w-48 sm:w-64 md:w-80 block" title="{{ $deployment->notes }}">
-                                                            {{ str_replace('GitHub Pull - ', '', $deployment->notes) }}
-                                                        </div>
-                                                    @elseif($deployment->notes)
-                                                        <div class="text-[9px] text-neutral-500 mt-1 italic font-semibold truncate w-48 sm:w-64 md:w-80 block" title="{{ $deployment->notes }}">
-                                                            Catatan: {{ $deployment->notes }}
-                                                        </div>
-                                                    @endif
+
                                                 </div>
                                                 <a href="{{ route('admin.deployments.download', $deployment) }}" class="opacity-0 group-hover/row:opacity-100 transition-opacity p-2 border border-neutral-850 hover:border-neutral-700 bg-neutral-900 hover:bg-neutral-950 text-neutral-400 hover:text-white rounded-lg active:scale-[0.94] shrink-0 ml-4" title="Download ZIP">
                                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>

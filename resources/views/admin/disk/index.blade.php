@@ -154,8 +154,19 @@
                                 <td class="table-td text-center font-mono text-xs font-semibold text-neutral-350">
                                     {{ $item['dir_mb'] >= 1 ? $item['dir_mb'] . ' MB' : round($item['dir_bytes']/1024, 1) . ' KB' }}
                                 </td>
-                                <td class="table-td text-center font-mono text-xs font-semibold text-neutral-350">
-                                    {{ $item['db_mb'] >= 1 ? $item['db_mb'] . ' MB' : round($item['db_bytes']/1024, 1) . ' KB' }}
+                                <td class="table-td text-center">
+                                    <span class="font-mono text-xs font-semibold text-neutral-350 block">
+                                        {{ $item['db_mb'] >= 1 ? $item['db_mb'] . ' MB' : round($item['db_bytes']/1024, 1) . ' KB' }}
+                                    </span>
+                                    @if($item['db_bytes'] > 0)
+                                        <span class="text-[8px] font-bold uppercase tracking-widest mt-0.5 block {{ $item['db_size_live'] ? 'text-emerald-500' : 'text-neutral-600' }}">
+                                            {{ $item['db_size_live'] ? '● Live' : '~ Estimasi' }}
+                                        </span>
+                                    @else
+                                        <span class="text-[8px] font-bold uppercase tracking-widest mt-0.5 block text-neutral-700">
+                                            Tidak ada DB
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="table-td">
                                     <div class="flex items-center justify-between text-[10px] mb-1.5 select-none font-semibold">

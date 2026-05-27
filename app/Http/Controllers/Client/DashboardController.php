@@ -70,14 +70,22 @@ class DashboardController extends Controller
         }
 
         // Calculate actual database size used by the subdomain on MySQL
+        // NOTE: On shared cPanel hosting, information_schema only returns rows for databases
+        // the current MySQL user has GRANT access to. Client databases (sublymyi_xxx) may be
+        // owned by a different cPanel MySQL user, so we fall back to an estimate.
         $realDatabaseBytes = 0;
         $database = $subdomain->userDatabases()->first();
         if ($database) {
             try {
                 $dbName = $database->db_name;
-                $result = \DB::select("SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = ?", [$dbName]);
-                if (!empty($result) && isset($result[0]->size)) {
+                $result = \DB::select("SELECT COALESCE(SUM(data_length + index_length), 0) AS size FROM information_schema.TABLES WHERE table_schema = ?", [$dbName]);
+                if (!empty($result) && isset($result[0]->size) && $result[0]->size > 0) {
                     $realDatabaseBytes = (int) $result[0]->size;
+                } else {
+                    // Fallback: estimate ~8% of extracted project size
+                    if ($latestSuccess && $latestSuccess->extracted_size > 0) {
+                        $realDatabaseBytes = (int) ($latestSuccess->extracted_size * 0.08);
+                    }
                 }
             } catch (\Exception $e) {
                 \Log::warning("Gagal mengambil ukuran database untuk {$subdomain->full_domain}: " . $e->getMessage());
