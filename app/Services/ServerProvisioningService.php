@@ -525,7 +525,7 @@ class ServerProvisioningService
             'Authorization' => "cpanel {$cpanelUser}:{$this->apiKey}"
         ];
 
-        $isApi2 = ($module === 'SubDomain' && $function === 'delsubdomain');
+        $isApi2 = ($module === 'SubDomain' && $function === 'delsubdomain') || ($module === 'Lvemanager');
 
         // 1. Try HTTP API first
         try {
@@ -1125,30 +1125,30 @@ class ServerProvisioningService
     }
 
     /**
-     * Helper to run CloudLinux Selector command via cPanel UAPI Lvemanager::cl_selector,
+     * Helper to run CloudLinux Selector command via cPanel API2 Lvemanager::cl-selector,
      * falling back to local CLI commands (cloudlinux-selector) if HTTP fails or Lvemanager is unavailable.
      */
     protected function runCloudlinuxSelector(string $action, string $cleanDir, array $additionalOpts = []): array
     {
         $opts = array_merge(['app_root' => $cleanDir], $additionalOpts);
 
-        // 1. Coba UAPI Lvemanager::cl_selector terlebih dahulu (Garis Bawah '_', bukan Dash '-')
+        // 1. Coba cPanel API2 Lvemanager::cl-selector terlebih dahulu (menggunakan Dash '-')
         if ($this->driver === 'cpanel') {
             try {
-                Log::info("Trying cPanel UAPI Lvemanager::cl_selector for action '{$action}'...");
+                Log::info("Trying cPanel API2 Lvemanager::cl-selector for action '{$action}'...");
                 
                 $params = array_merge([
                     'action' => $action,
                     'type' => 'nodejs',
                 ], $opts);
 
-                $response = $this->callCpanelApi('Lvemanager', 'cl_selector', $params);
+                $response = $this->callCpanelApi('Lvemanager', 'cl-selector', $params);
                 if ($response['success']) {
-                    Log::info("cPanel UAPI Lvemanager::cl_selector succeeded!");
+                    Log::info("cPanel API2 Lvemanager::cl-selector succeeded!");
                     return $response;
                 }
             } catch (\Exception $e) {
-                Log::warning("cPanel UAPI Lvemanager::cl_selector failed: " . $e->getMessage() . ". Trying local CLI fallback...");
+                Log::warning("cPanel API2 Lvemanager::cl-selector failed: " . $e->getMessage() . ". Trying local CLI fallback...");
             }
         } else {
             Log::info("SIMULATION [Log Driver]: NodeJS Selector action '{$action}' on '{$cleanDir}'");
